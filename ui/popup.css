@@ -1,0 +1,57 @@
+/* popup.css — 银狐防护弹出面板（Liquid Glass 深色毛玻璃） */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  width: 340px; min-height: 360px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: #eef2f8;
+  background: radial-gradient(700px 360px at 80% -10%, rgba(120,160,255,.22), transparent 55%),
+              radial-gradient(600px 360px at 0% 110%, rgba(255,120,120,.16), transparent 55%),
+              linear-gradient(160deg, #0c1020, #141a2e);
+}
+.app { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.head { display: flex; align-items: center; justify-content: space-between; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.logo { width: 34px; height: 34px; }
+.name { font-size: 15px; font-weight: 800; letter-spacing: .5px; }
+.sub { font-size: 10.5px; opacity: .55; letter-spacing: 1px; }
+.pill {
+  font-size: 11.5px; font-weight: 700; padding: 5px 11px; border-radius: 999px;
+  background: linear-gradient(135deg, #3ddc84, #2bb673); color: #06231a;
+  box-shadow: 0 4px 14px rgba(61,220,132,.35);
+}
+.pill.off { background: linear-gradient(135deg, #ff6b6b, #ff9472); color: #2a0c0c; box-shadow: 0 4px 14px rgba(255,107,107,.35); }
+
+.card {
+  background: linear-gradient(160deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 16px; padding: 14px 16px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 10px 26px rgba(0,0,0,.28);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.page-status .row { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; }
+.page-status .label { font-size: 12.5px; opacity: .7; }
+.page-status .value { font-size: 13px; font-weight: 700; }
+.value.safe { color: #6ee7b7; }
+.value.risk { color: #ff9a9a; }
+
+.stats { display: flex; gap: 12px; }
+.stat { flex: 1; text-align: center; }
+.stat .num { font-size: 26px; font-weight: 800; background: linear-gradient(135deg,#9db8ff,#c8a6ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.stat .cap { font-size: 11px; opacity: .65; margin-top: 2px; }
+
+.recent .sec-title { font-size: 12px; opacity: .7; margin-bottom: 8px; font-weight: 700; }
+.recent-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.recent-list li { font-size: 11.5px; display: flex; justify-content: space-between; gap: 8px; padding: 7px 10px; border-radius: 10px; background: rgba(255,255,255,.05); }
+.recent-list .h { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.recent-list .s { opacity: .6; flex: 0 0 auto; }
+.recent-empty { font-size: 11.5px; opacity: .5; padding: 4px 2px; }
+
+.settings-btn {
+  width: 100%; cursor: pointer; border: none; border-radius: 14px; padding: 12px;
+  font-size: 13.5px; font-weight: 700; color: #fff; font-family: inherit;
+  background: linear-gradient(135deg, rgba(125,180,255,.9), rgba(160,140,255,.9));
+  box-shadow: 0 10px 26px rgba(125,160,255,.32); transition: transform .15s ease, filter .15s ease;
+}
+.settings-btn:hover { transform: translateY(-2px); filter: brightness(1.06); }
+.settings-btn:active { transform: translateY(0); }

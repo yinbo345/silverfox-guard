@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="welcome.css">
+  <title>银狐防护 · 已成功启用</title>
+</head>
+<body>
+  <div class="aurora" aria-hidden="true">
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+    <span class="blob b3"></span>
+  </div>
+
+  <main class="wrap">
+    <header class="hero">
+      <div class="shield">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z"
+                fill="rgba(125,180,255,.18)" stroke="#7db4ff" stroke-width="1.4"/>
+          <path d="M8.5 12l2.4 2.4 4.6-4.8" stroke="#ffd479" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="pill">✓ 已成功启用</span>
+      <h1>银狐防护 <span>SilverFox Guard</span></h1>
+      <p class="sub">你的浏览器现已配备银狐（游蛇）木马下载站实时防护 🛡</p>
+    </header>
+
+    <section class="panel rise" style="--d:1">
+      <h2><span class="bar"></span>它现在能为你做什么</h2>
+      <div class="cards">
+        <div class="card">
+          <div class="ico">🛰</div>
+          <h3>实时网页分析</h3>
+          <p>打开任意网页即自动分析代码特征，识别仿冒官网、带毒安装包分发与钓鱼话术。</p>
+        </div>
+        <div class="card">
+          <div class="ico">🚫</div>
+          <h3>拦截任意下载入口</h3>
+          <p>不仅拦 <code>&lt;a&gt;</code> 链接，连伪装成 <code>div</code> / <code>button</code> 的下载卡片也一并禁用。</p>
+        </div>
+        <div class="card">
+          <div class="ico">🔗</div>
+          <h3>跳转链防护</h3>
+          <p>危险站自动跳转的银狐新站也会被标记并拦截，断链不漏、层层兜底。</p>
+        </div>
+        <div class="card">
+          <div class="ico">🛡</div>
+          <h3>智能免误拦</h3>
+          <p>官方软件官网、搜索引擎、本地文件自动放行，不误伤你的正常浏览。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel rise" style="--d:2">
+      <h2><span class="bar"></span>它是怎么工作的</h2>
+      <ol class="steps">
+        <li><b>① 采集</b><span>访问网页时，扩展分析页面代码、链接结构与 ICP 备案等特征。</span></li>
+        <li><b>② 评分</b><span>多维度加权打分，命中银狐特征即判定为风险站点。</span></li>
+        <li><b>③ 预警</b><span>弹出美观警告浮层并禁用下载入口，由你决定是否继续访问。</span></li>
+      </ol>
+    </section>
+
+    <div class="actions rise" style="--d:3">
+      <button class="btn btn-primary" id="settingsBtn">进入设置</button>
+      <button class="btn btn-ghost" id="startBtn">开始浏览</button>
+    </div>
+
+    <footer class="foot rise" style="--d:4">
+      点击浏览器工具栏的 <b>银狐防护</b> 图标，可随时查看防护状态与拦截统计。<br>
+      本扩展基于网页代码特征分析进行预警，仅供参考，不能替代专业杀毒软件。
+    </footer>
+  </main>
+
+  <script src="welcome.js"></script>
+</body>
+</html>

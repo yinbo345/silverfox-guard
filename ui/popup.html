@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="popup.css">
+  <title>银狐防护</title>
+</head>
+<body>
+  <div class="app">
+    <header class="head">
+      <div class="brand">
+        <svg class="logo" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z" fill="rgba(120,180,255,.18)" stroke="#7db4ff" stroke-width="1.4"/>
+          <path d="M12 7.5 6 9.5v3.2c0 3.4 2.3 5.8 6 7.6 3.7-1.8 6-4.2 6-7.6V9.5l-6-2Z" fill="rgba(120,180,255,.0)"/>
+          <path d="M9 11.5l2 2 4-4" stroke="#9fe0c0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <div class="name">银狐防护</div>
+          <div class="sub">SilverFox Guard</div>
+        </div>
+      </div>
+      <span class="pill" id="globalPill">防护中</span>
+    </header>
+
+    <section class="card page-status">
+      <div class="row">
+        <span class="label">当前页面</span>
+        <span class="value" id="pageStatus">检测中…</span>
+      </div>
+      <div class="row">
+        <span class="label">风险分</span>
+        <span class="value" id="pageScore">—</span>
+      </div>
+    </section>
+
+    <section class="card stats">
+      <div class="stat">
+        <div class="num" id="statWarn">0</div>
+        <div class="cap">拦截风险网站</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="statBlock">0</div>
+        <div class="cap">拦截下载</div>
+      </div>
+    </section>
+
+    <section class="card recent" id="recentWrap">
+      <div class="sec-title">近期拦截记录</div>
+      <ul class="recent-list" id="recentList"></ul>
+    </section>
+
+    <button class="settings-btn" id="openSettings">打开设置控制面板</button>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

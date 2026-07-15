@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <g transform="translate(16,13) scale(4.0)">
+    <!-- 盾牌外形：蓝描边 + 半透明蓝填充（与欢迎页一致）-->
+    <path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z"
+          fill="rgba(125,180,255,.30)" stroke="#7db4ff" stroke-width="1.5"
+          stroke-linejoin="round"/>
+    <!-- 金色对勾 -->
+    <path d="M8.5 12l2.4 2.4 4.6-4.8" fill="none" stroke="#ffd479"
+          stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

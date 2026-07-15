@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "银狐防护 · SilverFox Guard",
+  "version": "1.0.0",
+  "description": "基于网页代码分析的银狐(游蛇)木马网站识别与下载拦截防护扩展。命中风险特征即弹出警告并禁用全部下载/跳转链接，支持用户自行选择是否继续访问。",
+  "permissions": ["storage", "downloads", "activeTab", "webNavigation"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "ui/popup.html",
+    "default_title": "银狐防护 · SilverFox Guard",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_page": "ui/options.html",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["rules/iocs.js", "rules/analyzer.js", "content/content.js"],
+      "css": ["content/content.css"],
+      "run_at": "document_start"
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="options.css">
+  <title>银狐防护 · 设置控制面板</title>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <svg class="logo" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z" fill="rgba(120,180,255,.18)" stroke="#7db4ff" stroke-width="1.4"/>
+        <path d="M9 11.5l2 2 4-4" stroke="#9fe0c0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <div class="t1">银狐防护</div>
+        <div class="t2">SILVERFOX GUARD · 设置控制面板</div>
+      </div>
+      <div class="spacer"></div>
+      <span class="mini-pill on" id="masterPill">防护中</span>
+    </div>
+
+    <!-- 总开关 + 灵敏度 -->
+    <div class="panel">
+      <h3><span class="bar"></span>防护总开关</h3>
+      <div class="master">
+        <div class="rl">
+          <div class="mt">启用银狐木马网站防护</div>
+          <div class="ms">关闭后扩展将不再分析页面、不再拦截下载</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="enabledGlobal">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="row" style="border-top:1px solid rgba(255,255,255,.07); margin-top:6px;">
+        <div class="rl"><div class="rt">检测灵敏度</div><div class="rd">越高越易触发警告；低=需更强证据，高=宁可误报也不放过</div></div>
+        <div class="seg" id="sensitivity">
+          <button data-v="low">低</button>
+          <button data-v="medium">中</button>
+          <button data-v="high">高</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 检测维度 -->
+    <div class="panel">
+      <h3><span class="bar"></span>检测维度</h3>
+      <div class="desc">下列每一项都会独立评分并累加风险分。可单独关闭你认为易误报的维度。</div>
+      <div id="catList"></div>
+    </div>
+
+    <!-- 拦截行为 -->
+    <div class="panel">
+      <h3><span class="bar"></span>拦截行为</h3>
+      <div class="row">
+        <div class="rl"><div class="rt">弹出警告浮层</div><div class="rd">命中风险时，在页面上弹出美观的警告提示</div></div>
+        <label class="switch"><input type="checkbox" id="showWarning"><span class="slider"></span></label>
+      </div>
+      <div class="row">
+        <div class="rl"><div class="rt">自动禁用下载/跳转链接</div><div class="rd">命中风险后，禁用页面全部下载与重定向链接（推荐保持开启）</div></div>
+        <label class="switch"><input type="checkbox" id="autoBlockDownloads"><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <!-- 规则白名单 / 自定义 -->
+    <div class="panel">
+      <h3><span class="bar"></span>规则与白名单</h3>
+      <div class="field">
+        <label>信任域名白名单（每行一个，命中后完全不拦截）</label>
+        <textarea id="allowlist" placeholder="例如：&#10;my-company.com&#10;trusted-site.cn"></textarea>
+        <div class="hint">支持精确域名与后缀匹配，如填写 example.com 将同时信任 a.example.com。</div>
+      </div>
+      <div class="field">
+        <label>自定义风险关键词（命中即加风险分）</label>
+        <textarea id="customKeywords" placeholder="每行一个，例如：&#10;内部福利&#10;专属客服"></textarea>
+        <div class="hint">页面 HTML 中出现这些词会触发风险提示。</div>
+      </div>
+      <div class="field">
+        <label>自定义恶意域名黑名单（命中直接判危）</label>
+        <textarea id="customBadDomains" placeholder="每行一个域名，例如：&#10;bad-site.top"></textarea>
+        <div class="hint">这些域名一旦出现即视为银狐风险站点。</div>
+      </div>
+    </div>
+
+    <!-- 统计 -->
+    <div class="panel">
+      <h3><span class="bar"></span>防护统计</h3>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="n" id="stWarn">0</div><div class="c">拦截风险网站</div></div>
+        <div class="stat-box"><div class="n" id="stBlock">0</div><div class="c">拦截下载次数</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="saveBtn">保存设置</button>
+        <button class="btn btn-ghost" id="resetBtn">重置统计</button>
+      </div>
+    </div>
+
+    <div class="foot">
+      银狐（又称"游蛇"）木马常通过<b>仿冒知名软件官网</b>、<b>网盘分发带毒安装包</b>、<b>钓鱼诱导话术</b>传播。<br>
+      本扩展基于网页代码特征分析进行预警，仅供参考，无法替代专业杀毒软件。
+    </div>
+  </div>
+
+  <div class="toast-save" id="toast">已保存 ✓</div>
+
+  <script src="../rules/iocs.js"></script>
+  <script src="../rules/analyzer.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

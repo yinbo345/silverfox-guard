@@ -1,0 +1,93 @@
+/* content.css — 银狐防护警告浮层 / 拦截提示 / 常驻横幅
+   设计语言：Liquid Glass（深色渐变 + 毛玻璃 + 柔和阴影 + 丝滑动画） */
+@keyframes sf-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sf-rise { from { opacity: 0; transform: translateY(24px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes sf-pulse { 0%,100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255,90,90,.5)); } 50% { transform: scale(1.06); filter: drop-shadow(0 0 22px rgba(255,90,90,.85)); } }
+@keyframes sf-toast-in { from { opacity: 0; transform: translate(-50%, 16px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+.sf-overlay {
+  position: fixed !important; inset: 0 !important; z-index: 2147483647 !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  background: radial-gradient(1200px 600px at 50% -10%, rgba(255,80,80,.18), transparent 60%), rgba(8,10,20,.74) !important;
+  backdrop-filter: blur(9px) saturate(120%) !important; -webkit-backdrop-filter: blur(9px) saturate(120%) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  animation: sf-fade .28s ease both !important; padding: 24px !important; box-sizing: border-box !important;
+}
+.sf-card {
+  width: min(460px, 94vw) !important; padding: 30px 30px 26px !important; border-radius: 24px !important;
+  background: linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.04)) !important;
+  border: 1px solid rgba(255,255,255,.16) !important;
+  box-shadow: 0 30px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.18) !important;
+  backdrop-filter: blur(22px) saturate(140%) !important; -webkit-backdrop-filter: blur(22px) saturate(140%) !important;
+  color: #fff !important; box-sizing: border-box !important; animation: sf-rise .34s cubic-bezier(.2,.8,.2,1) both !important;
+  max-height: 90vh !important; overflow: auto !important;
+}
+.sf-icon { width: 58px !important; height: 58px !important; margin: 0 auto 14px !important; display: block !important; animation: sf-pulse 2.4s ease-in-out infinite !important; }
+.sf-title { margin: 0 0 6px !important; font-size: 22px !important; font-weight: 800 !important; text-align: center !important; letter-spacing: .5px !important;
+  background: linear-gradient(90deg, #ff8a8a, #ffd36e) !important; -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; }
+.sf-sub { margin: 0 0 16px !important; font-size: 13px !important; line-height: 1.6 !important; text-align: center !important; opacity: .82 !important; word-break: break-all !important; }
+.sf-sub b { color: #ffd36e !important; font-weight: 700 !important; }
+.sf-reasons { list-style: none !important; margin: 0 0 20px !important; padding: 14px !important; border-radius: 14px !important;
+  background: rgba(255,255,255,.06) !important; border: 1px solid rgba(255,255,255,.10) !important; display: flex !important; flex-direction: column !important; gap: 10px !important; }
+.sf-reasons li { font-size: 12.5px !important; line-height: 1.5 !important; display: flex !important; gap: 8px !important; align-items: flex-start !important; opacity: .95 !important; }
+.sf-dot { flex: 0 0 auto !important; width: 7px !important; height: 7px !important; margin-top: 6px !important; border-radius: 50% !important;
+  background: linear-gradient(135deg, #ff7a7a, #ffb86e) !important; box-shadow: 0 0 8px rgba(255,120,120,.8) !important; }
+.sf-btnrow { display: flex !important; gap: 12px !important; }
+.sf-btn { flex: 1 !important; cursor: pointer !important; border: none !important; border-radius: 14px !important; padding: 14px 10px !important;
+  font-size: 14.5px !important; font-weight: 700 !important; font-family: inherit !important; transition: transform .15s ease, filter .15s ease, box-shadow .15s ease !important; }
+.sf-btn:hover { transform: translateY(-2px) !important; filter: brightness(1.06) !important; }
+.sf-btn:active { transform: translateY(0) !important; }
+.sf-btn { color: #fff !important; background: rgba(255,255,255,.10) !important; border: 1px solid rgba(255,255,255,.22) !important; }
+.sf-btn-leave { color: #fff !important; background: linear-gradient(135deg, #ff5a5a, #ff8a4a) !important; box-shadow: 0 10px 26px rgba(255,90,90,.42) !important; border: none !important; }
+.sf-btn-stay,
+.sf-btn-continue { color: #fff !important; background: rgba(255,255,255,.10) !important; border: 1px solid rgba(255,255,255,.22) !important; }
+.sf-actions { display: flex !important; gap: 12px !important; margin-top: 4px !important; width: 100% !important; }
+.sf-tip,
+.sf-foot { margin: 14px 0 0 !important; font-size: 11.5px !important; text-align: center !important; opacity: .58 !important; line-height: 1.5 !important; }
+
+.sf-toast { position: fixed !important; left: 50% !important; bottom: 28px !important; transform: translateX(-50%) !important; z-index: 2147483647 !important;
+  background: rgba(20,16,22,.86) !important; border: 1px solid rgba(255,140,140,.4) !important; color: #ffd9d9 !important;
+  padding: 11px 18px !important; border-radius: 12px !important; font-size: 13px !important; font-weight: 600 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  box-shadow: 0 14px 40px rgba(0,0,0,.5) !important; backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important;
+  animation: sf-toast-in .25s ease both !important; pointer-events: none !important; }
+
+.sf-banner { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 2147483646 !important;
+  display: flex !important; align-items: center !important; gap: 12px !important; padding: 10px 16px !important;
+  background: linear-gradient(90deg, rgba(255,90,90,.92), rgba(255,140,80,.9)) !important;
+  color: #fff !important; font-size: 13px !important; font-weight: 600 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  box-shadow: 0 6px 24px rgba(0,0,0,.4) !important; backdrop-filter: blur(8px) !important; -webkit-backdrop-filter: blur(8px) !important; }
+.sf-banner b { font-weight: 800 !important; }
+.sf-banner button { margin-left: auto !important; cursor: pointer !important; border: 1px solid rgba(255,255,255,.5) !important;
+  background: rgba(255,255,255,.16) !important; color: #fff !important; border-radius: 10px !important; padding: 7px 14px !important;
+  font-size: 12.5px !important; font-weight: 700 !important; font-family: inherit !important; }
+.sf-banner button:hover { background: rgba(255,255,255,.28) !important; }
+
+/* 横幅内部布局 */
+.sf-btext { flex: 1 !important; min-width: 0 !important; line-height: 1.5 !important; }
+.sf-bbtns { display: flex !important; gap: 8px !important; align-items: center !important; flex-shrink: 0 !important; }
+.sf-bbtns button { margin-left: 0 !important; }
+
+/* 温和提示条（warn 层） */
+.sf-hint { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 2147483646 !important;
+  padding: 10px 16px !important; background: rgba(255,140,80,.92) !important; color: #fff !important;
+  font-size: 13px !important; font-weight: 600 !important; display: flex !important; align-items: center !important; gap: 12px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  box-shadow: 0 6px 24px rgba(0,0,0,.35) !important; backdrop-filter: blur(8px) !important; -webkit-backdrop-filter: blur(8px) !important; }
+.sf-hint b { font-weight: 800 !important; }
+.sf-hint button { margin-left: auto !important; cursor: pointer !important; border: 1px solid rgba(255,255,255,.5) !important;
+  background: rgba(255,255,255,.18) !important; color: #fff !important; border-radius: 10px !important; padding: 6px 12px !important;
+  font-size: 12px !important; font-weight: 700 !important; font-family: inherit !important; }
+.sf-hint button:hover { background: rgba(255,255,255,.30) !important; }
+
+/* 「完全放行」二次确认态 */
+.sf-confirm-row { display: inline-flex !important; gap: 8px !important; margin-left: auto !important; }
+.sf-confirm-row button { margin-left: 0 !important; }
+.sf-btn-danger { cursor: pointer !important; border: none !important; border-radius: 10px !important; padding: 7px 14px !important;
+  font-size: 12.5px !important; font-weight: 700 !important; font-family: inherit !important; color: #fff !important;
+  background: linear-gradient(135deg, #ff5a5a, #ff8a4a) !important; box-shadow: 0 6px 16px rgba(255,90,90,.4) !important; }
+.sf-btn-danger:hover { filter: brightness(1.08) !important; }
+
+/* 防止弹窗/横幅文本被意外选中 */
+.sf-overlay, .sf-banner, .sf-hint { user-select: none !important; -webkit-user-select: none !important; }
