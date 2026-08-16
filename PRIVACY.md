@@ -2,7 +2,7 @@
 
 **银狐防护 · SilverFox Guard**（以下简称"本扩展"）
 
-生效日期 / Effective date：2026-08-08
+生效日期 / Effective Date：2026-08-16
 
 ---
 
@@ -17,11 +17,19 @@
 - 任何可识别个人身份的信息（姓名、邮箱、电话、IP 地址等）；
 - 您的下载文件内容。
 
-**除用户主动触发的下载外，本扩展自动发出的网络请求仅为"域名年龄查询"。** 为判断一个网站是否新注册（银狐木马常使用新域名投递），本扩展仅将网站的**注册域名**（例如 `example.com`，不含路径、参数或页面内容）发送给公共 RDAP / WHOIS 服务器。该请求不包含您的任何个人信息，也不包含所访问页面的任何内容。
+**除用户主动触发的下载外，本扩展自动发出的网络请求包括两类：**
+
+1. **域名年龄查询。** 为判断一个网站是否新注册（银狐木马常使用新域名投递），本扩展仅将网站的**注册域名**（例如 `example.com`，不含路径、参数或页面内容）发送给公共 RDAP / WHOIS 服务器。该请求不包含您的任何个人信息，也不包含所访问页面的任何内容。
+
+2. **资源解析请求。** 为识别经脚本跳转、页面内嵌直链、重定向转发、文本文件内藏匿地址等伪装的钓鱼或木马下载投递，扩展会在您访问的页面上下文内，按需向该网页所引用的资源地址发起有限的网络请求（如脚本内直链、meta refresh 跳转目标、iframe 内嵌资源、重定向目标、同域文本文件等），用于解析其真实指向。此类请求遵循以下原则：仅用于本地风险判定，请求不发往本扩展运营方的服务器；跨站请求不携带您的登录凭据（不发送 Cookie），仅读取资源响应以判断其真实地址；不收集、不上传任何个人信息。
 
 **另有一次用户主动触发的下载行为。** 在「银狐急救」功能中，当用户点击下载按钮时，扩展通过浏览器标准下载 API 从 360 官方域名 `dl.360safe.com` 拉取 360 系统急救箱压缩包。该请求仅为文件下载、不含任何个人信息，扩展也不会执行或读取该文件内容。
 
-We **do not collect, upload, or transmit** any of the following: page content you browse, form inputs, credentials, browsing history, bookmarks, cookies, or any personally identifiable information (name, email, phone, IP, etc.). Apart from user-initiated downloads, the **only** outbound network request the extension makes automatically is a domain-age lookup: to judge whether a site is newly registered (a common SilverFox delivery tactic), the extension sends **only the registrable domain** (e.g. `example.com`, without path, query, or page content) to public RDAP/WHOIS servers. This request contains no personal data and no page content.
+We **do not collect, upload, or transmit** any of the following: page content you browse, form inputs, credentials, browsing history, bookmarks, cookies, or any personally identifiable information (name, email, phone, IP, etc.). Apart from user-initiated downloads, the extension makes two kinds of automatic outbound network requests:
+
+1. **Domain-age lookup.** To judge whether a site is newly registered (a common SilverFox delivery tactic), the extension sends **only the registrable domain** (e.g. `example.com`, without path, query, or page content) to public RDAP/WHOIS servers. This request contains no personal data and no page content.
+
+2. **Resource-resolution requests.** To detect phishing or trojan download delivery disguised through script redirects, in-page direct links, redirect forwarding, or addresses hidden inside text files, the extension may, within the context of the page you are visiting, issue limited network requests to resource URLs referenced by that page (such as script-embedded links, meta-refresh targets, iframe-embedded resources, redirect targets, and same-origin text files) in order to resolve their true destination. These requests follow these principles: they are used only for on-device risk assessment and are not sent to the extension operator's servers; cross-origin requests carry no login credentials (no cookies are sent) and only read the resource response to determine its real address; no personal data is collected or uploaded.
 
 **There is also one user-initiated download.** In the "SilverFox Rescue" feature, when the user clicks the download button, the extension uses the browser's standard download API to fetch the 360 System Rescue Box archive from 360's official domain `dl.360safe.com`. This request is purely a file download carrying no personal data, and the extension does not execute or read the file's contents.
 
@@ -46,9 +54,9 @@ The extension **does not use any remotely hosted code or scripts**. All detectio
 
 ## 四、第三方共享 / Third parties
 
-我们不与任何第三方共享、出售或交易您的数据。除上文所述的公共 RDAP 查询，以及「银狐急救」中用户主动触发的 360 官方工具下载外，本扩展不调用任何第三方服务、广告或分析平台。前述 360 下载仅向用户设备保存文件，不构成任何用户数据共享。
+我们不与任何第三方共享、出售或交易您的数据。除上文所述的公共 RDAP 查询、资源解析请求（仅本地读取响应以判定真实地址，不构成数据共享），以及「银狐急救」中用户主动触发的 360 官方工具下载外，本扩展不调用任何第三方服务、广告或分析平台。前述 360 下载仅向用户设备保存文件，资源解析请求仅用于本地风险判定，均不构成任何用户数据共享。
 
-We do not share, sell, or trade your data with any third party. Apart from the public RDAP lookup described above and the user-initiated download of 360's official rescue tool in the "SilverFox Rescue" feature, the extension calls no third-party services, advertising, or analytics platforms. That 360 download only saves a file to the user's device and does not constitute any sharing of user data.
+We do not share, sell, or trade your data with any third party. Apart from the public RDAP lookup and the resource-resolution requests described above (read locally only to determine a resource's true address, not constituting data sharing), and the user-initiated download of 360's official rescue tool in the "SilverFox Rescue" feature, the extension calls no third-party services, advertising, or analytics platforms. That 360 download only saves a file to the user's device, and the resource-resolution requests are used only for on-device risk assessment; neither constitutes any sharing of user data.
 
 ---
 
