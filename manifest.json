@@ -1,10 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "银狐防护 · SilverFox Guard",
-  "version": "1.0.0",
-  "description": "基于网页代码分析的银狐(游蛇)木马网站识别与下载拦截防护扩展。命中风险特征即弹出警告并禁用全部下载/跳转链接，支持用户自行选择是否继续访问。",
-  "permissions": ["storage", "downloads", "activeTab", "webNavigation"],
-  "host_permissions": ["<all_urls>"],
+  "name": "__MSG_extensionName__",
+  "version": "1.4.5",
+  "default_locale": "zh_CN",
+  "description": "__MSG_extensionDescription__",
+  "permissions": ["storage", "downloads", "activeTab", "webNavigation", "notifications"],
+  "host_permissions": ["<all_urls>", "https://open.bigmodel.cn/*"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'"
+  },
   "background": {
     "service_worker": "background.js"
   },
@@ -18,6 +22,7 @@
     }
   },
   "options_page": "ui/options.html",
+  "privacy_policy": "https://yinbo345.github.io/silverfox-guard/PRIVACY.md",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -26,9 +31,15 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["rules/iocs.js", "rules/analyzer.js", "content/content.js"],
+      "js": ["rules/iocs.js", "rules/analyzer.js", "rules/resource-resolver.js", "content/content.js"],
       "css": ["content/content.css"],
       "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["fonts/SmileySans-Oblique.woff2"],
+      "matches": ["<all_urls>"]
     }
   ]
 }
