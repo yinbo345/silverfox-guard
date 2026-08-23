@@ -4,109 +4,885 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="options.css">
-  <title>银狐防护 · 设置控制面板</title>
+  <title>银狐防护 · 设置</title>
 </head>
 <body>
-  <div class="wrap">
-    <div class="head">
-      <svg class="logo" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z" fill="rgba(120,180,255,.18)" stroke="#7db4ff" stroke-width="1.4"/>
-        <path d="M9 11.5l2 2 4-4" stroke="#9fe0c0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <div>
-        <div class="t1">银狐防护</div>
-        <div class="t2">SILVERFOX GUARD · 设置控制面板</div>
-      </div>
-      <div class="spacer"></div>
-      <span class="mini-pill on" id="masterPill">防护中</span>
-    </div>
-
-    <!-- 总开关 + 灵敏度 -->
-    <div class="panel">
-      <h3><span class="bar"></span>防护总开关</h3>
-      <div class="master">
-        <div class="rl">
-          <div class="mt">启用银狐木马网站防护</div>
-          <div class="ms">关闭后扩展将不再分析页面、不再拦截下载</div>
+  <!-- AI 提供商图标库（内联 SVG symbol，原色，不联网） -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="prov-zhipu" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="18" height="18" rx="5" fill="#4C5BE8"/>
+      <path d="M8 16V8h4.2a3 3 0 0 1 0 6H11" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="16.5" cy="9" r="1.4" fill="#fff"/>
+    </symbol>
+    <symbol id="prov-deepseek" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="18" height="18" rx="5" fill="#3C5DFF"/>
+      <path d="M6.5 15.5c2.2-1 3.3-2.6 3.3-4.6C9.8 8.4 8.4 7 6.5 7v2c1 .6 1.8 1.3 1.8 2.4 0 1-.7 1.7-1.8 2.3v1.8Zm11 0c-2.2-1-3.3-2.6-3.3-4.6 0-2.5 1.4-3.9 3.3-3.9v2c-1 .6-1.8 1.3-1.8 2.4 0 1 .7 1.7 1.8 2.3v1.8Z" fill="#fff"/>
+    </symbol>
+    <symbol id="prov-openai" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="18" height="18" rx="5" fill="#10A37F"/>
+      <path d="M12 7.2c-2.6 0-4.8 1.7-4.8 4.2 0 1.8 1.1 3.1 2.9 3.8v2.1l2.1-1.2c.3.1.6.1.9.1 2.6 0 4.7-1.8 4.7-4.2S14.6 7.2 12 7.2Z" fill="none" stroke="#fff" stroke-width="1.4"/>
+    </symbol>
+    <symbol id="prov-moonshot" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="18" height="18" rx="5" fill="#5B5BF5"/>
+      <path d="M15.5 8.5a5 5 0 1 0 0 7 4 4 0 0 1 0-7Z" fill="#fff"/>
+    </symbol>
+    <symbol id="prov-custom" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="18" height="18" rx="5" fill="#7C8698"/>
+      <path d="M12 7.5v9M7.5 12h9" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="12" cy="12" r="2.4" fill="#fff"/>
+    </symbol>
+  </svg>
+  <div class="app">
+    <!-- 左侧边栏 -->
+    <aside class="sidebar">
+      <div class="brand" id="brandEgg" role="button" tabindex="0" aria-label="银狐防护">
+        <svg class="logo" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z" fill="rgba(120,180,255,.18)" stroke="#7db4ff" stroke-width="1.4"/>
+          <path d="M9 11.5l2 2 4-4" stroke="#9fe0c0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="brand-t">
+          <div class="b1">银狐防护</div>
+          <div class="b2">SILVERFOX GUARD</div>
         </div>
-        <label class="switch">
-          <input type="checkbox" id="enabledGlobal">
-          <span class="slider"></span>
-        </label>
       </div>
-      <div class="row" style="border-top:1px solid rgba(255,255,255,.07); margin-top:6px;">
-        <div class="rl"><div class="rt">检测灵敏度</div><div class="rd">越高越易触发警告；低=需更强证据，高=宁可误报也不放过</div></div>
-        <div class="seg" id="sensitivity">
-          <button data-v="low">低</button>
-          <button data-v="medium">中</button>
-          <button data-v="high">高</button>
+
+      <nav class="nav" id="nav">
+        <button class="nav-item active" data-target="general" data-title="常规" data-desc="总开关与检测灵敏度">
+          <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 13a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 0 1-4 0v-.1A1.7 1.7 0 0 0 7 19.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H3a2 2 0 0 1 0-4h.1A1.7 1.7 0 0 0 4.7 7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 2.9-1.2V3a2 2 0 0 1 4 0v.1A1.7 1.7 0 0 0 17 4.7l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" opacity=".9"/></svg>
+          <span>常规</span>
+        </button>
+        <button class="nav-item" data-target="detect" data-title="检测维度" data-desc="独立评分的检测项，可逐项开关">
+          <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+          <span>检测维度</span>
+        </button>
+        <button class="nav-item" data-target="behavior" data-title="拦截行为" data-desc="命中风险时如何提醒与处置">
+          <svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z"/><path d="M9 12l2 2 4-4" stroke-width="2" fill="none"/></svg>
+          <span>拦截行为</span>
+        </button>
+        <button class="nav-item" data-target="rules" data-title="规则与白名单" data-desc="信任域名、自定义关键词与黑名单">
+          <svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 11h8M8 15h8M8 7h4" stroke-width="1.8" fill="none"/></svg>
+          <span>规则白名单</span>
+        </button>
+        <button class="nav-item" data-target="stats" data-title="防护统计" data-desc="已拦截风险与下载次数">
+          <svg viewBox="0 0 24 24"><path d="M5 19V5M5 19h14M9 15v-4M13 15V8M17 15v-7"/></svg>
+          <span>防护统计</span>
+        </button>
+        <button class="nav-item" data-target="rescue" data-title="银狐急救" data-desc="中招后的下载与查杀引导">
+          <svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z"/><path d="M12 8v8M8 12h8" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+          <span>银狐急救</span>
+        </button>
+        <button class="nav-item" data-target="scanner" data-title="银狐扫描" data-desc="上传样本做静态检测">
+          <svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7 9m5-5l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span>银狐扫描</span>
+        </button>
+        <button class="nav-item" data-target="ai" data-title="AI 设置" data-desc="AI 助手悬浮球与增强开关">
+          <svg viewBox="0 0 24 24"><path d="M12 2.5 4 5.2v6.3c0 4.8 3.1 8.3 8 9.4 4.9-1.1 8-4.6 8-9.4V5.2L12 2.5Z"/><path d="M8.2 12.2l2.5 2.5 4.9-5.1" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>AI 设置</span>
+        </button>
+        <button class="nav-item" data-target="personal" data-title="个性化" data-desc="字体与深浅色外观">
+          <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18c1.7 0 2-1.3 1.2-2.2-.8-.9-.3-2.1.9-2.1H15a3 3 0 0 0 0-6h-1.9c-1.2 0-1.7-1.4-.9-2.1.8-.9.5-2.2-1.2-2.2Z" opacity=".9"/><circle cx="12" cy="12" r="9" fill="none"/></svg>
+          <span>个性化</span>
+        </button>
+        <button class="nav-item" data-target="about" data-title="关于" data-desc="版本信息与说明">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+          <span>关于</span>
+        </button>
+      </nav>
+
+      <div class="side-foot">
+        <span class="mini-pill on" id="masterPill">防护中</span>
+        <span class="ver" id="verTop">v1.3.9</span>
+      </div>
+    </aside>
+
+    <!-- 右侧内容 -->
+    <main class="content" id="content">
+      <header class="content-head">
+        <button class="back-btn" id="backBtn" type="button" hidden>
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>返回</span>
+        </button>
+        <div>
+          <h1 id="secTitle">常规</h1>
+          <p id="secDesc">总开关与检测灵敏度</p>
         </div>
-      </div>
-    </div>
+      </header>
 
-    <!-- 检测维度 -->
-    <div class="panel">
-      <h3><span class="bar"></span>检测维度</h3>
-      <div class="desc">下列每一项都会独立评分并累加风险分。可单独关闭你认为易误报的维度。</div>
-      <div id="catList"></div>
-    </div>
+      <!-- 常规 -->
+      <section class="sec active" id="general">
+        <div class="card">
+          <div class="row">
+            <div class="rl"><div class="rt">启用银狐木马网站防护</div><div class="rd">关闭后扩展将不再分析页面、不再拦截下载</div></div>
+            <label class="switch"><input type="checkbox" id="enabledGlobal"><span class="slider"></span></label>
+          </div>
+          <div class="row">
+            <div class="rl"><div class="rt">检测灵敏度</div><div class="rd">越高越易触发警告；低=需更强证据，高=宁可误报也不放过</div></div>
+            <div class="seg" id="sensitivity">
+              <span class="seg-glider" aria-hidden="true"></span>
+              <button data-v="low">低</button>
+              <button data-v="medium">中</button>
+              <button data-v="high">高</button>
+            </div>
+          </div>
+        </div>
+        <div class="tip">提示：灵敏度调高会增加误报概率，建议在频繁误报的站点加入信任白名单，而非一味调低。</div>
+      </section>
 
-    <!-- 拦截行为 -->
-    <div class="panel">
-      <h3><span class="bar"></span>拦截行为</h3>
-      <div class="row">
-        <div class="rl"><div class="rt">弹出警告浮层</div><div class="rd">命中风险时，在页面上弹出美观的警告提示</div></div>
-        <label class="switch"><input type="checkbox" id="showWarning"><span class="slider"></span></label>
-      </div>
-      <div class="row">
-        <div class="rl"><div class="rt">自动禁用下载/跳转链接</div><div class="rd">命中风险后，禁用页面全部下载与重定向链接（推荐保持开启）</div></div>
-        <label class="switch"><input type="checkbox" id="autoBlockDownloads"><span class="slider"></span></label>
-      </div>
-    </div>
+      <!-- 检测维度 -->
+      <section class="sec" id="detect">
+        <div class="card">
+          <p class="sec-desc">下列每一项都会独立评分并累加风险分。可单独关闭你认为易误报的维度。</p>
+          <div id="catList"></div>
+        </div>
+      </section>
 
-    <!-- 规则白名单 / 自定义 -->
-    <div class="panel">
-      <h3><span class="bar"></span>规则与白名单</h3>
-      <div class="field">
-        <label>信任域名白名单（每行一个，命中后完全不拦截）</label>
-        <textarea id="allowlist" placeholder="例如：&#10;my-company.com&#10;trusted-site.cn"></textarea>
-        <div class="hint">支持精确域名与后缀匹配，如填写 example.com 将同时信任 a.example.com。</div>
-      </div>
-      <div class="field">
-        <label>自定义风险关键词（命中即加风险分）</label>
-        <textarea id="customKeywords" placeholder="每行一个，例如：&#10;内部福利&#10;专属客服"></textarea>
-        <div class="hint">页面 HTML 中出现这些词会触发风险提示。</div>
-      </div>
-      <div class="field">
-        <label>自定义恶意域名黑名单（命中直接判危）</label>
-        <textarea id="customBadDomains" placeholder="每行一个域名，例如：&#10;bad-site.top"></textarea>
-        <div class="hint">这些域名一旦出现即视为银狐风险站点。</div>
-      </div>
-    </div>
+      <!-- 拦截行为 -->
+      <section class="sec" id="behavior">
+        <div class="card">
+          <div class="row">
+            <div class="rl"><div class="rt">弹出警告浮层</div><div class="rd">命中风险时，在页面上弹出美观的警告提示</div></div>
+            <label class="switch"><input type="checkbox" id="showWarning"><span class="slider"></span></label>
+          </div>
+          <div class="row">
+            <div class="rl"><div class="rt">自动禁用下载/跳转链接</div><div class="rd">命中风险后，禁用页面全部下载与重定向链接（推荐保持开启）</div></div>
+            <label class="switch"><input type="checkbox" id="autoBlockDownloads"><span class="slider"></span></label>
+          </div>
+          <div class="row">
+            <div class="rl"><div class="rt">Windows 系统弹窗提醒</div><div class="rd">命中风险时在 Windows 右下角弹出系统通知（toast），更易引起注意（默认开启）</div></div>
+            <label class="switch"><input type="checkbox" id="notify"><span class="slider"></span></label>
+          </div>
+          <div class="row">
+            <div class="rl"><div class="rt">ICP 备案权威核验</div><div class="rd">向公开备案查询接口核实域名备案真伪：确有备案则不再误判仿冒，页面写了备案号但查无记录则判定为盗用他人备案。仅在核验有价值时才发起（页面展示备案号、.cn 站查不到备案标识、或已判仿冒），且只发送域名、不发送任何浏览内容。关闭后仅做页面文字扫描</div></div>
+            <label class="switch"><input type="checkbox" id="icpApiVerify"><span class="slider"></span></label>
+          </div>
+        </div>
+      </section>
 
-    <!-- 统计 -->
-    <div class="panel">
-      <h3><span class="bar"></span>防护统计</h3>
-      <div class="stat-grid">
-        <div class="stat-box"><div class="n" id="stWarn">0</div><div class="c">拦截风险网站</div></div>
-        <div class="stat-box"><div class="n" id="stBlock">0</div><div class="c">拦截下载次数</div></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" id="saveBtn">保存设置</button>
-        <button class="btn btn-ghost" id="resetBtn">重置统计</button>
-      </div>
-    </div>
+      <!-- 规则白名单（枢纽页：点各卡片进入独立子页面） -->
+      <section class="sec" id="rules">
+        <div class="card">
+          <p class="sec-desc">下列三类规则各自独立成页，点击进入编辑。修改后均需点击底部「保存设置」生效。</p>
+          <div class="rule-cards">
+            <button class="rule-card" data-sub="rules-allowlist" type="button">
+              <span class="rc-ico">
+                <svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.6 7 9 4-1.4 7-4.5 7-9V6l-7-3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span class="rc-t">信任域名白名单</span>
+              <span class="rc-d">命中后完全不拦截，支持精确与后缀匹配</span>
+            </button>
+            <button class="rule-card" data-sub="rules-keywords" type="button">
+              <span class="rc-ico">
+                <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="18" cy="17" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+              </span>
+              <span class="rc-t">自定义风险关键词</span>
+              <span class="rc-d">页面命中即加风险分</span>
+            </button>
+            <button class="rule-card" data-sub="rules-baddomains" type="button">
+              <span class="rc-ico">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7.5 7.5l9 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </span>
+              <span class="rc-t">自定义恶意域名黑名单</span>
+              <span class="rc-d">命中直接判危</span>
+            </button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="field">
+            <label>自动学习的下载黑名单</label>
+            <div class="hint" style="margin:0 0 10px">每次成功拦截一次可疑下载，该文件所在域名会被自动记下；此后任何页面指向同一域名都会加分或直接拦截（银狐换落地页不换载荷服务器）。90 天未再命中自动移除，最多保留 500 条。GitHub、微软等可信下载源与你的信任白名单永不入库。如遇误拦，删除对应条目即可恢复下载。</div>
+            <div id="dlBlList" class="dlbl-list"><div class="dlbl-empty">暂无记录</div></div>
+            <div class="row" style="border:0;padding:10px 0 0">
+              <div class="rl"><div class="rd" id="dlBlCount">共 0 条</div></div>
+              <button class="btn ghost" id="dlBlClear" type="button">清空全部</button>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    <div class="foot">
-      银狐（又称"游蛇"）木马常通过<b>仿冒知名软件官网</b>、<b>网盘分发带毒安装包</b>、<b>钓鱼诱导话术</b>传播。<br>
-      本扩展基于网页代码特征分析进行预警，仅供参考，无法替代专业杀毒软件。
-    </div>
+      <!-- 子页面：信任域名白名单 -->
+      <section class="sec subpage" id="rules-allowlist">
+        <div class="card">
+          <div class="field">
+            <label>信任域名白名单（每行一个，命中后完全不拦截）</label>
+            <textarea id="allowlist" placeholder="例如：&#10;my-company.com&#10;trusted-site.cn"></textarea>
+            <div class="hint">支持精确域名与后缀匹配，如填写 example.com 将同时信任 a.example.com。</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 子页面：自定义风险关键词 -->
+      <section class="sec subpage" id="rules-keywords">
+        <div class="card">
+          <div class="field">
+            <label>自定义风险关键词（命中即加风险分）</label>
+            <textarea id="customKeywords" placeholder="每行一个，例如：&#10;内部福利&#10;专属客服"></textarea>
+            <div class="hint">页面 HTML 中出现这些词会触发风险提示。</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 子页面：自定义恶意域名黑名单 -->
+      <section class="sec subpage" id="rules-baddomains">
+        <div class="card">
+          <div class="field">
+            <label>自定义恶意域名黑名单（命中直接判危）</label>
+            <textarea id="customBadDomains" placeholder="每行一个域名，例如：&#10;bad-site.top"></textarea>
+            <div class="hint">这些域名一旦出现即视为银狐风险站点。</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 防护统计 -->
+      <section class="sec" id="stats">
+        <div class="card">
+          <div class="stat-grid">
+            <div class="stat-box"><div class="n" id="stWarn">0</div><div class="c">拦截风险网站</div></div>
+            <div class="stat-box"><div class="n" id="stBlock">0</div><div class="c">拦截下载次数</div></div>
+          </div>
+          <div class="tip">统计仅保存在本地浏览器，不会上传。重置只清空计数，不影响白名单与规则。</div>
+        </div>
+      </section>
+
+      <!-- 银狐急救 -->
+      <section class="sec" id="rescue">
+        <div class="card rescue-hero">
+          <div class="rescue-ico">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z" stroke="#9fe0c0" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 8v8M8 12h8" stroke="#9fe0c0" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="rescue-txt">
+            <h2>银狐急救</h2>
+            <p>当你已经中了银狐病毒后，可点击右侧按钮下载 360 系统急救箱进行急救。</p>
+          </div>
+          <button class="btn btn-rescue" id="rescueBtn">下载 360 系统急救箱</button>
+        </div>
+
+        <div class="card rescue-linkcard">
+          <p class="sec-desc">官方下载直链（360 更新后可能变动，可手动复制备用）：</p>
+          <div class="rescue-url" id="rescueUrl" title="点击复制">加载中…</div>
+        </div>
+
+        <div class="card">
+          <p class="sec-desc">中招后急救步骤：</p>
+          <ol class="rescue-steps">
+            <li>点击上方按钮下载 <b>360 系统急救箱</b>（官方绿色版，无需安装）。</li>
+            <li>用解压软件（如 7-Zip）把压缩包解压到桌面等好找的位置。</li>
+            <li>进入解压后的文件夹，双击主程序（.exe）打开急救箱主界面。</li>
+            <li>若双击无反应或被拦截——部分银狐病毒会禁掉一切 .exe 程序——请改双击同目录下的 <b>.com</b> 文件。.com 是 Windows 最底层的 DOS 应用程序，通常不被此类病毒拦截。</li>
+            <li>勾选 <b>全盘扫描</b> 与 <b>强力模式</b>，点击 <b>开始查杀</b>，等待完成后重启电脑。</li>
+          </ol>
+          <div class="tip">银狐木马常会屏蔽常规杀毒软件。360 系统急救箱为独立绿色版，不依赖已安装的安全软件，更适合中招后急救。</div>
+        </div>
+      </section>
+
+      <!-- 银狐扫描（父页面：小卡片入口 → 子页面） -->
+      <section class="sec" id="scanner">
+        <div class="card">
+          <div class="rule-cards">
+            <button class="rule-card" data-sub="scanner-main" type="button">
+              <span class="rc-ico">
+                <svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7 9m5-5l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </span>
+              <span class="rc-t">银狐样本扫描</span>
+              <span class="rc-d">上传程序 / 安装包 / 脚本做静态检测</span>
+            </button>
+          </div>
+          <div class="tip" style="margin-top:12px">当你下载了不确定的程序，这个功能可以提供银狐扫描，但扫描结果不一定 100% 正确，请谨慎运行从网上下载的文件。</div>
+        </div>
+      </section>
+
+      <!-- 子页面：银狐样本扫描 -->
+      <section class="sec subpage" id="scanner-main">
+        <div class="card">
+          <div class="row">
+            <div class="rl">
+              <div class="rt">静态样本扫描</div>
+              <div class="rd">选择文件或整个文件夹，纯本地分析、文件不上传、绝不运行样本。</div>
+            </div>
+            <div style="display:flex;gap:8px;flex:0 0 auto">
+              <button class="btn" id="scScanFiles" type="button">扫描文件</button>
+              <button class="btn ghost" id="scScanDir" type="button">扫描文件夹</button>
+            </div>
+          </div>
+          <div id="scannerRoot"></div>
+        </div>
+      </section>
+
+      <!-- 个性化 -->
+      <section class="sec" id="personal">
+        <div class="card">
+          <p class="sec-desc">自定义扩展界面外观，设置即时生效（自动保存），无需点击「保存设置」。</p>
+          <div class="row">
+            <div class="rl">
+              <div class="rt">切换字体</div>
+              <div class="rd">得意黑为内嵌字体，跨系统显示一致；跟随系统使用你的系统默认无衬线字体。</div>
+            </div>
+            <details class="font-fold" id="fontFold">
+              <summary>选择字体</summary>
+              <div class="font-fold-body">
+                <button class="font-opt active" data-font="system">跟随系统（默认无衬线）</button>
+                <button class="font-opt" data-font="smiley">得意黑 Smiley Sans（内嵌）</button>
+              </div>
+            </details>
+          </div>
+          <div class="row" style="flex-direction: column; align-items: stretch; gap: 10px;">
+            <div class="rl">
+              <div class="rt">外观主题</div>
+              <div class="rd">选择界面配色风格；每套主题都支持深色 / 浅色。默认「经典」即当前主题。</div>
+            </div>
+            <button type="button" class="rule-card rule-card--sm" data-sub="personal-theme"
+                    data-sub-title="外观主题" data-sub-desc="选择界面配色风格，每套主题都支持深色 / 浅色">
+              <span class="rc-ico">
+                <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.5 0 2.4-1.1 1.7-2.3-.7-1.2.1-2.2 1.3-2.2H16a3 3 0 0 0 0-6h-1.5c-1.1 0-1.9-.9-1.4-1.9.5-.9 0-1.9-1.3-1.9-2.6 0-5 1.1-6.6 2.9A9 9 0 0 0 12 3Z"/><circle cx="7.5" cy="11.5" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="15" cy="7.5" r="1"/><circle cx="16.5" cy="11.5" r="1"/></svg>
+              </span>
+              <span class="rc-sm-body">
+                <span class="rc-t">外观主题</span>
+                <span class="rc-d">当前：<span id="themeCurrent">经典</span></span>
+              </span>
+              <span class="theme-preview" aria-hidden="true">
+                <span class="tp-check">✓</span>
+              </span>
+            </button>
+          </div>
+          <div class="row">
+            <div class="rl">
+              <div class="rt">深浅色模式</div>
+              <div class="rd">深色护眼，浅色明亮。当前仅设置页与弹窗支持切换。</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="themeLight"><span class="slider"></span></label>
+          </div>
+          <div class="row" style="flex-direction: column; align-items: stretch; gap: 10px;">
+            <div class="rl">
+              <div class="rt">界面材质</div>
+              <div class="rd">磨砂玻璃为默认质感；琉声液态玻璃为真实折射玻璃质感（仅非 Pixel 主题下可切换，Pixel 主题锁定磨砂玻璃）。</div>
+            </div>
+            <div class="seg" id="materialSeg" role="tablist">
+              <span class="seg-glider"></span>
+              <button type="button" data-material="frosted" class="active">磨砂玻璃</button>
+              <button type="button" data-material="liquid">琉声液态玻璃</button>
+            </div>
+          </div>
+          <div class="row" style="flex-direction: column; align-items: stretch; gap: 10px;">
+            <div class="rl">
+              <div class="rt">自定义背景</div>
+              <div class="rd">上传图片作为设置页背景（自动压缩存储，不影响检测逻辑）。留空则使用主题默认背景。</div>
+            </div>
+            <div class="bg-ctrl">
+              <button type="button" id="bgUploadBtn" class="btn btn-ghost">上传图片</button>
+              <input type="file" id="bgFile" accept="image/*" hidden>
+              <span class="bg-preview" id="bgPreview" hidden></span>
+              <button type="button" id="bgClearBtn" class="btn btn-ghost" hidden>清除</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="rl">
+              <div class="rt">字体大小</div>
+              <div class="rd">拖动滑块调整界面字号，范围 85%–140%，立即生效。</div>
+            </div>
+            <div class="fs-ctrl">
+              <input type="range" id="fontScale" min="85" max="140" step="5" value="100">
+              <span class="fs-val" id="fontScaleVal">100%</span>
+              <button type="button" id="fontScaleReset" class="fs-reset" title="重置为默认 100%">↺</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="rl">
+              <div class="rt">减弱动画效果</div>
+              <div class="rd">关闭全部界面动画（过渡、弹跳、悬停光晕等），适合对动效敏感或使用低性能设备。开启后立即生效。</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="reduceMotion"><span class="slider"></span></label>
+          </div>
+        </div>
+        <div class="tip">提示：浅色模式目前应用于「设置页」与「弹窗」；欢迎页与网页内警告横幅保持深色设计，以维持醒目警示作用。</div>
+      </section>
+
+      <!-- AI 设置（父页面） -->
+      <section class="sec" id="ai">
+        <div class="card">
+          <p class="sec-desc">配置 AI 助手悬浮球与回答能力。设置即时生效（自动保存），无需点击「保存设置」。</p>
+          <div class="row">
+            <div class="rl">
+              <div class="rt">AI 助手（悬浮球）</div>
+              <div class="rd">开启后设置页右下角出现 AI 悬浮球，可询问扩展用法、主题/字号/检测开关等设置问题（基于 GLM 大模型，不分析当前网页）。</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="aiEnabled"><span class="slider"></span></label>
+          </div>
+          <div class="row">
+            <div class="rl">
+              <div class="rt">本地规则引擎（离线秒回）</div>
+              <div class="rd">内置关键词规则引擎，覆盖扩展设置 / 主题 / 字号 / 检测开关 / 急救箱等常见问答，零延迟、离线可用、零体积。可随时开关：关闭后仅在你开启「允许云端 GLM 增强」时走云端。</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="localModelEnabled"><span class="slider"></span></label>
+          </div>
+          <div class="row">
+            <div class="rl">
+              <div class="rt">允许云端增强</div>
+              <div class="rd">本地规则未命中时，是否允许调用云端大模型作补充。默认关闭，避免频繁消耗云端额度；开启后仅在本地规则未命中时兜底（使用所选模型）。</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="cloudEnhance"><span class="slider"></span></label>
+          </div>
+          <div class="row">
+            <div class="rl">
+              <div class="rt">Max 模式</div>
+              <div class="rd">开启后系统优先调用云端模型辅助（更聪明、更自由），并自动关闭下方的「本地规则引擎」与「允许云端增强」开关，仅保留云端 AI 模型辅助；当云端遇到无法处理的问题时再回退到本地规则。关闭本模式即恢复本地引擎默认开启。</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="aiMaxMode"><span class="slider"></span></label>
+          </div>
+          <div class="row sub-row collapsed" id="maxModeSub">
+            <div class="rl">
+              <div class="rt">后台自动 AI 分析网页 <span class="badge-exp">实验性功能</span></div>
+              <div class="rd">开启后，浏览网页时由扩展在后台自动将页面内容发送给云端 AI，按钓鱼 / 仿冒 / 诈骗 / 品牌核验等规则判断风险并以页面提示呈现。无需手动触发，随页面加载自动生效。实验阶段，建议仅在可信网络下启用。</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="aiCloudWebAnalyse"><span class="slider"></span></label>
+          </div>
+          <div class="row sub-row collapsed" id="maxModeFileSub">
+            <div class="rl">
+              <div class="rt">借助云端 AI 分析扫描文件 <span class="badge-exp">实验性功能</span></div>
+              <div class="rd">开启后，在「银狐扫描」中扫描出可疑 / 报毒文件时，扩展将本地提取的可疑特征摘要（文件名、大小、魔数、导入表、命中特征等，不含文件正文）发送给云端 AI 作辅助研判，并在结果卡片追加「云端 AI 辅助分析」一行。纯本地判定不受影响，失败静默。</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="aiScanFileAnalyse"><span class="slider"></span></label>
+          </div>
+          <!-- 模型管理入口卡片（下钻到子页面） -->
+          <div class="sub-entry" data-sub="ai-model-manage" data-sub-title="AI 模型管理" data-sub-desc="选择模型提供商、指定模型、配置场景路由规则">
+            <div class="se-ic"><svg class="prov-ic" id="entryProvIc"><use href="#prov-zhipu"/></svg></div>
+            <div class="se-mid">
+              <div class="se-t">AI 模型管理</div>
+              <div class="se-d" id="entryModelSummary">默认模型：智谱 GLM · glm-4.7-flash（内置免费）</div>
+            </div>
+            <div class="se-go">管理 ›</div>
+          </div>
+          <div class="sub-entry" data-sub="ai-learn-sub" data-sub-title="本地自学习" data-sub-desc="AI 自动从对话中学习你的口语习惯和常见问题，全部保存在本地，不上传云端">
+            <div class="se-ic"><svg class="prov-ic learn-ic" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z" fill="currentColor"/></svg></div>
+            <div class="se-mid">
+              <div class="se-t">本地自学习</div>
+              <div class="se-d" id="entryLearnSummary">已学规则 0 条 · 口语词 0 个</div>
+            </div>
+            <div class="se-go">查看 ›</div>
+          </div>
+        </div>
+        <div class="tip">提示：本地规则引擎默认开启、零延迟离线可用；「允许云端增强」默认关闭，仅在本地规则未命中时走云端兜底。模型配置即时生效，无需点「保存设置」。</div>
+      </section>
+
+      <!-- AI 模型管理（子页面，下钻） -->
+      <section class="sec subpage" id="ai-model-manage">
+        <div class="card">
+          <p class="sec-desc">选择模型提供商、指定模型名称，并为不同对话场景配置路由规则。设置即时生效（自动保存）。</p>
+          <div class="sub-block">
+            <div class="rl">
+              <div class="rt">云端模型</div>
+              <div class="rd">选择模型提供商、指定模型名称。默认使用内置免费模型，无需密钥；也可填入自己的 Key 使用其他模型。<span class="mp-gate">（仅当「允许云端增强」开启时生效）</span></div>
+            </div>
+            <div class="model-picker">
+              <div class="mp-line">
+                <!-- 自定义提供商下拉（带图标） -->
+                <div class="ai-prov-picker" id="aiProviderPicker">
+                  <button type="button" class="prov-trigger sf-select" id="aiProviderTrigger" aria-haspopup="listbox">
+                    <svg class="prov-ic" id="provTriggerIc"><use href="#prov-zhipu"/></svg>
+                    <span class="prov-label" id="provTriggerLabel">智谱 GLM（默认免费）</span>
+                    <svg class="prov-caret" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                  <div class="prov-pop" id="aiProviderPop" hidden role="listbox"></div>
+                </div>
+                <input id="aiModel" class="sf-input" placeholder="模型名称，如 glm-4.7-flash" autocomplete="off" spellcheck="false">
+                <button type="button" class="btn btn-ghost mp-reset" id="aiModelReset" title="恢复默认免费模型">重置默认</button>
+              </div>
+              <div class="mp-line">
+                <input id="aiApiKey" type="password" class="sf-input" placeholder="API Key（智谱默认内置免费，留空即用内置）" autocomplete="off">
+                <button type="button" class="btn btn-ghost" id="aiKeyToggle">显示</button>
+              </div>
+              <div class="mp-line" id="aiBaseUrlWrap" hidden>
+                <input id="aiBaseUrl" class="sf-input" placeholder="自定义 API 基址，如 https://your-gateway.com/v1" autocomplete="off" spellcheck="false">
+              </div>
+              <div class="mp-hint" id="aiModelHint"></div>
+            </div>
+          </div>
+          <div class="sub-block">
+            <div class="rl">
+              <div class="rt">场景路由规则</div>
+              <div class="rd">为不同对话场景指定使用的模型；未设置的场景走上方默认模型。每行前面的图标表示对应提供商。</div>
+            </div>
+            <div class="ai-rules" id="aiRules"></div>
+            <button type="button" class="btn btn-ghost ai-rule-add" id="aiRuleAdd">+ 新增场景规则</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI 本地自学习（子页面，下钻） -->
+      <section class="sec subpage" id="ai-learn-sub">
+        <div class="card">
+          <p class="sec-desc">AI 在本地自动总结你的对话习惯：高频问题会生成新规则，常用说法会补充为口语词，误判的规则会自动降权。所有数据只保存在本机，不上传任何云端。</p>
+          <div class="row">
+            <div class="rl">
+              <div class="rt">启用本地自学习</div>
+              <div class="rd">关闭后不再记录新对话，也不会从已积累的数据中学习，但历史数据仍保留。</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="learnEnabled"><span class="slider"></span></label>
+          </div>
+          <div class="learn-stats" id="learnStats">
+            <div class="ls-item"><div class="ls-n" id="learnRuleCount">0</div><div class="ls-l">已学规则</div></div>
+            <div class="ls-item"><div class="ls-n" id="learnWordCount">0</div><div class="ls-l">口语词</div></div>
+            <div class="ls-item"><div class="ls-n" id="learnLogCount">0</div><div class="ls-l">学习样本</div></div>
+          </div>
+          <div class="learn-recent" id="learnRecent">
+            <div class="lr-title">最近学习</div>
+            <div class="lr-empty">暂无记录，多与 AI 助手对话即可自动生成。</div>
+          </div>
+          <button type="button" class="btn btn-danger learn-clear" id="learnClear">清空本地自学习数据</button>
+        </div>
+      </section>
+
+      <!-- 子页面：外观主题（下钻，与规则白名单同款进入/返回逻辑） -->
+      <section class="sec subpage" id="personal-theme">
+        <div class="card">
+          <p class="sec-desc">选择一套配色风格，点击立即生效并自动保存。每套主题都支持深色 / 浅色（深浅色开关在「个性化」页）。</p>
+          <div class="theme-grid" id="themeGrid">
+            <button type="button" class="theme-opt active" data-palette="classic">
+              <span class="theme-swatch sw-classic"></span>
+              <span class="theme-name">经典</span>
+            </button>
+            <button type="button" class="theme-opt" data-palette="gold">
+              <span class="theme-swatch sw-gold"></span>
+              <span class="theme-name">暖金国风</span>
+            </button>
+            <button type="button" class="theme-opt" data-palette="neon">
+              <span class="theme-swatch sw-neon"></span>
+              <span class="theme-name">赛博霓虹</span>
+            </button>
+            <button type="button" class="theme-opt" data-palette="mist">
+              <span class="theme-swatch sw-mist"></span>
+              <span class="theme-name">极简雾灰</span>
+            </button>
+            <button type="button" class="theme-opt" data-palette="space">
+              <span class="theme-swatch sw-space"></span>
+              <span class="theme-name">暗夜深空</span>
+            </button>
+            <button type="button" class="theme-opt" data-palette="pixel">
+              <span class="theme-swatch sw-pixel"></span>
+              <span class="theme-name">Pixel</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 关于 -->
+      <section class="sec" id="about">
+        <div class="card">
+          <div class="about-row"><span class="ak">扩展名称</span><span class="av">银狐防护 · SilverFox Guard</span></div>
+          <div class="about-row"><span class="ak">版本</span><span class="av" id="verAbout">v1.3.9</span></div>
+          <div class="about-row"><span class="ak">检测方式</span><span class="av">网页代码特征分析（本地，不上传）</span></div>
+          <div class="about-row"><span class="ak">更新日志</span><span class="av"><a href="#" id="aboutChangelog" rel="noreferrer">查看各版本变更记录 ›</a></span></div>
+          <div class="about-row"><span class="ak">隐私政策</span><span class="av"><a href="https://yinbo345.github.io/silverfox-guard/PRIVACY.md" target="_blank" rel="noreferrer">yinbo345.github.io/silverfox-guard/PRIVACY.md</a></span></div>
+          <div class="about-row"><span class="ak">项目仓库</span><span class="av"><a href="https://github.com/yinbo345/silverfox-guard" target="_blank" rel="noreferrer">github.com/yinbo345/silverfox-guard</a></span></div>
+        </div>
+        <div class="tip">银狐（又称"游蛇"）木马常通过仿冒知名软件官网、网盘分发带毒安装包、钓鱼诱导话术传播。本扩展基于网页代码特征分析进行预警，仅供参考，无法替代专业杀毒软件。</div>
+      </section>
+
+      <!-- 更新日志（放映式大版本介绍；不在左侧分类导航，由关于页 / 更新成功弹窗进入） -->
+      <section class="sec" id="changelog">
+        <div class="cl-show" id="clShow" aria-roledescription="幻灯片">
+          <div class="cl-aura" aria-hidden="true">
+            <span class="cl-blob b1"></span><span class="cl-blob b2"></span><span class="cl-blob b3"></span>
+          </div>
+
+          <!-- 幻灯片轨道 -->
+          <div class="cl-track" id="clTrack">
+
+            <!-- 0 · 封面 -->
+            <article class="cl-slide cl-cover" data-kicker="SILVERFOX GUARD · 大版本更新">
+              <div class="cl-cover-mark" aria-hidden="true">
+                <svg viewBox="0 0 120 120" width="150" height="150" class="gemini-mark">
+                  <defs>
+                    <linearGradient id="gmA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4285F4"/><stop offset="1" stop-color="#A142F4"/></linearGradient>
+                    <linearGradient id="gmB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EA4335"/><stop offset="1" stop-color="#FBBC04"/></linearGradient>
+                    <linearGradient id="gmC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34A853"/><stop offset="1" stop-color="#4285F4"/></linearGradient>
+                    <radialGradient id="gmGlow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+                  </defs>
+                  <circle cx="60" cy="60" r="54" fill="url(#gmGlow)" opacity=".35"/>
+                  <g class="gemini-spin">
+                    <path d="M60 14 C78 30 90 46 86 66 C82 86 66 92 60 106 C54 92 38 86 34 66 C30 46 42 30 60 14 Z" fill="none" stroke="url(#gmA)" stroke-width="5.5" stroke-linejoin="round"/>
+                    <path d="M106 60 C90 78 74 90 54 86 C34 82 28 66 14 60 C28 54 34 38 54 34 C74 30 90 42 106 60 Z" fill="none" stroke="url(#gmB)" stroke-width="5.5" stroke-linejoin="round" opacity=".95"/>
+                    <path d="M60 106 C42 90 30 74 34 54 C38 34 54 28 60 14 C66 28 82 34 86 54 C90 74 78 90 60 106 Z" fill="none" stroke="url(#gmC)" stroke-width="4" stroke-linejoin="round" opacity=".8"/>
+                  </g>
+                  <circle cx="60" cy="60" r="7" fill="#fff"/>
+                </svg>
+              </div>
+              <h1 class="cl-title">让 AI 更聪明<span class="cl-title-sub">听得懂，更做得到</span></h1>
+              <div class="cl-ver-big">v1.4.6</div>
+              <p class="cl-lead">Max 模式升级：AI 不再只会回答，还能理解你的意图去操作设置；模糊 / 复合指令一次完成，安全边界仍牢牢握在本地。</p>
+              <div class="cl-scroll-hint" aria-hidden="true"><span></span>翻页键 / ← → 切换 · 3 秒自动播放</div>
+            </article>
+
+            <!-- 1 · AI 助手悬浮球 -->
+            <article class="cl-slide cl-feature" data-kicker="AI 助手">
+              <div class="cl-stage">
+                <div class="cl-fab-demo" aria-hidden="true">
+                  <div class="cl-fab-core"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 3a4 4 0 0 1 4 4v1a4 4 0 0 1-8 0V7a4 4 0 0 1 4-4Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 20a7 7 0 0 1 14 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+                  <div class="cl-fab-bubble">
+                    <p>怎么把主题换成深色？</p>
+                    <p class="cl-bubble-a">在「外观」里选暗夜深空即可，我帮你打开 ›</p>
+                  </div>
+                </div>
+              </div>
+              <div class="cl-copy">
+                <h2>会聊天的防护助手</h2>
+                <ul class="cl-points">
+                  <li>右下角悬浮球，随问随答扩展用法</li>
+                  <li>本地规则引擎离线秒回，零延迟零流量</li>
+                  <li>云端大模型兜底，复杂问题也能接住</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- 2 · 多模型 + 图标 -->
+            <article class="cl-slide cl-feature" data-kicker="多模型自由">
+              <div class="cl-stage">
+                <div class="cl-prov-row" aria-hidden="true">
+                  <span class="cl-chip"><svg class="prov-ic"><use href="#prov-zhipu"/></svg>智谱 GLM</span>
+                  <span class="cl-chip"><svg class="prov-ic"><use href="#prov-deepseek"/></svg>DeepSeek</span>
+                  <span class="cl-chip"><svg class="prov-ic"><use href="#prov-openai"/></svg>OpenAI</span>
+                  <span class="cl-chip"><svg class="prov-ic"><use href="#prov-kimi"/></svg>Kimi</span>
+                  <span class="cl-chip"><svg class="prov-ic"><use href="#prov-custom"/></svg>自定义</span>
+                </div>
+              </div>
+              <div class="cl-copy">
+                <h2>想用哪家就用哪家</h2>
+                <ul class="cl-points">
+                  <li>下拉自带各家品牌图标，一眼分清</li>
+                  <li>手动指定任意模型名，一键重置回内置免费</li>
+                  <li>自带 Key 即可切换，默认内置 GLM 免配置</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- 3 · 场景路由 -->
+            <article class="cl-slide cl-feature" data-kicker="场景路由">
+              <div class="cl-stage">
+                <div class="cl-route" aria-hidden="true">
+                  <div class="cl-route-node">设置类问题</div>
+                  <div class="cl-route-arrow">→</div>
+                  <div class="cl-route-node cl-route-accent">DeepSeek</div>
+                  <div class="cl-route-node">闲聊</div>
+                  <div class="cl-route-arrow">→</div>
+                  <div class="cl-route-node cl-route-accent">内置 GLM</div>
+                </div>
+              </div>
+              <div class="cl-copy">
+                <h2>不同场景，不同模型</h2>
+                <ul class="cl-points">
+                  <li>规则自定义「何种场景用何种模型」</li>
+                  <li>未命中规则的问题走默认模型兜底</li>
+                  <li>配置即时生效，无需保存</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- 3.5 · 后台自动 AI 网页分析（v1.4.4） -->
+            <article class="cl-slide cl-feature" data-kicker="后台 AI 分析">
+              <div class="cl-stage">
+                <div class="cl-analyze-demo" aria-hidden="true">
+                  <div class="cl-analyze-card">
+                    <div class="cl-analyze-url">rpcs3.io</div>
+                    <div class="cl-analyze-bar"><span class="cl-analyze-fill"></span></div>
+                    <div class="cl-analyze-verdict">风险等级：高 · 疑似仿冒（官方 rpcs3.net）</div>
+                  </div>
+                </div>
+              </div>
+              <div class="cl-copy">
+                <h2>浏览网页，AI 在后台自动守护</h2>
+                <ul class="cl-points">
+                  <li>开启 Max 模式 + 后台自动 AI 分析，随页面加载自动运行</li>
+                  <li>无需手动触发，也不占用 AI 悬浮球</li>
+                  <li>按钓鱼 / 仿冒 / 诈骗 / 品牌核验等规则输出风险等级，命中时在页面提示</li>
+                  <li>实验性功能，建议仅在可信网络下启用</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- 3.6 · v1.4.5 新特性：AI 融合更彻底 -->
+            <article class="cl-slide cl-feature" data-kicker="v1.4.5 · AI 融合更彻底">
+              <div class="cl-stage">
+                <div class="cl-analyze-demo" aria-hidden="true">
+                  <div class="cl-analyze-card">
+                    <div class="cl-analyze-url">银狐扫描 · setup_xyz.exe</div>
+                    <div class="cl-analyze-bar"><span class="cl-analyze-fill"></span></div>
+                    <div class="cl-analyze-verdict">云端 AI 辅助：高 · 疑似银狐载荷（伪装安装包）</div>
+                  </div>
+                </div>
+              </div>
+              <div class="cl-copy">
+                <h2>AI 融合更彻底</h2>
+                <ul class="cl-points">
+                  <li>银狐扫描新增「借助云端 AI 分析文件」：仅发本地提取的可疑特征摘要，不传文件正文</li>
+                  <li>网页 AI 分析遇额度耗尽 / 限流 / 密钥失效时，页面内一次性提示并建议关闭 Max</li>
+                  <li>修复报毒浮层在「继续浏览 → 二次确认」后被重复弹出的问题</li>
+                  <li>本地规则引擎始终离线生效，云端仅作兜底，互不影响</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- 3.7 · v1.4.6 新特性：让 AI 更聪明 -->
+            <article class="cl-slide cl-feature" data-kicker="v1.4.6 · 让 AI 更聪明">
+              <div class="cl-stage">
+                <div class="cl-analyze-demo" aria-hidden="true">
+                  <div class="cl-analyze-card">
+                    <div class="cl-analyze-url">你说：帮我安静点</div>
+                    <div class="cl-analyze-bar"><span class="cl-analyze-fill"></span></div>
+                    <div class="cl-analyze-verdict">AI 调用工具：关闭警告 ＋ 关闭通知 ＋ 关闭下载拦截</div>
+                  </div>
+                </div>
+              </div>
+              <div class="cl-copy">
+                <h2>让 AI 更聪明</h2>
+                <ul class="cl-points">
+                  <li>Max 模式开放云端模型工具调用：AI 理解模糊 / 复合意图，直接操作设置</li>
+                  <li>「帮我安静点」这类口语，AI 一次调用多个工具（关警告 ＋ 关通知 ＋ 关拦截）</li>
+                  <li>本地白名单校验：模型只能从预设操作里选，越权一律拒绝，绝无任意代码执行</li>
+                  <li>本地指令层仍是最高的安全网：明确死词（如「关闭防护」）秒回本地、不耗云端</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- 4 · 历史一句话 -->
+            <article class="cl-slide cl-recap" data-kicker="此前版本">
+              <h2 class="cl-recap-h">一路走来</h2>
+              <div class="cl-recap-grid">
+                <div class="cl-recap-item"><b>v1.4.6</b><span>让 AI 更聪明 · Max 工具调用 · 模糊意图秒操作</span></div>
+                <div class="cl-recap-item"><b>v1.4.5</b><span>AI 融合更彻底 · 扫描借云端 AI · 失败提示 · 报毒修复</span></div>
+                <div class="cl-recap-item"><b>v1.4.4</b><span>后台自动 AI 网页分析 · 悬浮球语音</span></div>
+                <div class="cl-recap-item"><b>v1.4.2</b><span>AI 助手悬浮球 · 多模型切换 · 场景路由</span></div>
+              </div>
+              <p class="cl-recap-foot">本次 v1.4.6 让 AI 不仅听得懂，更能做得到——理解意图、操作设置，安全边界依旧牢牢握在本地。</p>
+            </article>
+
+          </div>
+
+          <!-- 翻页箭头 -->
+          <button class="cl-nav cl-prev" id="clPrev" aria-label="上一页">‹</button>
+          <button class="cl-nav cl-next" id="clNext" aria-label="下一页">›</button>
+        </div>
+
+        <!-- 进度点 + 倒计时环（卡片外底部） -->
+        <div class="cl-foot">
+          <div class="cl-dots" id="clDots" role="tablist" aria-label="幻灯片导航"></div>
+          <div class="cl-count" id="clCount" aria-hidden="true"><span class="cl-count-ring"></span><b id="clIdx">1</b>/8</div>
+        </div>
+      </section>
+
+      <!-- 底部操作栏 -->
+      <footer class="action-bar">
+        <span class="auto-note">修改后点击「保存设置」生效</span>
+        <div class="btn-row">
+          <button class="btn btn-ghost" id="resetBtn">重置统计</button>
+          <button class="btn btn-primary" id="saveBtn">保存设置</button>
+        </div>
+      </footer>
+    </main>
   </div>
 
   <div class="toast-save" id="toast">已保存 ✓</div>
 
+  <!-- 扩展自动更新提示（独立悬浮窗，不归任何主题；仅版本升级时弹出，首次安装不弹） -->
+  <div class="upd-toast" id="updToast" role="status" aria-live="polite" hidden>
+    <div class="upd-ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 3 5 6v6c0 4.6 3 7.7 7 9 4-1.3 7-4.4 7-9V6l-7-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M15.5 9.5 11 14l-2.5-2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M18.5 14.5a2.4 2.4 0 0 1 0 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M20 16.6v2.9h-2.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="upd-body">
+      <div class="upd-title">银狐防护已更新到版本 <b id="updVer">v1.4.6</b></div>
+      <div class="upd-sub">让 AI 更聪明：Max 模式开放云端模型工具调用，AI 现可理解模糊 / 复合意图直接操作设置（如「帮我安静点」一次关闭警告、通知与下载拦截）；本地白名单校验守住安全边界，越权指令一律拒绝；明确死词仍由本地指令层秒回。</div>
+      <a class="upd-link" id="updLink" href="#" rel="noreferrer">查看本次更新内容 ›</a>
+    </div>
+    <button class="upd-close" id="updClose" type="button" aria-label="关闭提示">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <!-- 减小/减弱动画效果：开启确认弹窗 -->
+  <div class="modal-overlay" id="rmModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rmTitle">
+      <div class="modal-ico">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#7db4ff" stroke-width="1.6"/><path d="M12 8v5M12 16h.01" stroke="#7db4ff" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <h3 id="rmTitle">减弱动画效果</h3>
+      <p>开启后，将关闭所有界面动画（过渡、弹跳、悬停光晕等）。</p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="rmCancel">取消</button>
+        <button class="btn btn-primary" id="rmConfirm">确认</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Max 模式开启确认弹窗（提示可能增加 token 消耗） -->
+  <div class="modal-overlay" id="maxModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="maxTitle">
+      <div class="modal-ico">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 5 6v6c0 4.6 3 7.7 7 9 4-1.3 7-4.4 7-9V6l-7-3Z" stroke="#7db4ff" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 9v4M12 16h.01" stroke="#7db4ff" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <h3 id="maxTitle">开启 Max 模式？</h3>
+      <p>开启后系统将优先调用云端模型辅助，回复更聪明、更自由，但<b>可能增加你的 token 消耗与调用额度</b>。同时「本地规则引擎」与「允许云端增强」会自动关闭，仅保留云端 AI 辅助；云端处理不了时再回退本地。</p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="maxCancel">取消</button>
+        <button class="btn btn-primary" id="maxConfirm">确认开启</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pixel 主题解锁弹窗（彩蛋：连点左上角标志 3 下触发；不归任何主题） -->
+  <div class="egg-overlay" id="eggOverlay" role="dialog" aria-modal="true" aria-labelledby="eggTitle">
+    <div class="egg-modal">
+      <h3 class="egg-title" id="eggTitle">输入口令</h3>
+      <p class="egg-sub">验证通过后可解锁一项隐藏外观。</p>
+      <input class="egg-input" id="eggInput" type="text" autocomplete="off" spellcheck="false"
+             placeholder="在此输入口令…" aria-label="解锁口令">
+      <div class="egg-ok" id="eggOk">已解锁 ✓</div>
+      <div class="egg-hint">提示：Google 自家的「类原生安卓」系统，其英文代号是？</div>
+      <div class="egg-actions">
+        <button class="egg-cancel" id="eggCancel" type="button">取消</button>
+        <button class="egg-confirm" id="eggConfirm" type="button">确认</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI 助手悬浮球 + 对话窗（不归入侧边栏分类，浮于设置页右下角） -->
+  <button type="button" id="aiFab" class="ai-fab" aria-label="打开 AI 助手" hidden>
+    <svg class="ai-shield" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="sfShieldG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ffffff"/>
+          <stop offset="1" stop-color="#cfe2ff"/>
+        </linearGradient>
+      </defs>
+      <!-- 盾牌主体 -->
+      <path d="M12 2.4 4.2 5.1v6.3c0 4.8 3.1 8.3 7.8 9.4 4.7-1.1 7.8-4.6 7.8-9.4V5.1L12 2.4Z" fill="url(#sfShieldG)"/>
+      <path d="M12 2.4 4.2 5.1v6.3c0 4.8 3.1 8.3 7.8 9.4 4.7-1.1 7.8-4.6 7.8-9.4V5.1L12 2.4Z" fill="none" stroke="rgba(40,70,160,.35)" stroke-width=".5"/>
+      <!-- 打勾 -->
+      <path d="M8.1 12.1l2.6 2.6 4.9-5.1" stroke="#2a4cff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <span class="ai-badge">AI</span>
+  </button>
+  <div class="ai-panel" id="aiPanel" role="dialog" aria-label="AI 助手" hidden>
+    <div class="ai-head">
+      <div class="ai-title"><span class="ai-dot"></span><span class="ai-name">银狐小助</span><span class="ai-ver">SILVERFOX·AI</span></div>
+      <button type="button" id="aiClose" class="ai-x" aria-label="收起">—</button>
+    </div>
+    <div class="ai-log" id="aiLog"></div>
+    <div class="ai-input-row">
+      <button type="button" id="aiMic" class="ai-mic" aria-label="语音输入" title="语音输入（Web Speech API）">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <textarea id="aiInput" rows="1" placeholder="问问扩展怎么用…（Enter 发送，Shift+Enter 换行）"></textarea>
+      <button type="button" id="aiSend" class="ai-send">发送</button>
+    </div>
+    <div class="ai-foot">本地规则优先 · 仅答扩展用法，不分析当前网页</div>
+  </div>
+
   <script src="../rules/iocs.js"></script>
   <script src="../rules/analyzer.js"></script>
-  <script src="options.js"></script>
+  <script src="scanner.js"></script>
+  <script src="ai.js?v=20260822b"></script>
+  <script src="options.js?v=20260822b"></script>
 </body>
 </html>
