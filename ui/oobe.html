@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="oobe.css">
+  <title>银狐防护 · 初始化设置</title>
+</head>
+<body>
+  <div class="aurora" aria-hidden="true">
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+    <span class="blob b3"></span>
+    <span class="blob b4"></span>
+  </div>
+
+  <main class="oobe">
+    <div class="oobe-win glass">
+      <!-- 窗口标题栏 -->
+      <div class="win-bar">
+        <div class="win-dots"><i></i><i></i><i></i></div>
+        <div class="win-title">
+          <svg viewBox="0 0 24 24" fill="none" class="win-logo">
+            <path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z" fill="rgba(125,180,255,.22)" stroke="#7db4ff" stroke-width="1.4"/>
+            <path d="M8.5 12l2.4 2.4 4.6-4.8" stroke="#ffd479" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>银狐防护 · 初始化设置向导</span>
+        </div>
+        <button class="skip-all" id="skipAll" title="全部用默认设置，直接完成">一键跳过</button>
+      </div>
+
+      <div class="win-body">
+        <!-- 左侧步骤导航 -->
+        <aside class="rail">
+          <div class="rail-head">设置进度</div>
+          <ol class="stepper" id="stepper">
+            <li class="stp" data-step="0">
+              <span class="stp-ic">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4z" fill="currentColor"/></svg>
+              </span>
+              <div class="stp-tx"><b>欢迎</b><small>开始向导</small></div>
+            </li>
+            <li class="stp" data-step="1">
+              <span class="stp-ic">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="1.6"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <div class="stp-tx"><b>防护灵敏度</b><small>判定松紧</small></div>
+            </li>
+            <li class="stp" data-step="2">
+              <span class="stp-ic">
+                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/><path d="M12 3.5c2.5 2.2 3.8 5.2 3.8 8.5S14.5 18.3 12 20.5C9.5 18.3 8.2 15.3 8.2 12S9.5 5.7 12 3.5z" fill="currentColor" opacity=".5"/><circle cx="9" cy="9" r="1.4" fill="currentColor"/></svg>
+              </span>
+              <div class="stp-tx"><b>外观偏好</b><small>主题·字体·材质</small></div>
+            </li>
+            <li class="stp" data-step="3">
+              <span class="stp-ic">
+                <svg viewBox="0 0 24 24" fill="none"><rect x="5" y="7" width="14" height="11" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M12 4v3M9 12h.01M15 12h.01M9.5 15h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </span>
+              <div class="stp-tx"><b>AI 助手</b><small>性格·提醒</small></div>
+            </li>
+            <li class="stp" data-step="4">
+              <span class="stp-ic">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4 10-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <div class="stp-tx"><b>完成</b><small>查看摘要</small></div>
+            </li>
+          </ol>
+          <div class="rail-foot">
+            <div class="pct" id="pct">0%</div>
+            <div class="pct-label">已完成</div>
+          </div>
+        </aside>
+
+        <!-- 右侧内容舞台 -->
+        <section class="stage">
+          <div class="oobe-body">
+            <!-- Step 0 欢迎 -->
+            <section class="pane" data-pane="0">
+              <div class="hero">
+                <div class="shield">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z" fill="rgba(125,180,255,.18)" stroke="#7db4ff" stroke-width="1.4"/>
+                    <path d="M8.5 12l2.4 2.4 4.6-4.8" stroke="#ffd479" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <span class="pill">✓ 已成功启用</span>
+                <h1>欢迎使用 银狐防护 <span>SilverFox Guard</span></h1>
+                <p class="sub">花一分钟做几项偏好设置，让防护更贴合你的习惯。随时都可在设置页修改。</p>
+                <div class="hero-actions">
+                  <button class="btn btn-primary" data-next>开始设置</button>
+                  <a class="btn btn-ghost" id="introLink" target="_blank" rel="noopener">先看功能介绍 →</a>
+                </div>
+                <div class="feat-row">
+                  <div class="feat"><span class="feat-ic">⚡</span><b>实时拦截</b><small>仿冒/木马站点即时预警</small></div>
+                  <div class="feat"><span class="feat-ic">🤖</span><b>AI 小助</b><small>自然语言改设置</small></div>
+                  <div class="feat"><span class="feat-ic">🎨</span><b>个性化</b><small>主题·字体·材质随心</small></div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Step 1 灵敏度 -->
+            <section class="pane" data-pane="1">
+              <h2><span class="bar"></span>防护灵敏度</h2>
+              <p class="desc">决定判定松紧：高灵敏度更易触发警告（适合谨慎场景），低灵敏度更少打扰（适合老练用户）。</p>
+              <div class="opt-cards" data-field="sensitivity">
+                <button data-val="low">
+                  <span class="oc-ic">🌿</span>
+                  <b>低</b>
+                  <small>仅拦高置信危险，最不打扰，适合老练用户。</small>
+                  <span class="oc-tag">省心模式</span>
+                </button>
+                <button data-val="medium" class="active">
+                  <span class="oc-ic">⚖️</span>
+                  <b>中</b>
+                  <small>均衡档，误报与漏报折中，默认推荐。</small>
+                  <span class="oc-tag">推荐</span>
+                </button>
+                <button data-val="high">
+                  <span class="oc-ic">🛡️</span>
+                  <b>高</b>
+                  <small>更易触发警告，防护更严，适合谨慎场景。</small>
+                  <span class="oc-tag">严阵以待</span>
+                </button>
+              </div>
+              <div class="hint" id="sensitivityHint"></div>
+            </section>
+
+            <!-- Step 2 外观 -->
+            <section class="pane" data-pane="2">
+              <h2><span class="bar"></span>外观偏好</h2>
+              <p class="desc">挑一套顺眼的主题，下面所有选择都会实时预览。</p>
+
+              <div class="field">
+                <label>主题调色板</label>
+                <div class="palette-grid" data-field="themePalette">
+                  <button data-val="classic"><span class="sw sw-classic"></span>经典</button>
+                  <button data-val="gold"><span class="sw sw-gold"></span>暖金国风</button>
+                  <button data-val="neon"><span class="sw sw-neon"></span>赛博霓虹</button>
+                  <button data-val="mist"><span class="sw sw-mist"></span>极简雾灰</button>
+                  <button data-val="space"><span class="sw sw-space"></span>暗夜深空</button>
+                  <button data-val="pixel"><span class="sw sw-pixel"></span>像素蓝紫</button>
+                </div>
+              </div>
+
+              <div class="field row2">
+                <div class="sub-field">
+                  <label>深浅色</label>
+                  <div class="seg" data-field="theme">
+                    <button data-val="dark">深色</button>
+                    <button data-val="light">浅色</button>
+                    <i class="seg-glider"></i>
+                  </div>
+                </div>
+                <div class="sub-field">
+                  <label>字体</label>
+                  <div class="seg" data-field="fontMode">
+                    <button data-val="system">系统</button>
+                    <button data-val="smiley">得意黑</button>
+                    <i class="seg-glider"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field row2">
+                <div class="sub-field">
+                  <label>界面材质</label>
+                  <div class="seg" data-field="material">
+                    <button data-val="frosted">磨砂玻璃</button>
+                    <button data-val="liquid">琉声液态</button>
+                    <i class="seg-glider"></i>
+                  </div>
+                </div>
+                <div class="sub-field">
+                  <label>字号 <b id="fsVal">100%</b></label>
+                  <input type="range" id="fontScale" min="0.85" max="1.40" step="0.01" value="1">
+                </div>
+              </div>
+
+              <!-- 实时预览小窗 -->
+              <div class="preview-wrap">
+                <label class="preview-label">实时预览</label>
+                <div class="mock" id="mock">
+                  <div class="mock-bar"><i></i><i></i><i></i><span>银狐防护</span></div>
+                  <div class="mock-status"><span class="dot"></span>防护中 · 已拦截 0 次</div>
+                  <div class="mock-warn">
+                    <div class="mw-title">⚠ 检测到疑似仿冒站点</div>
+                    <div class="mw-sub">官网核验不符，已锁定下载入口</div>
+                  </div>
+                  <div class="mock-sample" id="mockSample">中文示例 Aa 银狐防护</div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Step 3 AI 助手 -->
+            <section class="pane" data-pane="3">
+              <h2><span class="bar"></span>AI 助手</h2>
+              <p class="desc">选择 AI 小助的性格与扩展的报读提醒方式，让它更合你的胃口。</p>
+
+              <div class="field">
+                <label>性格档</label>
+                <div class="persona-grid" data-field="aiPersona">
+                  <button data-val="balanced"><b>均衡</b><small>全面稳妥，默认之选</small></button>
+                  <button data-val="efficient"><b>高效</b><small>简洁直接，少废话</small></button>
+                  <button data-val="gentle"><b>温柔</b><small>耐心细致，语气温和</small></button>
+                  <button data-val="pro"><b>严谨</b><small>专业克制，重依据</small></button>
+                  <button data-val="humorous"><b>幽默</b><small>轻松俏皮，带点梗</small></button>
+                </div>
+              </div>
+
+              <div class="field">
+                <label>扩展报读 / 提醒偏好</label>
+                <div class="opt-cards two" data-field="remindMode">
+                  <button data-val="normal" class="active">
+                    <span class="oc-ic">🔔</span>
+                    <b>正常</b>
+                    <small>危险告警 + 适度主动提示，信息更完整。</small>
+                  </button>
+                  <button data-val="quiet">
+                    <span class="oc-ic">🔕</span>
+                    <b>安静</b>
+                    <small>仅危险告警，不弹软提示卡、不主动建议，最清净。</small>
+                  </button>
+                </div>
+              </div>
+
+              <div class="field row2">
+                <div class="sub-field">
+                  <label>Max 模式</label>
+                  <div class="seg" data-field="aiMaxMode">
+                    <button data-val="off">关</button>
+                    <button data-val="on">开</button>
+                    <i class="seg-glider"></i>
+                  </div>
+                  <div class="hint">开启后 AI 可理解模糊/复合意图直接操作设置。</div>
+                </div>
+                <div class="sub-field">
+                  <label>云端增强（非 Max 兜底）</label>
+                  <div class="seg" data-field="cloudEnhance">
+                    <button data-val="off">关</button>
+                    <button data-val="on">开</button>
+                    <i class="seg-glider"></i>
+                  </div>
+                  <div class="hint">本地未命中时由云端大模型兜底（默认关）。</div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Step 4 完成 -->
+            <section class="pane" data-pane="4">
+              <div class="done">
+                <div class="check">✓</div>
+                <h2>都设置好了</h2>
+                <p class="desc">下面是你的偏好摘要，随时都可在设置页调整。</p>
+                <div class="summary" id="summary"></div>
+                <div class="mock" id="mock2" style="margin-top:18px;">
+                  <div class="mock-bar"><i></i><i></i><i></i><span>银狐防护</span></div>
+                  <div class="mock-status"><span class="dot"></span>防护中 · 主题已套用</div>
+                  <div class="mock-sample" id="mockSample2">中文示例 Aa 银狐防护</div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- 底部导航 -->
+          <footer class="oobe-foot">
+            <button class="btn btn-ghost" id="prevBtn">上一步</button>
+            <button class="btn btn-text" id="skipStep">跳过此项</button>
+            <button class="btn btn-primary" id="nextBtn">下一步</button>
+          </footer>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script src="oobe.js"></script>
+</body>
+</html>
