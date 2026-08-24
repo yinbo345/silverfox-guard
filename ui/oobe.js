@@ -1,7 +1,7 @@
 /* oobe.js — 银狐防护首次引导向导（OOBE）逻辑
    步骤：0 欢迎 → 1 灵敏度 → 2 外观 → 3 AI 助手 → 4 完成
    每步可「跳过此项」，右上角「一键跳过」全部用默认；完成后写入设置并跳转设置页。
-   字段 remindMode = 扩展整体报读/提醒偏好（'normal' 正常 | 'quiet' 安静）。 */
+   字段 remindMode = 扩展整体报毒识别/提醒偏好（'normal' 正常 | 'quiet' 安静）。 */
 'use strict';
 
 // 本页用到的设置项与默认值（须与 background/options/popup 的 DEFAULTS 保持一致）
@@ -13,7 +13,7 @@ const DEFAULTS = {
   material: 'frosted',
   fontScale: 1,
   aiPersona: 'balanced',
-  remindMode: 'normal',   // 扩展整体报读/提醒偏好：'normal' 正常 | 'quiet' 安静
+  remindMode: 'normal',   // 扩展整体报毒识别/提醒偏好：'normal' 正常 | 'quiet' 安静
   aiMaxMode: false,
   cloudEnhance: false
 };
@@ -174,7 +174,7 @@ function renderSummary() {
   chips.push('材质：' + (LABELS.material[s.material] || s.material));
   chips.push('字号：' + Math.round(s.fontScale * 100) + '%');
   chips.push('AI 性格：' + (LABELS.aiPersona[s.aiPersona] || s.aiPersona));
-  chips.push('报读提醒：' + (LABELS.remindMode[s.remindMode] || s.remindMode));
+  chips.push('报毒识别提醒：' + (LABELS.remindMode[s.remindMode] || s.remindMode));
   chips.push('Max 模式：' + (s.aiMaxMode ? '开' : '关'));
   if (!s.aiMaxMode) chips.push('云端增强：' + (s.cloudEnhance ? '开' : '关'));
   const box = $('summary');
