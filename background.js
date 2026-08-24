@@ -48,7 +48,7 @@ const WWW_RE = /^www\./;
 const DEFAULTS = {
   enabledGlobal: true, showWarning: true, autoBlockDownloads: true, notify: true, sensitivity: 'medium',
   aiPersona: 'balanced',   // AI 助手性格档：'balanced' 均衡 | 'efficient' 高效 | 'gentle' 温柔 | 'pro' 严谨 | 'humorous' 幽默
-  remindMode: 'normal',    // 扩展整体报读/提醒偏好：'normal' 正常（危险告警 + 适度主动提示）| 'quiet' 安静（仅危险告警，不弹软提示/主动建议）
+  remindMode: 'normal',    // 扩展整体报毒识别/提醒偏好：'normal' 正常（危险告警 + 适度主动提示）| 'quiet' 安静（仅危险告警，不弹软提示/主动建议）
   oobeDone: false,         // 首次引导（OOBE）是否已完成
   // ICP 备案权威核验总开关：关闭后完全不向第三方备案接口发起任何请求，
   // 备案判定退回「仅扫描页面文本」的旧行为（判定更保守，但零外部请求）。
