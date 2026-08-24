@@ -35,7 +35,7 @@ const DEFAULTS = {
   aiTtsEnabled: false,  // AI 语音播报（微软 Edge 神经语音，免费自然，默认关）
   aiTtsVoice: 'female', // 朗读音色 key：female=晓晓女声 / male=云希男声
   aiPersona: 'balanced',   // AI 助手性格档：'balanced' 均衡 | 'efficient' 高效 | 'gentle' 温柔 | 'pro' 严谨 | 'humorous' 幽默
-  remindMode: 'normal',    // 扩展整体报读/提醒偏好：'normal' 正常 | 'quiet' 安静（仅危险告警，不弹软提示卡）
+  remindMode: 'normal',    // 扩展整体报毒识别/提醒偏好：'normal' 正常 | 'quiet' 安静（仅危险告警，不弹软提示卡）
   oobeDone: false,         // 首次引导（OOBE）是否已完成
   fontScale: 1,         // 0.85 ~ 1.40，界面字号缩放系数
   reduceMotion: false,  // 减弱动画效果：关闭全部过渡与动画
