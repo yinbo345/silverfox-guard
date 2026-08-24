@@ -6,8 +6,16 @@ const DEFAULTS = {
   showWarning: true,
   autoBlockDownloads: true,
   sensitivity: 'medium',
+  fontMode: 'system',
+  theme: 'dark',
+  themePalette: 'classic', // 'classic' | 'gold' | 'neon' | 'mist' | 'space' | 'pixel'
+  material: 'frosted',     // 'frosted' | 'liquid'
+  bgImage: '',             // 自定义背景 dataURL
   enabled: {},
-  allowlist: [], customKeywords: [], customBadDomains: []
+  allowlist: [], customKeywords: [], customBadDomains: [],
+  aiPersona: 'balanced',   // AI 助手性格档
+  remindMode: 'normal',    // 扩展整体报读/提醒偏好：'normal' 正常 | 'quiet' 安静（仅危险告警）
+  fontScale: 1          // 0.85 ~ 1.40，界面字号缩放系数
 };
 
 function $(id) { return document.getElementById(id); }
@@ -34,6 +42,34 @@ function fmtTime(t) {
 
 async function init() {
   const settings = await getSettings();
+
+  // 应用字体、深浅色、外观主题、材质、自定义背景（与设置页完全一致）
+  const root = document.documentElement;
+  root.classList.toggle('font-smiley', settings.fontMode === 'smiley');
+  root.classList.toggle('theme-light', settings.theme === 'light');
+  // 外观主题：经典保持无额外类；其余调色板挂对应 html.theme-* 类
+  const pal = settings.themePalette || 'classic';
+  root.classList.toggle('theme-gold', pal === 'gold');
+  root.classList.toggle('theme-neon', pal === 'neon');
+  root.classList.toggle('theme-mist', pal === 'mist');
+  root.classList.toggle('theme-space', pal === 'space');
+  root.classList.toggle('theme-pixel', pal === 'pixel');
+  // 界面材质：默认磨砂玻璃；琉声液态玻璃仅在非 Pixel 主题下生效
+  const material = settings.material || 'frosted';
+  root.classList.toggle('material-liquid', material === 'liquid' && pal !== 'pixel');
+  if (typeof settings.fontScale === 'number') {
+    // 得意黑内置 110% 基准系数（用户实测最佳）；跟随系统仍按滑块原值
+    let s = settings.fontScale;
+    if (settings.fontMode === 'smiley') s *= 1.10;
+    root.style.setProperty('--sf-scale', s.toFixed(3));
+  }
+  // 自定义背景（仅在非 Pixel 主题下生效，保持 Pixel 扁平实色）
+  if (settings.bgImage && pal !== 'pixel') {
+    root.style.setProperty('--sf-bg-image', 'url(' + settings.bgImage + ')');
+  } else {
+    root.style.removeProperty('--sf-bg-image');
+  }
+
   const pill = $('globalPill');
   pill.textContent = settings.enabledGlobal ? '防护中' : '已关闭';
   pill.className = 'pill' + (settings.enabledGlobal ? '' : ' off');
