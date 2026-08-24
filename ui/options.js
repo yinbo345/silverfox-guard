@@ -20,7 +20,7 @@ const DEFAULTS = {
   pixelUnlocked: false,   // Pixel 主题为隐藏彩蛋，解锁后才在主题网格显示/生效
   material: 'frosted',  // 'frosted'(磨砂玻璃，默认) | 'liquid'(琉声液态玻璃)；Pixel 主题下强制 frosted
   bgImage: '',          // 自定义背景 dataURL（空=使用主题默认背景）
-  aiEnabled: false,     // AI 助手悬浮球开关
+  aiEnabled: true,      // AI 助手悬浮球开关（默认开启，开箱即用）
   aiApiKey: '',         // 兼容旧字段：智谱 GLM API Key（空则使用内置默认免费 Key）
   aiProvider: 'zhipu',  // 当前选中的模型提供商（zhipu/deepseek/openai/moonshot/custom）
   aiModel: 'glm-4.7-flash', // 当前默认模型名称（自由文本）
@@ -34,6 +34,9 @@ const DEFAULTS = {
   aiScanFileAnalyse: false, // 子开关「借助云端AI分析扫描文件」（Max 下，银狐扫描可疑文件时发特征摘要给 AI 辅助研判）
   aiTtsEnabled: false,  // AI 语音播报（微软 Edge 神经语音，免费自然，默认关）
   aiTtsVoice: 'female', // 朗读音色 key：female=晓晓女声 / male=云希男声
+  aiPersona: 'balanced',   // AI 助手性格档：'balanced' 均衡 | 'efficient' 高效 | 'gentle' 温柔 | 'pro' 严谨 | 'humorous' 幽默
+  remindMode: 'normal',    // 扩展整体报读/提醒偏好：'normal' 正常 | 'quiet' 安静（仅危险告警，不弹软提示卡）
+  oobeDone: false,         // 首次引导（OOBE）是否已完成
   fontScale: 1,         // 0.85 ~ 1.40，界面字号缩放系数
   reduceMotion: false,  // 减弱动画效果：关闭全部过渡与动画
   enabled: {
@@ -1491,6 +1494,12 @@ function bindLearnPanel() {
 }
 
 async function init() {
+  // 首次引导（OOBE）未完成 → 跳转向导页（完成向导后会写 oobeDone 再回来，不会死循环）
+  try {
+    const ob = await new Promise((res) => chrome.storage.sync.get({ oobeDone: false }, res));
+    if (!ob.oobeDone) { location.replace(chrome.runtime.getURL('ui/oobe.html')); return; }
+  } catch (e) {}
+
   // 动态写入版本号（取自 manifest，避免硬编码遗漏导致内部页面版本滞后）
   try {
     const ver = (chrome.runtime && chrome.runtime.getManifest && chrome.runtime.getManifest().version) || '1.3.5';
@@ -1574,7 +1583,9 @@ async function init() {
       model: settings.aiModel || 'glm-4.7-flash',
       keys: settings.aiKeys || {},
       baseUrls: settings.aiBaseUrls || {},
-      rules: settings.aiModelRules || []
+      rules: settings.aiModelRules || [],
+      aiPersona: settings.aiPersona || 'balanced',
+      remindMode: settings.remindMode || 'normal'
     });
   }
 
