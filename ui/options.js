@@ -32,6 +32,8 @@ const DEFAULTS = {
   aiMaxMode: false,         // Max 模式：开启后云端模型优先辅助，自动关闭本地引擎与云端增强开关，仅保留云端 AI 模型辅助；云端处理不了时回退本地
   aiCloudWebAnalyse: false, // 子开关「借助云端AI分析网页」（Max 下，后台自动分析网页）
   aiScanFileAnalyse: false, // 子开关「借助云端AI分析扫描文件」（Max 下，银狐扫描可疑文件时发特征摘要给 AI 辅助研判）
+  aiTtsEnabled: false,  // AI 语音播报（微软 Edge 神经语音，免费自然，默认关）
+  aiTtsVoice: 'female', // 朗读音色 key：female=晓晓女声 / male=云希男声
   fontScale: 1,         // 0.85 ~ 1.40，界面字号缩放系数
   reduceMotion: false,  // 减弱动画效果：关闭全部过渡与动画
   enabled: {
@@ -137,15 +139,19 @@ function flashThemeAnim() {
 /* 通用跳转：把指定 section 设为可见（用于不在侧边栏分类中的页面，如更新日志） */
 function gotoSection(id, title, desc) {
   document.querySelectorAll('.nav-item').forEach((n) => n.classList.remove('active'));
-  document.querySelectorAll('.sec').forEach((s) => s.classList.remove('active'));
+  document.querySelectorAll('.sec').forEach((s) => { s.classList.remove('active'); s.classList.remove('sec-in'); });
   const sec = document.getElementById(id);
-  if (sec) sec.classList.add('active');
+  if (sec) {
+    sec.classList.add('active');
+    void sec.offsetWidth;            // 强制回流，确保入场动画重新触发
+    sec.classList.add('sec-in');
+  }
   const tt = document.getElementById('secTitle'); if (tt) tt.textContent = title || '';
   const td = document.getElementById('secDesc'); if (td) td.textContent = desc || '';
   const bb = document.getElementById('backBtn'); if (bb) bb.hidden = false;
   window.__sfReturnHub = 'about';
 }
-function showChangelog() { gotoSection('changelog', '更新日志', 'v1.4.6 · 让 AI 更聪明'); startChangelogShow(); }
+function showChangelog() { gotoSection('changelog', '更新日志', 'v1.4.7 · 让 AI 能说更省心'); startChangelogShow(); }
 
 /* 更新日志放映控制：手动翻页优先，3 秒无操作自动翻页（轮播）；任一手动操作重置 3 秒计时 */
 var __clState = null;
@@ -179,6 +185,20 @@ function startChangelogShow() {
     if (idxEl) idxEl.textContent = String(idx + 1);
     var ring = $('clCount') ? $('clCount').querySelector('.cl-count-ring') : null;
     if (ring) ring.style.setProperty('--p', '0%');
+    if (idx === 0) playCover();   // 封面：Gemini 标记旋转淡入 → 文字错峰浮现
+  }
+  // 封面开场序列（稳定轻量版，沿用 v1.4.6 气质）：标记旋转淡入落定 → 文字错峰浮现；不升空、不诡异再现
+  function playCover() {
+    var wrap = $('clStarWrap'); var cover = $('clShow') ? $('clShow').querySelector('.cl-cover') : null;
+    if (!wrap || !cover) return;
+    wrap.classList.remove('cl-cover-play');
+    cover.classList.remove('cl-cover-text-in');
+    void wrap.offsetWidth; void cover.offsetWidth;
+    wrap.classList.add('cl-cover-play');                 // Gemini 标记旋转淡入
+    // 标记落定后文字浮现
+    setTimeout(function () {
+      cover.classList.add('cl-cover-text-in');
+    }, 560);
   }
   function tickRing() {
     var ring = $('clCount') ? $('clCount').querySelector('.cl-count-ring') : null;
@@ -335,6 +355,29 @@ function setupUpdateToast() {
   });
 }
 
+/* 读取打包内的 sponsors.json 显示鸣谢名单（无名单则隐藏区块） */
+function renderSponsors() {
+  const wrap = $('sponsorList');
+  const ul = $('sponsorNames');
+  if (!wrap || !ul) return;
+  if (!chrome.runtime || !chrome.runtime.getURL) { wrap.hidden = true; return; }
+  fetch(chrome.runtime.getURL('sponsors.json'))
+    .then(function (r) { return r.ok ? r.json() : []; })
+    .then(function (list) {
+      if (!Array.isArray(list) || !list.length) { wrap.hidden = true; return; }
+      ul.textContent = '';
+      list.forEach(function (s) {
+        const name = (typeof s === 'string') ? s : (s && s.name) || '';
+        if (!name) return;
+        const li = document.createElement('li');
+        li.textContent = name;   // 用 textContent 防 XSS，名单即使被改也只是纯文本
+        ul.appendChild(li);
+      });
+      wrap.hidden = false;
+    })
+    .catch(function () { wrap.hidden = true; });
+}
+
 /* 版本号比较：a<b 返回 -1，a>b 返回 1，相等返回 0（逢11进一规则下逐段比较即可） */
 function cmpVer(a, b) {
   const pa = String(a).split('.').map((n) => parseInt(n, 10) || 0);
@@ -357,7 +400,13 @@ function setupNav() {
     item.addEventListener('click', () => {
       const target = item.dataset.target;
       navItems.forEach((n) => n.classList.toggle('active', n === item));
-      document.querySelectorAll('.sec').forEach((s) => s.classList.toggle('active', s.id === target));
+      document.querySelectorAll('.sec').forEach((s) => { s.classList.remove('active'); s.classList.remove('sec-in'); });
+      const targetSec = document.getElementById(target);
+      if (targetSec) {
+        targetSec.classList.add('active');
+        void targetSec.offsetWidth;            // 强制回流，确保入场动画重新触发
+        targetSec.classList.add('sec-in');
+      }
       secTitle.textContent = item.dataset.title || '';
       secDesc.textContent = item.dataset.desc || '';
       const bb = $('backBtn'); if (bb) bb.hidden = true;   // 切到一级分类时退出子页面
@@ -1071,6 +1120,75 @@ function bindControls(settings) {
     }
   }
 
+  // AI 语音播报（免费 TTS）：默认关闭；开启后可在音色列表选择并试听，AI 回复时朗读
+  const ttsEn = $('aiTtsEnabled');
+  const ttsSub = $('ttsSub');
+  const ttsVoice = $('ttsVoice');
+  const ttsPreview = $('ttsPreview');
+
+  // 仅两个精挑音色：女生（晓晓）/ 男生（云希），与 ai.js 的 TTS_VOICES 对应
+  function populateTtsVoices() {
+    if (!ttsVoice) return;
+    ttsVoice.innerHTML = '';
+    const items = [
+      { value: 'female', text: '女生 · 晓晓（温柔自然）' },
+      { value: 'male', text: '男生 · 云希（清亮自然）' }
+    ];
+    items.forEach((it) => {
+      const o = document.createElement('option');
+      o.value = it.value; o.textContent = it.text;
+      ttsVoice.appendChild(o);
+    });
+    const saved = (window.__sfSettings && window.__sfSettings.aiTtsVoice) || 'female';
+    ttsVoice.value = ['female', 'male'].indexOf(saved) !== -1 ? saved : 'female';
+  }
+  // 试听走 Edge 神经语音（与 ai.js 同源），返回 MP3 Blob URL 后播放
+  function previewTts(voiceKey) {
+    if (!(window.SilverFoxAI && window.SilverFoxAI.previewTTS)) return;
+    if (ttsPreview) { ttsPreview.disabled = true; ttsPreview.textContent = '合成中…'; }
+    window.SilverFoxAI.previewTTS(voiceKey).then((url) => {
+      if (!url) return;
+      const a = new Audio(); a.src = url;
+      a.play().catch(() => {});
+      a.onended = () => { try { URL.revokeObjectURL(url); } catch (e) {} };
+    }).catch((err) => {
+      // 失败不再静默：在按钮上短暂显示原因，便于区分「GEC 过期 / 连接被拒 / 网络不通」
+      const msg = (err && err.message) || String(err || '未知错误');
+      const hint = msg.indexOf('403') !== -1 ? 'GEC版本过期'
+        : msg.indexOf('close code') !== -1 ? '连接被拒'
+        : msg.indexOf('connect error') !== -1 ? '连不上服务'
+        : '网络/服务';
+      if (ttsPreview) { ttsPreview.textContent = '失败：' + hint; }
+      console.warn('[银狐] TTS 试听失败：', msg);
+    }).finally(() => {
+      if (ttsPreview) setTimeout(() => { ttsPreview.disabled = false; ttsPreview.textContent = '试听'; }, 2200);
+    });
+  }
+
+  if (ttsEn) {
+    ttsEn.checked = settings.aiTtsEnabled === true;
+    if (ttsSub) ttsSub.classList.toggle('collapsed', !ttsEn.checked);
+    ttsEn.addEventListener('change', (e) => {
+      const on = e.target.checked;
+      if (hasStorage()) chrome.storage.sync.set({ aiTtsEnabled: on });
+      if (window.__sfSettings) window.__sfSettings.aiTtsEnabled = on;
+      if (ttsSub) ttsSub.classList.toggle('collapsed', !on);
+      if (window.SilverFoxAI) window.SilverFoxAI.setConfig({ ttsEnabled: on });
+    });
+  }
+  if (ttsVoice) {
+    ttsVoice.addEventListener('change', (e) => {
+      const v = e.target.value;
+      if (hasStorage()) chrome.storage.sync.set({ aiTtsVoice: v });
+      if (window.__sfSettings) window.__sfSettings.aiTtsVoice = v;
+      if (window.SilverFoxAI) window.SilverFoxAI.setConfig({ ttsVoice: v });
+    });
+  }
+  if (ttsPreview) {
+    ttsPreview.addEventListener('click', () => { previewTts(ttsVoice ? ttsVoice.value : ''); });
+  }
+  populateTtsVoices();
+
   // 首屏按已存偏好即时渲染（instant，避免加载瞬间"弹一下"）；后续交互动画由 JS spring 接管
   applyAppearance(true);
 }
@@ -1210,6 +1328,8 @@ function collectSettings() {
     aiMaxMode: ($('aiMaxMode') ? $('aiMaxMode').checked : false),
     aiCloudWebAnalyse: ($('aiCloudWebAnalyse') ? $('aiCloudWebAnalyse').checked : false),
     aiScanFileAnalyse: ($('aiScanFileAnalyse') ? $('aiScanFileAnalyse').checked : false),
+    aiTtsEnabled: ($('aiTtsEnabled') ? $('aiTtsEnabled').checked : false),
+    aiTtsVoice: ($('ttsVoice') ? $('ttsVoice').value : ''),
     fontScale: ($('fontScale') ? parseFloat($('fontScale').value) / 100 : 1),
     reduceMotion: ($('reduceMotion') ? $('reduceMotion').checked : false),
     enabled,
@@ -1393,6 +1513,36 @@ async function init() {
   loadStats();
   setupNav();
   setupSubNav();
+
+  // AI 浮球 / 其他页面通过 #sec=<id> 锚点打开对应子页面（如 #sec=rescue / #sec=changelog）
+  (function jumpFromHash() {
+    try {
+      const h = (location.hash || '').replace(/^#/, '');
+      if (!h) return;
+      const m = h.match(/sec=([^&]+)/);
+      if (!m) return;
+      const id = decodeURIComponent(m[1]);
+      // 等 DOM / 导航就绪后再跳转，确保 section 元素与 nav 已绑定
+      const doJump = function () {
+        if (id === 'changelog') { if (typeof showChangelog === 'function') showChangelog(); return; }
+        const sec = document.getElementById(id);
+        const navItem = document.querySelector('.nav-item[data-target="' + id + '"]');
+        if (sec && navItem && typeof navItem.click === 'function') {
+          navItem.click();
+        } else if (sec) {
+          // 兜底直接切（含 data-sub 子页面返回态）
+          const card = document.querySelector('[data-sub="' + id + '"]');
+          document.querySelectorAll('.sec').forEach((s) => { s.classList.remove('active'); s.classList.remove('sec-in'); });
+          sec.classList.add('active'); void sec.offsetWidth; sec.classList.add('sec-in');
+          if (navItem) navItem.classList.add('active');
+          const bb = document.getElementById('backBtn'); if (bb) bb.hidden = !card;
+        }
+      };
+      if (document.readyState === 'complete') setTimeout(doJump, 60);
+      else window.addEventListener('load', function () { setTimeout(doJump, 60); });
+    } catch (e) {}
+  })();
+
   bindRescue();
   bindDlBlacklist();
   loadDlBlacklist();
@@ -1405,6 +1555,7 @@ async function init() {
 
   setupPixelEgg();
   setupUpdateToast();
+  renderSponsors();
 
   // AI 助手悬浮球：传入设置（多模型选择 / 场景路由 / 开关 / 版本号供提示词上下文）
   if (window.SilverFoxAI) {
@@ -1417,6 +1568,8 @@ async function init() {
       maxMode: settings.aiMaxMode === true,
       cloudWebAnalyse: settings.aiCloudWebAnalyse === true,
       scanFileAnalyse: settings.aiScanFileAnalyse === true,
+      ttsEnabled: settings.aiTtsEnabled === true,
+      ttsVoice: settings.aiTtsVoice || '',
       provider: settings.aiProvider || 'zhipu',
       model: settings.aiModel || 'glm-4.7-flash',
       keys: settings.aiKeys || {},
