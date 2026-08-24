@@ -59,9 +59,24 @@
 
   const SCENARIO_LABELS = { fallback: '兜底对话（本地未命中）', settings: '设置 / 操作解答', casual: '闲聊问候' };
 
+  // 性格档 → 语气/风格约束（OOBE 可选，默认均衡）
+  const PERSONA_RULES = {
+    balanced: '你的性格是「均衡」：全面稳妥，信息准确、表达亲切，是该扩展默认之选。',
+    efficient: '你的性格是「高效」：简洁直接、直奔主题，少客套少废话；能用一句话说清就绝不用两句，优先给结论与执行结果。',
+    gentle: '你的性格是「温柔」：耐心细致、语气温和，解释充分、步步引导，像朋友一样照顾对方的理解节奏，不居高临下。',
+    pro: '你的性格是「严谨」：专业克制、重依据，用词得体，涉及设置项时说明作用与边界，不夸大、不模糊。',
+    humorous: '你的性格是「幽默」：轻松俏皮、适度玩梗，但绝不拿安全风险开玩笑；专业度不打折扣，只是语气更讨喜。'
+  };
   function buildSystem(version) {
+    const persona = (cfg && PERSONA_RULES[cfg.aiPersona]) ? PERSONA_RULES[cfg.aiPersona] : PERSONA_RULES.balanced;
+    const quietMode = (cfg && cfg.remindMode === 'quiet');
+    const remindRule = quietMode
+      ? '当前用户偏好「安静提醒」：除直接回答问题外，不要主动展开额外建议、不要顺带推销扩展功能、不要发送非请求的操作提示；只给被问到的那部分内容，点到为止。'
+      : '在不打扰的前提下，可适度主动给出一条最相关的实用建议（如顺手提示一个相关设置入口），但不要堆砌。';
     return [
       '你是「银狐防护 · SilverFox Guard」浏览器扩展的内置使用助手，名为「银狐小助」。',
+      persona,
+      remindRule,
       '你的职责仅限帮助用户理解和使用本扩展的功能与设置，包括：',
       '1）解释各个设置项（全局防护开关、网页内警告横幅、自动拦截可疑下载、备案核验、灵敏度、个性化里的字体/主题/深浅色/字号/材质/自定义背景/减弱动画、AI 助手本身等）的作用与开启方式；',
       '2）说明扩展的检测逻辑大类（域名仿冒、备案缺失、低质量站点、可执行文件直链、网盘分发、混淆 JS、虚拟机检测、社工话术、仿冒官网、跳转 iframe、域名结构异常），但只做原理科普，不替用户判定某个具体网站是否危险；',
@@ -72,7 +87,10 @@
       '- 回答用简体中文，简洁、口语化、分点清晰；不要使用英文长句或机翻腔。',
       '- 当前扩展版本为 ' + (version || '未知') + '。',
       '- 不要编造扩展没有的功能。',
-      '- 当用户想修改设置（开关防护、警告、拦截、通知、备案核验、主题、字体、字号、材质、灵敏度、云端/Max/本地引擎开关、清空白名单/关键词/危险域名、下载急救箱等）时，优先调用提供的 action__ 工具直接完成，而不是只告诉用户步骤；可一次调用多个工具满足复合意图（如「帮我安静点」同时关警告与通知）。'
+      '- 调用工具后，用你自己的话自然回复用户（一句即可，自然地告知已办好或补充说明皆可），但不要复述任何工具名称或调用过程（如「调用 open_subpage」「set_xxx」等），也不要在回复里出现方括号包裹的工具指令；严禁输出「已为你打开」「已执行」之类的机械确认模板句——必须是你自然组织的中文口语。',
+      '- 严禁敷衍式回复：执行完工具后绝不允许只回「好的」「好的，已为您完成」「已操作」这类空话；必须说一句有信息量、像人话的内容（例如说明改了什么、顺带一句实用提醒、或接一句相关引导），但同样不要复述工具名。',
+      '- 当用户想修改设置（开/关防护、警告、拦截、通知、备案核验、主题、字体、字号、材质、灵敏度、云端/Max/本地引擎开关、TTS 语音、清空白名单/关键词/危险域名、逐项开/关检测维度、打开设置子页面等）时，调用对话中随附「固定工具清单」里的对应固定工具直接完成，而不是只告诉用户步骤；可一次调用多个工具满足复合意图（如「帮我安静点」同时关警告与通知）。',
+      '- 重要区分（务必遵守）：仅当用户【命令式】要求你直接改某项设置（如「换成深色」「字号大一点」「关闭警告横幅」「开启防护」「帮我安静点」「打开 AI 设置页」）时才调用对应的固定工具；若用户是【疑问式】问怎么改、某设置干什么、原理是什么（如「怎么换主题」「字号在哪调」「检测原理是什么」），或只是闲聊/打招呼/感谢，一律直接文本回复，绝不调用任何工具。'
     ].join('\n');
   }
 
@@ -601,6 +619,327 @@
     { id: 'clearKw', phrases: ['清空自定义关键词', '清除自定义词', '清空关键词', '自定义关键词清空', '清掉自定义词'], run: () => clearLines('customKeywords'), done: '已清空自定义风险关键词。' },
     { id: 'clearBad', phrases: ['清空危险域名', '清除自定义危险域名', '清空自定义域名', '危险域名清空', '自定义域名清空'], run: () => clearLines('customBadDomains'), done: '已清空自定义危险域名。' }
   ];
+
+  /* ============ Max 自主设置：通用 set_setting 工具 + 本地硬校验 ============
+   * 云端模型不再依赖写死的 41 条指令集，而是拿到「可操作设置清单」(SETTINGS_SCHEMA)
+   * 与当前设置快照，自行把用户意图映射成 key+value，调用通用工具 set_setting(key,value)。
+   * 本地对 key（白名单）与 value（类型 / 枚举 / 范围）做硬校验，越权或非法一律拒绝，
+   * 绝无任意代码执行权。41 条 ACTIONS 仍作为第 0 步本地最高优先级安全网。 */
+  const SETTINGS_SCHEMA = [
+    { key: 'enabledGlobal',     label: '全局防护总开关',   type: 'bool',  desc: '是否开启银狐防护（分析网页、拦截下载）。' },
+    { key: 'showWarning',       label: '网页警告横幅',     type: 'bool',  desc: '命中风险时在网页内弹出警告横幅。' },
+    { key: 'autoBlockDownloads',label: '自动拦截可疑下载', type: 'bool',  desc: '锁定伪装成按钮 / 卡片的木马下载入口。' },
+    { key: 'notify',            label: 'Windows 系统弹窗', type: 'bool',  desc: '命中风险时右下角弹系统通知 toast。' },
+    { key: 'icpApiVerify',      label: '备案核验',         type: 'bool',  desc: '查询站点 ICP 备案，缺失 / 异常作风险加分。' },
+    { key: 'localModelEnabled', label: '本地规则引擎',     type: 'bool',  desc: '内置关键词规则引擎（离线秒回）。' },
+    { key: 'cloudEnhance',      label: '云端增强兜底',     type: 'bool',  desc: '本地未命中时调用云端大模型兜底。' },
+    { key: 'aiMaxMode',         label: 'Max 模式',         type: 'bool',  desc: '云端模型优先辅助并可直接操作设置。' },
+    { key: 'reduceMotion',      label: '减弱动画效果',     type: 'bool',  desc: '关闭全部界面动画与过渡。' },
+    { key: 'aiCloudWebAnalyse', label: '后台 AI 分析网页', type: 'bool',  desc: '浏览网页时后台自动送云端 AI 研判（仅品牌域名与页面特征摘要，不含正文）。' },
+    { key: 'aiScanFileAnalyse', label: '云端 AI 分析文件', type: 'bool',  desc: '银狐扫描可疑文件时送云端 AI 辅助研判（仅本地特征摘要，不含文件正文）。' },
+    { key: 'aiEnabled',         label: 'AI 助手悬浮球',    type: 'bool',  desc: '设置页右下角是否显示 AI 悬浮球。' },
+    { key: 'aiTtsVoice',        label: '朗读音色',         type: 'enum',  allowed: ['female', 'male'], desc: 'female=晓晓女声，male=云希男声。' },
+    { key: 'theme',             label: '深浅色模式',       type: 'enum',  allowed: ['dark', 'light'], desc: 'dark=深色护眼，light=浅色明亮。' },
+    { key: 'themePalette',      label: '外观主题',         type: 'enum',  allowed: ['classic', 'gold', 'neon', 'mist', 'space', 'pixel'], desc: '经典 / 暖金国风 / 赛博霓虹 / 极简雾灰 / 暗夜深空 / Pixel 彩蛋。' },
+    { key: 'material',          label: '界面材质',         type: 'enum',  allowed: ['frosted', 'liquid'], desc: 'frosted=磨砂玻璃，liquid=琉声液态玻璃。' },
+    { key: 'fontMode',          label: '字体',             type: 'enum',  allowed: ['system', 'smiley'], desc: 'system=跟随系统，smiley=得意黑。' },
+    { key: 'sensitivity',       label: '检测灵敏度',       type: 'enum',  allowed: ['high', 'medium', 'low'], desc: 'high=严格，medium=适中，low=宽松。' },
+    { key: 'fontScale',         label: '字号缩放',         type: 'range', min: 0.85, max: 1.40, desc: '界面字号缩放系数，0.85~1.40。' },
+    { key: 'clearAllowlist',    label: '清空信任白名单',   type: 'clear', desc: '清空信任域名白名单（value 任意）。' },
+    { key: 'clearKeywords',     label: '清空自定义关键词', type: 'clear', desc: '清空自定义风险关键词（value 任意）。' },
+    { key: 'clearBadDomains',   label: '清空危险域名',     type: 'clear', desc: '清空自定义危险域名（value 任意）。' }
+  ];
+
+  // key → 具体操作（复用本地控件修改函数，保证与手动改一致）。绝无任意代码执行。
+  const SETTINGS_APPLIER = {
+    enabledGlobal:     (v) => setToggle('enabledGlobal', v, 'enabledGlobal'),
+    showWarning:       (v) => setToggle('showWarning', v, 'showWarning'),
+    autoBlockDownloads:(v) => setToggle('autoBlockDownloads', v, 'autoBlockDownloads'),
+    notify:            (v) => setToggle('notify', v, 'notify'),
+    icpApiVerify:      (v) => setToggle('icpApiVerify', v, 'icpApiVerify'),
+    localModelEnabled: (v) => setToggle('localModelEnabled', v, 'localModelEnabled'),
+    cloudEnhance:      (v) => setToggle('cloudEnhance', v, 'cloudEnhance'),
+    aiMaxMode:         (v) => setToggle('aiMaxMode', v, 'aiMaxMode'),
+    reduceMotion:      (v) => setReduceMotion(v),
+    aiCloudWebAnalyse: (v) => setToggle('aiCloudWebAnalyse', v, 'aiCloudWebAnalyse'),
+    aiScanFileAnalyse: (v) => setToggle('aiScanFileAnalyse', v, 'aiScanFileAnalyse'),
+    aiEnabled:         (v) => setToggle('aiEnabled', v, 'aiEnabled'),
+    aiTtsVoice:        (v) => { const el = document.getElementById('ttsVoice'); if (!el) return false; el.value = (v === 'male' ? 'male' : 'female'); el.dispatchEvent(new Event('change', { bubbles: true })); return true; },
+    theme:             (v) => setTheme(v === 'light'),
+    themePalette:      (v) => pickPalette(v),
+    material:          (v) => pickMaterial(v),
+    fontMode:          (v) => pickFont(v),
+    sensitivity:       (v) => pickSensitivity(v),
+    fontScale:         (v) => setFontScale(typeof v === 'number' ? v : parseFloat(v)),
+    clearAllowlist:    () => clearLines('allowlist'),
+    clearKeywords:     () => clearLines('customKeywords'),
+    clearBadDomains:   () => clearLines('customBadDomains')
+  };
+
+  function getSettingsSnapshot() {
+    const snap = {};
+    const g = (id) => { const e = $(id); return e ? e.checked : undefined; };
+    snap.enabledGlobal = g('enabledGlobal');
+    snap.showWarning = g('showWarning');
+    snap.autoBlockDownloads = g('autoBlockDownloads');
+    snap.notify = g('notify');
+    snap.icpApiVerify = g('icpApiVerify');
+    snap.localModelEnabled = g('localModelEnabled');
+    snap.cloudEnhance = g('cloudEnhance');
+    snap.aiMaxMode = g('aiMaxMode');
+    snap.reduceMotion = g('reduceMotion');
+    snap.aiCloudWebAnalyse = g('aiCloudWebAnalyse');
+    snap.aiScanFileAnalyse = g('aiScanFileAnalyse');
+    snap.aiEnabled = g('aiEnabled');
+    const tl = $('themeLight'); snap.theme = tl ? (tl.checked ? 'light' : 'dark') : undefined;
+    const pal = document.querySelector('.theme-opt.active'); snap.themePalette = pal ? pal.dataset.palette : undefined;
+    const mat = document.querySelector('#materialSeg button.active'); snap.material = mat ? mat.dataset.material : undefined;
+    const fnt = document.querySelector('.font-opt.active'); snap.fontMode = fnt ? fnt.dataset.font : undefined;
+    const sbtn = document.querySelector('#sensitivity button.active'); snap.sensitivity = sbtn ? sbtn.dataset.v : undefined;
+    const fs = $('fontScale'); snap.fontScale = fs ? parseFloat(fs.value) / 100 : undefined;
+    return snap;
+  }
+
+  // 本地硬校验：key 白名单 + value 类型 / 枚举 / 范围；返回 {ok, reason, coerced, type}
+  function validateSetting(key, value) {
+    const s = SETTINGS_SCHEMA.find((x) => x.key === key);
+    if (!s) return { ok: false, reason: '未知设置项「' + key + '」（不在可操作范围内）' };
+    let v = value;
+    if (s.type === 'bool') {
+      if (typeof v === 'string') v = /^(true|1|开|启用|开启|是|on)$/i.test(v.trim());
+      else v = !!v;
+      return { ok: true, coerced: v, type: 'bool' };
+    }
+    if (s.type === 'enum') {
+      const sv = String(v).toLowerCase();
+      if (!s.allowed.includes(sv)) return { ok: false, reason: '「' + key + '」取值无效，允许：' + s.allowed.join(' / ') };
+      return { ok: true, coerced: sv, type: 'enum' };
+    }
+    if (s.type === 'range') {
+      const n = typeof v === 'number' ? v : parseFloat(v);
+      if (isNaN(n)) return { ok: false, reason: '「' + key + '」需为数字' };
+      if (n < s.min || n > s.max) return { ok: false, reason: '「' + key + '」超出范围（' + s.min + '~' + s.max + '）' };
+      return { ok: true, coerced: n, type: 'range' };
+    }
+    if (s.type === 'clear') return { ok: true, coerced: true, type: 'clear' };
+    return { ok: false, reason: '「' + key + '」类型未支持' };
+  }
+
+  function sLabel(key) { const s = SETTINGS_SCHEMA.find((x) => x.key === key); return s ? s.label : key; }
+
+  function applySetting(key, value) {
+    const chk = validateSetting(key, value);
+    if (!chk.ok) return { ok: false, reason: chk.reason };
+    const applier = SETTINGS_APPLIER[key];
+    if (!applier) return { ok: false, reason: '「' + key + '」暂不支持自动修改' };
+    try {
+      const r = applier(chk.coerced);
+      if (r === false) return { ok: false, reason: '「' + key + '」操作失败（未找到对应控件）' };
+      const msg = sLabel(key) + (chk.type === 'clear' ? ' 已清空' : (chk.type === 'bool' ? (' 已' + (chk.coerced ? '开启' : '关闭')) : (' 已设为 ' + chk.coerced)));
+      return { ok: true, msg: msg };
+    } catch (e) { return { ok: false, reason: '「' + key + '」执行出错：' + (e && e.message || e) }; }
+  }
+
+  /* ============ Max 自主设置：固定工具集（覆盖全开关 + 打开子页面）============
+   * 不再用「通用 set_setting + 让模型自己琢磨 key/value」的方式（易调不准、且会把闲聊也当操作）。
+   * 改为把每一项可操作设置 / 子页面都做成【固定的、名字自解释的工具】，模型只需按意图挑对工具、填好类型明确的参数，
+   * 本地拿到工具名 → 直接映射到对应控件修改函数，绝无任意代码执行权。
+   * 这样「调得准」且「聊天不退化」：闲聊/疑问不挂工具，只有命令式才挂这组固定工具。 */
+
+  // 所有固定工具定义（名字即语义，参数类型明确，杜绝模型乱猜 key）
+  const FIXED_TOOLS = [
+    // —— 防护核心开关 ——
+    { name: 'set_global_protection',  label: '全局防护总开关', key: 'enabledGlobal',      param: { name: 'enabled', type: 'boolean', desc: 'true=开启银狐防护（分析网页、拦截下载），false=关闭' } },
+    { name: 'set_warning_banner',     label: '网页警告横幅',   key: 'showWarning',        param: { name: 'enabled', type: 'boolean', desc: 'true=开启网页内警告横幅，false=关闭' } },
+    { name: 'set_auto_block_download',label: '自动拦截下载',   key: 'autoBlockDownloads', param: { name: 'enabled', type: 'boolean', desc: 'true=锁定伪装成按钮/卡片的木马下载入口，false=关闭' } },
+    { name: 'set_system_notify',      label: '系统弹窗',       key: 'notify',             param: { name: 'enabled', type: 'boolean', desc: 'true=命中风险时右下角弹系统通知，false=关闭' } },
+    { name: 'set_icp_verify',         label: '备案核验',       key: 'icpApiVerify',       param: { name: 'enabled', type: 'boolean', desc: 'true=开启 ICP 备案核验，false=关闭' } },
+    { name: 'set_local_engine',       label: '本地规则引擎',   key: 'localModelEnabled',  param: { name: 'enabled', type: 'boolean', desc: 'true=开启内置关键词规则引擎（离线秒回），false=关闭' } },
+    { name: 'set_cloud_enhance',      label: '云端增强兜底',   key: 'cloudEnhance',       param: { name: 'enabled', type: 'boolean', desc: 'true=本地未命中时调用云端大模型兜底，false=关闭' } },
+    { name: 'set_max_mode',           label: 'Max 模式',       key: 'aiMaxMode',          param: { name: 'enabled', type: 'boolean', desc: 'true=开启 Max 模式（云端模型可理解意图并直接操作设置），false=关闭' } },
+    { name: 'set_reduce_motion',      label: '减弱动画',       key: 'reduceMotion',       param: { name: 'enabled', type: 'boolean', desc: 'true=关闭全部界面动画与过渡，false=恢复' } },
+    { name: 'set_cloud_web_analyse',  label: '后台 AI 分析网页',key: 'aiCloudWebAnalyse',  param: { name: 'enabled', type: 'boolean', desc: 'true=浏览时后台自动送云端 AI 研判，false=关闭' } },
+    { name: 'set_cloud_file_analyse', label: '云端 AI 分析文件',key: 'aiScanFileAnalyse',  param: { name: 'enabled', type: 'boolean', desc: 'true=扫描可疑文件时送云端 AI 辅助研判，false=关闭' } },
+    { name: 'set_ai_fab',             label: 'AI 助手悬浮球',  key: 'aiEnabled',          param: { name: 'enabled', type: 'boolean', desc: 'true=显示 AI 悬浮球，false=隐藏' } },
+    { name: 'set_tts',                label: 'AI 语音播报',    key: 'aiTtsEnabled',       param: { name: 'enabled', type: 'boolean', desc: 'true=开启 Edge 神经语音播报，false=关闭' } },
+    { name: 'set_tts_voice',          label: '朗读音色',       key: 'aiTtsVoice',         param: { name: 'voice', type: 'string', enum: ['female', 'male'], desc: 'female=晓晓女声（默认），male=云希男声' } },
+    // —— 外观 ——
+    { name: 'set_theme_mode',         label: '深浅色模式',     key: 'theme',              param: { name: 'mode', type: 'string', enum: ['dark', 'light'], desc: 'dark=深色护眼，light=浅色明亮' } },
+    { name: 'set_palette',            label: '外观主题',       key: 'themePalette',       param: { name: 'palette', type: 'string', enum: ['classic', 'gold', 'neon', 'mist', 'space', 'pixel'], desc: 'classic=经典 / gold=暖金国风 / neon=赛博霓虹 / mist=极简雾灰 / space=暗夜深空 / pixel=Pixel 彩蛋' } },
+    { name: 'set_material',           label: '界面材质',       key: 'material',           param: { name: 'material', type: 'string', enum: ['frosted', 'liquid'], desc: 'frosted=磨砂玻璃，liquid=琉声液态玻璃' } },
+    { name: 'set_font',               label: '字体',           key: 'fontMode',           param: { name: 'font', type: 'string', enum: ['system', 'smiley'], desc: 'system=跟随系统，smiley=得意黑' } },
+    { name: 'set_sensitivity',        label: '检测灵敏度',     key: 'sensitivity',        param: { name: 'level', type: 'string', enum: ['high', 'medium', 'low'], desc: 'high=严格，medium=适中，low=宽松' } },
+    { name: 'set_font_scale',         label: '字号缩放',       key: 'fontScale',          param: { name: 'scale', type: 'number', desc: '界面字号缩放系数，0.85~1.40（如 1.1 表示 110%）' } },
+    // —— 清空类（无参数）——
+    { name: 'clear_allowlist',        label: '清空信任白名单', key: 'clearAllowlist' },
+    { name: 'clear_keywords',         label: '清空自定义关键词',key: 'clearKeywords' },
+    { name: 'clear_bad_domains',      label: '清空危险域名',   key: 'clearBadDomains' },
+    // —— 检测维度（26 项逐个开关）——
+    { name: 'set_detect_dimension',   label: '检测维度开关',   dimension: true,
+      param: { name: 'dimension', type: 'string',
+        enum: ['domainImpersonation','icpMissing','icpStolen','codeEngineering','linkAnalysis','crossDomainDownload','blacklistedPayload','domainAge','lowQuality','execDownload','cloudDiskDist','obfuscatedJs','vmDetection','socialEngineering','fakeOfficial','redirectIframe','noahKit','downloadRedirector','runtimeDownload','domainStructure','brandedExe','passwordArchive','lureTheme','fakeUpdate','friendlyLinks','doubleExt'],
+        desc: '要开关的检测维度 id，如 domainImpersonation（域名仿冒）/ icpMissing（缺备案）/ lowQuality（低质量）/ execDownload（直链可执行）/ obfuscatedJs（混淆JS）/ vmDetection（沙箱探测）等' } },
+    // —— 打开子页面 ——
+    { name: 'open_subpage',           label: '打开设置子页面', open: true,
+      param: { name: 'section', type: 'string',
+        enum: ['general','detect','behavior','rules','rules-allowlist','rules-keywords','rules-baddomains','stats','rescue','scanner','ai','personal','about','changelog'],
+        desc: '要打开的设置页：general=常规 / detect=检测维度 / behavior=拦截行为 / rules=规则与白名单 / rules-allowlist=信任白名单 / rules-keywords=自定义关键词 / rules-baddomains=危险域名 / stats=防护统计 / rescue=银狐急救 / scanner=银狐扫描 / ai=AI设置 / personal=个性化 / about=关于 / changelog=更新日志' } }
+  ];
+
+  // 子页面：友好 key → 实际 DOM id / 标签
+  const SUBPAGE_MAP = {
+    general: { id: 'general', label: '常规' }, detect: { id: 'detect', label: '检测维度' },
+    behavior: { id: 'behavior', label: '拦截行为' }, rules: { id: 'rules', label: '规则与白名单' },
+    'rules-allowlist': { id: 'rules-allowlist', label: '信任白名单' }, 'rules-keywords': { id: 'rules-keywords', label: '自定义关键词' },
+    'rules-baddomains': { id: 'rules-baddomains', label: '危险域名' }, stats: { id: 'stats', label: '防护统计' },
+    rescue: { id: 'rescue', label: '银狐急救' }, scanner: { id: 'scanner', label: '银狐扫描' },
+    ai: { id: 'ai', label: 'AI 设置' }, personal: { id: 'personal', label: '个性化' },
+    about: { id: 'about', label: '关于' }, changelog: { id: 'changelog', label: '更新日志' }
+  };
+
+  // 中文别名 → 英文 key（模型常传中文 label，如「银狐急救」「更新日志」，需容错）
+  const SUBPAGE_ALIAS = {
+    '常规': 'general', '通用': 'general', '基础': 'general', '检测维度': 'detect', '维度': 'detect',
+    '拦截行为': 'behavior', '拦截': 'behavior', '规则': 'rules', '规则与白名单': 'rules', '白名单规则': 'rules',
+    '信任白名单': 'rules-allowlist', '白名单': 'rules-allowlist', '自定义关键词': 'rules-keywords', '关键词': 'rules-keywords',
+    '危险域名': 'rules-baddomains', '危险网站': 'rules-baddomains', '防护统计': 'stats', '统计': 'stats',
+    '银狐急救': 'rescue', '急救': 'rescue', '急救箱': 'rescue', '360急救': 'rescue',
+    '银狐扫描': 'scanner', '扫描': 'scanner', '木马扫描': 'scanner',
+    'AI设置': 'ai', 'AI': 'ai', 'AI助手': 'ai', '人工智能': 'ai', '个性化': 'personal', '主题': 'personal', '外观': 'personal',
+    '关于': 'about', '关于我们': 'about', '更新日志': 'changelog', '日志': 'changelog', '改动': 'changelog', '版本': 'changelog'
+  };
+
+  // 打开设置子页面（优先复用既有导航逻辑，并自带不依赖监听器的可靠直接切换，确保任何时机都生效）
+  function openOptionsSection(sectionKey) {
+    if (!sectionKey) return { ok: false, reason: '未指定要打开的子页面' };
+    // 归一化：去空格、兼容「银狐急救」类中文别名、大小写
+    const raw = String(sectionKey).trim();
+    const norm = SUBPAGE_ALIAS[raw] || raw;
+    const m = SUBPAGE_MAP[norm] || SUBPAGE_MAP[String(norm).toLowerCase()];
+    if (!m) return { ok: false, reason: '未知子页面「' + raw + '」（可选：' + Object.keys(SUBPAGE_MAP).join(' / ') + '）' };
+    const targetId = (m.id === 'changelog') ? 'changelog' : m.id;
+
+    // 当前是否就在 options 设置页（AI 浮球可能注入在任意普通网页，那里没有这些 DOM）
+    const inOptions = !!document.getElementById(targetId) ||
+                      !!document.querySelector('.nav-item[data-target="' + targetId + '"]');
+
+    if (!inOptions) {
+      // 不在设置页：打开 options 页并带 #sec=<id> 锚点，由 options.js 启动时读取并跳转
+      try {
+        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
+          const url = chrome.runtime.getURL('ui/options.html') + '#sec=' + encodeURIComponent(targetId);
+          if (chrome.tabs && chrome.tabs.create) {
+            chrome.tabs.create({ url: url, active: true });
+          } else if (chrome.runtime && chrome.runtime.sendMessage) {
+            // 兜底：让 background 开页（部分环境 content script 无 tabs 权限）
+            chrome.runtime.sendMessage({ type: 'SF_OPEN_OPTIONS_SECTION', section: targetId });
+          } else {
+            window.open(url, '_blank');
+          }
+          return { ok: true, msg: '' };
+        }
+      } catch (e) {}
+      return { ok: false, reason: '无法打开设置页（环境不支持）' };
+    }
+
+    // —— 以下为已在 options 页内：直接切换 ——
+    if (targetId === 'changelog') {
+      if (typeof showChangelog === 'function') { showChangelog(); return { ok: true, msg: '' }; }
+      return { ok: false, reason: '更新日志不可用' };
+    }
+    const sec = document.getElementById(m.id);
+    const navItem = document.querySelector('.nav-item[data-target="' + m.id + '"]');
+    const card = document.querySelector('[data-sub="' + m.id + '"]');
+    // 直接切换（不依赖 click 监听是否就绪，保证一定生效），并触发非线性入场动画
+    document.querySelectorAll('.sec').forEach((s) => { s.classList.remove('active'); s.classList.remove('sec-in'); });
+    if (sec) {
+      sec.classList.add('active');
+      void sec.offsetWidth;            // 强制回流，确保入场动画重新触发
+      sec.classList.add('sec-in');
+      if (navItem) navItem.classList.add('active');
+      const tt = document.getElementById('secTitle'); if (tt && navItem) tt.textContent = navItem.dataset.title || m.label;
+      const td = document.getElementById('secDesc'); if (td && navItem) td.textContent = navItem.dataset.desc || '';
+      const bb = document.getElementById('backBtn');
+      if (bb) bb.hidden = !card;   // 子页面（data-sub 命中）才显示返回键
+    }
+    // 若既有导航逻辑已就绪，再走一次 click 让其完整同步标题/描述与返回态
+    if (navItem && typeof navItem.click === 'function') {
+      try { navItem.click(); } catch (e) {}
+    } else if (card && typeof card.click === 'function') {
+      try { card.click(); } catch (e) {}
+    }
+    if (sec) return { ok: true, msg: '' };
+    return { ok: false, reason: '未找到「' + m.label + '」入口' };
+  }
+
+  // 切换某项检测维度（仅在「保存设置」时持久化，故改完触发 saveBtn 保存）
+  function setDetectDimension(id, enabled) {
+    const cb = document.querySelector('input[data-cat="' + id + '"]');
+    if (!cb) return false;
+    cb.checked = !!enabled;
+    const sb = document.getElementById('saveBtn');
+    if (sb) sb.click();
+    return true;
+  }
+
+  function dimLabel(id) {
+    const cats = (window.SF_ANALYZER && window.SF_ANALYZER.CATEGORIES) || [];
+    const c = cats.find((x) => x.id === id);
+    return c ? c.label : id;
+  }
+
+  // 固定工具分发：工具名 → 对应控件修改函数（本地白名单，模型无任意代码执行权）
+  function dispatchFixedTool(name, args) {
+    const spec = FIXED_TOOLS.find((t) => t.name === name);
+    if (!spec) return { ok: false, reason: '未知工具「' + name + '」' };
+    if (spec.open) return openOptionsSection(args && args.section);
+    if (spec.dimension) {
+      const ok = setDetectDimension(args && args.dimension, args && args.enabled);
+      const label = dimLabel(args && args.dimension);
+      return ok ? { ok: true, msg: (args && args.enabled ? '已开启' : '已关闭') + '检测维度「' + label + '」' } : { ok: false, reason: '未找到检测维度「' + (args && args.dimension) + '」' };
+    }
+    if (!spec.key) return { ok: false, reason: '该工具无可操作设置' };
+    const value = spec.param ? args[spec.param.name] : undefined;
+    return applySetting(spec.key, value);
+  }
+
+  // 固定工具清单（追加到系统提示，明确告诉模型有哪些固定工具、何时用）
+  function maxSettingsBlock() {
+    const grp = (title, names) => '- ' + title + '：' + names.join(' / ');
+    const lines = [
+      grp('防护开关', ['set_global_protection', 'set_warning_banner', 'set_auto_block_download', 'set_system_notify', 'set_icp_verify', 'set_local_engine', 'set_cloud_enhance', 'set_max_mode', 'set_reduce_motion', 'set_cloud_web_analyse', 'set_cloud_file_analyse', 'set_ai_fab', 'set_tts', 'set_tts_voice']),
+      grp('外观', ['set_theme_mode(dark/light)', 'set_palette(经典/暖金/霓虹/雾灰/深空/Pixel)', 'set_material(磨砂/琉声)', 'set_font(系统/得意黑)', 'set_sensitivity(严格/适中/宽松)', 'set_font_scale(0.85~1.40)']),
+      grp('清空', ['clear_allowlist', 'clear_keywords', 'clear_bad_domains']),
+      grp('检测维度', ['set_detect_dimension(dimension=维度id, enabled=true/false)']),
+      grp('打开页面', ['open_subpage(section=常规/检测维度/拦截行为/规则与白名单/信任白名单/自定义关键词/危险域名/防护统计/银狐急救/银狐扫描/AI设置/个性化/关于/更新日志)'])
+    ];
+    return '【固定工具清单】用户命令式要求改设置 / 打开设置页时，只能调用下列固定工具之一（可一次调用多个满足复合意图，如「帮我安静点」同时调用 set_warning_banner(false) 与 set_system_notify(false)）；不要只复述步骤，也不要自创工具名。\n' + lines.join('\n') +
+      '\n注意：所有工具名与参数均已固定，按意图选对工具即可，参数类型明确（布尔填 true/false，枚举填给定取值，数字填数值）；清空类与打开页面无需多余参数。检测维度可逐项开/关（dimension 取维度 id）。';
+  }
+
+  // 由 FIXED_TOOLS 生成 OpenAI 兼容的 tools 数组（每个工具参数类型明确，规避 anyOf 在部分模型上的兼容坑）
+  function buildFixedTools() {
+    return FIXED_TOOLS.map((t) => {
+      const func = { name: t.name, description: (t.desc || t.label || t.name), strict: false };
+      if (t.param) {
+        const p = { type: 'object', properties: {}, required: [t.param.name], additionalProperties: false };
+        if (t.param.type === 'boolean') {
+          p.properties[t.param.name] = { type: 'boolean', description: t.param.desc || 'true 或 false' };
+        } else if (t.param.type === 'string' && t.param.enum) {
+          p.properties[t.param.name] = { type: 'string', enum: t.param.enum, description: t.param.desc || '取值见枚举' };
+        } else if (t.param.type === 'number') {
+          p.properties[t.param.name] = { type: 'number', description: t.param.desc || '数值' };
+        } else {
+          p.properties[t.param.name] = { type: 'string', description: t.param.desc || '' };
+        }
+        func.parameters = p;
+      } else {
+        func.parameters = { type: 'object', properties: {}, required: [], additionalProperties: false };
+      }
+      return { type: 'function', function: func };
+    });
+  }
+
   function matchActions(q) {
     const intents = extractIntents(q || '');
     const t = (q || '').toLowerCase();
@@ -617,6 +956,7 @@
   let cfg = {
     enabled: false, apiKey: '', version: '', localModelEnabled: true, cloudEnhance: false,
     maxMode: false, cloudWebAnalyse: false,
+    ttsEnabled: false, ttsVoice: 'female',
     provider: DEFAULT_PROVIDER, model: DEFAULT_MODEL, keys: {}, baseUrls: {}, rules: []
   };
   let fab, panel, logEl, inputEl, sendBtn, closeBtn;
@@ -641,6 +981,111 @@
     row.appendChild(bubble);
     logEl.appendChild(row);
     logEl.scrollTop = logEl.scrollHeight;
+    if (role === 'assistant' && tag !== '回退') speakTTS(text);
+  }
+
+  // ── 免费 TTS：微软 Edge 神经语音（与 Edge「大声朗读」同源）──────────────
+  // 通过官方 WebSocket 端点合成 MP3 本地播放。仅暴露两个精挑音色，不暴露几十种中文神经音；
+  // 免费、无需密钥、不上传内容至我们服务器（仅连微软官方合成端点）。
+  // 仅在用户开启「AI 语音播报」时生效；失败静默，绝不回退到机械的 Web Speech 本地语音。
+  const EDGE_TTS_TRUSTED = '6A5AA1D4EAFF4E9FB37E23D68491D6F4';
+  // Sec-MS-GEC-Version：微软会随 Chromium 更新而废弃旧版本号（过期即握手 403 无声）。
+  // 跟随 rany2/edge-tts 上游当前有效值；若日后试听再次无声，优先来这里升级该版本号。
+  const EDGE_TTS_GEC_VER = '1-143.0.3650.75';
+  const EDGE_TTS_WS = 'wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1';
+  const TTS_VOICES = {
+    female: { id: 'zh-CN-XiaoxiaoNeural', label: '女生 · 晓晓（温柔自然）' },
+    male:   { id: 'zh-CN-YunxiNeural',    label: '男生 · 云希（清亮自然）' }
+  };
+  // GEC 输入串（纯函数，便于测试）：Unix秒 + 11644473600 → 向下取整 300 秒窗口 → ×1e7（100ns ticks）
+  function edgeTtsGecInput(nowSec) {
+    let ticks = Math.floor(nowSec) + 11644473600;
+    ticks -= ticks % 300;
+    ticks *= 10000000;
+    return String(ticks) + EDGE_TTS_TRUSTED;
+  }
+  // 生成标准 UUID4 的 32 位 hex（无连字符），与 rany2/edge-tts 的 ConnectionId 一致
+  function edgeTtsConnId() {
+    const b = new Uint8Array(16);
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) crypto.getRandomValues(b);
+    else for (let i = 0; i < 16; i++) b[i] = (Math.random() * 256) | 0;
+    b[6] = (b[6] & 0x0f) | 0x40;
+    b[8] = (b[8] & 0x3f) | 0x80;
+    return Array.from(b).map((x) => x.toString(16).padStart(2, '0')).join('');
+  }
+  // 生成 Sec-MS-GEC 令牌（SHA-256，**必须大写**，与微软/rany2 一致；小写会被握手拒绝）
+  async function edgeTtsGenGec() {
+    const str = edgeTtsGecInput(Date.now() / 1000);
+    if (typeof crypto !== 'undefined' && crypto.subtle && crypto.subtle.digest) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    }
+    throw new Error('no crypto.subtle');
+  }
+  // 合成：返回 MP3 的 Blob URL（失败时 reject）。
+  function edgeTtsSynthesize(text, voiceId) {
+    return new Promise((resolve, reject) => {
+      if (typeof WebSocket === 'undefined') return reject(new Error('no WebSocket'));
+      let ws = null;
+      let cancelled = false;
+      const timer = setTimeout(() => { cancelled = true; if (ws) try { ws.close(); } catch (e) {} reject(new Error('timeout')); }, 30000);
+      edgeTtsGenGec().then((gec) => {
+        if (cancelled) return;
+        const connId = edgeTtsConnId();
+        const url = EDGE_TTS_WS + '?TrustedClientToken=' + EDGE_TTS_TRUSTED + '&ConnectionId=' + connId + '&Sec-MS-GEC=' + gec + '&Sec-MS-GEC-Version=' + EDGE_TTS_GEC_VER;
+        try { ws = new WebSocket(url); } catch (e) { clearTimeout(timer); return reject(e); }
+        ws.binaryType = 'arraybuffer';
+        const uuid = '00000000-0000-0000-0000-000000000000';
+        const date = new Date().toString();
+        const chunks = [];
+        let gotAudio = false;
+        ws.onopen = () => {
+          ws.send('X-Timestamp:' + date + '\r\nContent-Type:application/json; charset=utf-8\r\nPath:speech.config\r\n\r\n{"context":{"synthesis":{"audio":{"metadataoptions":{"sentenceBoundaryEnabled":false,"wordBoundaryEnabled":false},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}}');
+          const safe = String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          const ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='zh-CN'><voice name='" + voiceId + "'>" + safe + '</voice></speak>';
+          ws.send('X-RequestId:' + uuid + '\r\nContent-Type:application/ssml+xml\r\nPath:ssml\r\n\r\n' + ssml);
+        };
+        ws.onmessage = (ev) => {
+          const d = ev.data;
+          if (typeof d === 'string') {
+            if (d.indexOf('Path:turn.end') !== -1) { ws.close(); return; }
+            // 诊断：打印服务端返回的任何文本帧（含可能的错误 JSON），便于定位 1006/403 根因
+            console.warn('[银狐] TTS 服务端帧：', d.slice(0, 300));
+            return;
+          }
+          const b = new Uint8Array(d);
+          const hl = (b[0] << 8) | b[1];
+          const h = new TextDecoder().decode(b.slice(2, 2 + hl));
+          const a = b.slice(2 + hl);
+          if (h.indexOf('Path:audio') !== -1 && h.indexOf('metadata') === -1) { chunks.push(a); gotAudio = true; }
+        };
+        ws.onerror = () => { clearTimeout(timer); reject(new Error('ws connect error (check network/CSP)')); };
+        ws.onclose = (ev) => {
+          clearTimeout(timer);
+          if (gotAudio && chunks.length) {
+            try { resolve(URL.createObjectURL(new Blob(chunks, { type: 'audio/mpeg' }))); } catch (e) { reject(e); }
+          } else reject(new Error('no audio, ws close code=' + (ev && ev.code) + (ev && ev.reason ? ' (' + ev.reason + ')' : '')));
+        };
+      }).catch((e) => { clearTimeout(timer); reject(e); });
+    });
+  }
+  // 播放 TTS：AI 回复时调用，朗读整段文本（女生/男生由设置决定）。
+  function speakTTS(text) {
+    if (!cfg.ttsEnabled) return;
+    const t = String(text || '').trim();
+    if (!t) return;
+    if (/^（?无(返回内容|错误|结果|输出)/.test(t)) return;
+    const key = (cfg.ttsVoice && TTS_VOICES[cfg.ttsVoice]) ? cfg.ttsVoice : 'female';
+    const voiceId = TTS_VOICES[key].id;
+    edgeTtsSynthesize(t, voiceId).then((url) => {
+      try {
+        const a = new Audio();
+        a.src = url;
+        a.play().catch(() => {});
+        a.onended = () => { try { URL.revokeObjectURL(url); } catch (e) {} };
+        a.onerror = () => { try { URL.revokeObjectURL(url); } catch (e) {} };
+      } catch (e) {}
+    }).catch(() => {}); // 静默失败，绝不回退机械音
   }
 
   function setBusy(busy) {
@@ -662,18 +1107,8 @@
     }
   }
 
-  // 把 ACTIONS 暴露给云端模型做 tool-use（仅 Max 模式启用）。模型只能从白名单里选操作，
-  // 且每条操作自包含、无自定义参数——本地校验白名单后才执行，模型拿不到任意代码执行权。
-  function buildTools() {
-    return ACTIONS.map((a) => ({
-      type: 'function',
-      function: {
-        name: 'action__' + a.id,
-        description: (a.done || a.id) + ' 触发词示例：' + (a.phrases ? a.phrases.slice(0, 4).join(' / ') : ''),
-        parameters: { type: 'object', properties: {}, required: [] }
-      }
-    }));
-  }
+  // 通用 set_setting 工具（Max 模式 tool-use）已在本文件上方 buildMaxTools() 定义，
+  // 配套 SETTINGS_SCHEMA / applySetting 做本地硬校验，模型无任意代码执行权。
 
   async function callCloud(text, override) {
     const provider = (override && override.provider) || cfg.provider;
@@ -681,7 +1116,9 @@
     const mcfg = resolveModelCfg(provider, model);
     if (!mcfg.endpoint) throw new Error('自定义模型未配置 API 基址，请在「AI 设置」填写后重试。');
     if (!mcfg.key) throw new Error('未配置「' + mcfg.label + '」的 API Key，请在「AI 设置」填写后重试。');
-    const messages = [{ role: 'system', content: buildSystem(cfg.version) }]
+    let sys = buildSystem(cfg.version);
+    if (override && override.systemExtra) sys += '\n\n' + override.systemExtra;
+    const messages = [{ role: 'system', content: sys }]
       .concat(history.slice(-12).map((m) => ({ role: m.role, content: m.content })));
     const body = { model: mcfg.model, messages: messages, max_tokens: 800, temperature: 0.5, stream: false };
     // Max 模式下带 tools，让模型可调用本地预定义的操作（白名单校验后执行）
@@ -715,6 +1152,7 @@
   async function send() {
     const text = (inputEl && inputEl.value || '').trim();
     if (!text) return;
+    cloudFallback = false;   // 每轮重置，避免上一轮的回退标记污染本轮
     appendMsg('user', text);
     history.push({ role: 'user', content: text });
     inputEl.value = '';
@@ -728,6 +1166,42 @@
     // 0) 本地指令（可操作设置，绝对最高优先级）：无论本地引擎是否开启、是否 Max 模式，
     //    只要命中 ACTIONS 就立即本地执行并返回，绝不走云端（改设置类指令不应被云端/Max 接管）。
     //    支持一句话多个指令，识别「换成深色 / 字大点 / 开启防护 / 关闭防护」等。
+
+    // 0.1) 本地「打开设置子页面」意图：无论是否 Max / 云端，只要用户说「打开/去/进入/切换到 XX页」，
+    //      本地直接识别并跳转（不在设置页时新开标签页带 #sec 锚点），不依赖云端模型是否调工具。
+    //      这是此前「AI 会说但不跳转」的根因修复点——云端模型未必稳定返回 open_subpage 工具调用。
+    {
+      const openIntent = /(打开|去|进入|切换到?|切到|转到|看看|前往|打开一下|帮我打开|帮我把|打开那个)/;
+      if (openIntent.test(text)) {
+        // 在文本里找页面别名（SUBPAGE_ALIAS 已含中文名与缩写）
+        let hitSection = null;
+        // 按别名长度降序匹配，避免「急救」先命中而漏掉「银狐急救」
+        const aliasKeys = Object.keys(SUBPAGE_ALIAS).sort((a, b) => b.length - a.length);
+        for (const k of aliasKeys) { if (text.indexOf(k) !== -1) { hitSection = SUBPAGE_ALIAS[k]; break; } }
+        // 也兼容英文 id 直写（如 rescue / changelog）
+        if (!hitSection) {
+          const lower = text.toLowerCase();
+          for (const id of Object.keys(SUBPAGE_MAP)) {
+            if (new RegExp('\\b' + id + '\\b').test(lower)) { hitSection = id; break; }
+          }
+        }
+        if (hitSection) {
+          const r = openOptionsSection(hitSection);
+          const label = (SUBPAGE_MAP[hitSection] && SUBPAGE_MAP[hitSection].label) || hitSection;
+          if (r.ok) {
+            appendMsg('assistant', '已为你打开「' + label + '」。', '本地·已操作');
+          } else {
+            appendMsg('assistant', (r.reason || '未能打开该页面') + '（可手动在扩展设置里查看）', '本地·已操作');
+          }
+          history.push({ role: 'assistant', content: '已为你打开「' + label + '」。' });
+          setBusy(false);
+          if (inputEl) inputEl.focus();
+          finish('action', { action: 'open_subpage:' + hitSection, hit: true, solved: true });
+          return;
+        }
+      }
+    }
+
     {
       const acts = matchActions(text);
       if (acts.length) {
@@ -759,40 +1233,48 @@
         const ovModel = (rule && rule.model) || cfg.model;
         const ovCfg = resolveModelCfg(ovProvider, ovModel);
         if (!ovCfg.key) throw new Error('未配置「' + ovCfg.label + '」的可用 Key，无法在 Max 模式下调用云端');
-        const ans = await callCloud(text, { provider: ovProvider, model: ovModel, tools: buildTools() });
-        // 解析模型返回的 tool_calls：白名单校验后本地执行
+        // 闲聊/问候类不挂工具，保证模型能正常文本聊天；
+        // 仅当用户【命令式】要求改设置时才挂这组固定工具，避免把疑问/闲聊误当成操作去调工具。
+        const looksCmd = /(开|关|启|停|换|设|调|改|切|增|减|打|帮我|恢复|默认|安静|深色|浅色|暖金|霓虹|雾灰|深空|像素|得意黑|磨砂|琉声|字号|灵敏度|防护|警告|横幅|拦截|通知|备案|语音|音色|主题|材质|字体|打开|白名单|关键词|危险域名|检测维度|维度)/.test(text);
+        const useTools = scenario !== 'casual' && looksCmd;
+        const ans = await callCloud(text, {
+          provider: ovProvider, model: ovModel,
+          tools: useTools ? buildFixedTools() : undefined,
+          systemExtra: maxSettingsBlock()
+        });
+        const hasText = !!(ans.text && ans.text.trim() && !/^（?无(返回内容|错误|结果|输出)/.test(ans.text));
+        // 解析模型返回的 tool_calls：按固定工具名分发到本地预定义的控件修改函数（本地白名单校验），模型无任意代码执行权
+        const performed = [];
+        let rejected = 0; const rejReasons = [];
         if (ans.toolCalls && ans.toolCalls.length) {
-          const performed = [];
-          let rejected = 0;
           for (const tc of ans.toolCalls) {
             const fname = tc.function && tc.function.name;
-            if (!fname || fname.indexOf('action__') !== 0) { rejected++; continue; } // 非白名单工具，拒绝
-            const aid = fname.slice('action__'.length);
-            const a = ACTIONS.find((x) => x.id === aid);
-            if (!a) { rejected++; continue; }                  // 不在预定义操作内，拒绝执行
-            try {
-              const res = a.run();
-              if (res === 'pixel') performed.push('当前是 Pixel 隐藏主题，材质已锁定为磨砂玻璃，无法切换为琉声。');
-              else if (res === false) performed.push('（' + (a.done || a.id) + '）未能找到对应控件。');
-              else performed.push(a.done + (a.tip ? '\n' + a.tip : ''));
-            } catch (e) { performed.push('（' + (a.done || a.id) + '）执行出错：' + (e && e.message || e)); }
+            let args = {};
+            try { args = JSON.parse((tc.function && tc.function.arguments) || '{}'); } catch (e) { args = {}; }
+            const res = dispatchFixedTool(fname, args);
+            if (res.ok) performed.push(res.msg);
+            else { rejected++; rejReasons.push(res.reason || ('「' + fname + '」执行失败')); }
           }
-          const reply = performed.join('\n\n') + (rejected ? '\n\n（已忽略 ' + rejected + ' 个不在允许范围内的操作）' : '');
-          appendMsg('assistant', reply, '云端·已操作');
+        }
+        // 工具执行后，始终用模型自己生成的文本作为回复（AI 自己说话，不输出机械固定文案）。
+        // 仅当「模型既无文本、工具也没执行任何事」时才视为异常，回退本地规则。
+        if (hasText || performed.length || rejected) {
+          let reply = '';
+          if (hasText) reply += ans.text.trim();
+          if (rejected) reply += (reply ? '\n\n' : '') + '（已忽略 ' + rejected + ' 个无效操作' + (rejReasons.length ? '：' + rejReasons.join('；') : '') + '）';
+          reply = reply.trim();
+          if (!reply) {
+            // 极少数情况：模型既没说话、工具也没成功也没被拒 —— 给一句极简兜底，不写死"已为你打开"
+            reply = '好的。';
+          }
+          appendMsg('assistant', reply, performed.length ? '云端·已操作' : (ans.tag || '云端·Max'));
           history.push({ role: 'assistant', content: reply });
-          finish('cloud', { maxMode: true, provider: ovProvider, scenario: scenario, hit: false, cloud: true, cloudAction: true, answer: ans.text, solved: true });
+          finish('cloud', { maxMode: true, provider: ovProvider, scenario: scenario, hit: false, cloud: true, cloudAction: performed.length > 0, answer: ans.text, solved: true });
           setBusy(false);
           if (inputEl) inputEl.focus();
           return;
         }
-        // 模型未调用工具：按普通文本回复
-        const ansText = ans.text.trim();
-        appendMsg('assistant', ansText, ans.tag || '云端·Max');
-        history.push({ role: 'assistant', content: ansText });
-        finish('cloud', { maxMode: true, provider: ovProvider, scenario: scenario, hit: false, cloud: true, cloudAction: false, answer: ansText, solved: true });
-        setBusy(false);
-        if (inputEl) inputEl.focus();
-        return;
+        cloudFallback = true;   // 云端既没说话也没操作，落到本地规则/兜底
       } catch (e) {
         // 云端处理不了 → 回退到下方本地规则与兜底；标记避免下方云端块重复调用
         cloudFallback = true;
@@ -1084,5 +1566,18 @@
     if (window.SilverFoxAI && window.SilverFoxAI._syncAnalyzeBtn) window.SilverFoxAI._syncAnalyzeBtn();
   }
 
-  window.SilverFoxAI = { init: init, setConfig: setConfig, setVisible: setVisible, open: openPanel, close: closePanel };
+  window.SilverFoxAI = {
+    init: init, setConfig: setConfig, setVisible: setVisible, open: openPanel, close: closePanel,
+    _schema: SETTINGS_SCHEMA, _validateSetting: validateSetting, _applySetting: applySetting, _getSettingsSnapshot: getSettingsSnapshot,
+    _fixedTools: FIXED_TOOLS, _dispatchFixedTool: dispatchFixedTool, _openOptionsSection: openOptionsSection, _buildFixedTools: buildFixedTools,
+    // 供设置页试听 / 外部调用：合成文本并返回 MP3 Blob URL（voiceKey: 'female' | 'male'）
+    synthesize: function (text, voiceKey) {
+      const key = (voiceKey && TTS_VOICES[voiceKey]) ? voiceKey : 'female';
+      return edgeTtsSynthesize(text, TTS_VOICES[key].id);
+    },
+    previewTTS: function (voiceKey) {
+      return window.SilverFoxAI.synthesize('这是银狐防护 AI 语音播报的试听示例，你可以选择喜欢的音色。', voiceKey);
+    },
+    _gecInput: edgeTtsGecInput
+  };
 })();
