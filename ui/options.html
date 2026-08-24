@@ -429,17 +429,35 @@
           </div>
           <div class="row sub-row collapsed" id="maxModeSub">
             <div class="rl">
-              <div class="rt">后台自动 AI 分析网页 <span class="badge-exp">实验性功能</span></div>
-              <div class="rd">开启后，浏览网页时由扩展在后台自动将页面内容发送给云端 AI，按钓鱼 / 仿冒 / 诈骗 / 品牌核验等规则判断风险并以页面提示呈现。无需手动触发，随页面加载自动生效。实验阶段，建议仅在可信网络下启用。</div>
+              <div class="rt">后台自动 AI 分析网页</div>
+              <div class="rd">开启后，浏览网页时由扩展在后台自动将页面内容发送给云端 AI，按钓鱼 / 仿冒 / 诈骗 / 品牌核验等规则研判风险；AI 会先推断页面所属品牌的官方域名，后台再比对当前域名是否匹配官方，不匹配即判定仿冒并以页面提示呈现。无需手动触发，随页面加载自动生效（依赖 Max 模式）。</div>
             </div>
             <label class="switch"><input type="checkbox" id="aiCloudWebAnalyse"><span class="slider"></span></label>
           </div>
           <div class="row sub-row collapsed" id="maxModeFileSub">
             <div class="rl">
-              <div class="rt">借助云端 AI 分析扫描文件 <span class="badge-exp">实验性功能</span></div>
-              <div class="rd">开启后，在「银狐扫描」中扫描出可疑 / 报毒文件时，扩展将本地提取的可疑特征摘要（文件名、大小、魔数、导入表、命中特征等，不含文件正文）发送给云端 AI 作辅助研判，并在结果卡片追加「云端 AI 辅助分析」一行。纯本地判定不受影响，失败静默。</div>
+              <div class="rt">借助云端 AI 分析扫描文件</div>
+              <div class="rd">开启后，在「银狐扫描」中扫描出可疑 / 报毒文件时，扩展将本地提取的可疑特征摘要（文件名、大小、魔数、导入表、命中特征等，不含文件正文）发送给云端 AI 作辅助研判，并在结果卡片追加「云端 AI 辅助分析」一行。纯本地判定不受影响，失败静默（依赖 Max 模式）。</div>
             </div>
             <label class="switch"><input type="checkbox" id="aiScanFileAnalyse"><span class="slider"></span></label>
+          </div>
+          <!-- AI 语音播报（免费 TTS，默认关闭） -->
+          <div class="row">
+            <div class="rl">
+              <div class="rt">AI 语音播报</div>
+              <div class="rd">开启后，AI 回复会用微软 Edge 神经语音朗读出来（晓晓女声 / 云希男声，免费、自然、不上传内容）。默认关闭。</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="aiTtsEnabled"><span class="slider"></span></label>
+          </div>
+          <div class="row sub-row collapsed" id="ttsSub">
+            <div class="rl">
+              <div class="rt">播报音色</div>
+              <div class="rd">选择朗读音色（女生 · 晓晓 / 男生 · 云希），点「试听」可预览当前音色。</div>
+            </div>
+            <div class="tts-ctrl">
+              <select id="ttsVoice" class="sf-input"></select>
+              <button type="button" class="btn btn-ghost" id="ttsPreview">试听</button>
+            </div>
           </div>
           <!-- 模型管理入口卡片（下钻到子页面） -->
           <div class="sub-entry" data-sub="ai-model-manage" data-sub-title="AI 模型管理" data-sub-desc="选择模型提供商、指定模型、配置场景路由规则">
@@ -573,6 +591,20 @@
           <div class="about-row"><span class="ak">隐私政策</span><span class="av"><a href="https://yinbo345.github.io/silverfox-guard/PRIVACY.md" target="_blank" rel="noreferrer">yinbo345.github.io/silverfox-guard/PRIVACY.md</a></span></div>
           <div class="about-row"><span class="ak">项目仓库</span><span class="av"><a href="https://github.com/yinbo345/silverfox-guard" target="_blank" rel="noreferrer">github.com/yinbo345/silverfox-guard</a></span></div>
         </div>
+
+        <!-- 支持作者 / 鸣谢 -->
+        <div class="card sponsor-card">
+          <div class="sponsor-head">
+            <span class="sponsor-title">支持作者</span>
+          </div>
+          <p class="sponsor-desc">银狐防护是一个免费、开源的浏览器扩展。如果你的上网安全因它而多了一分保障，欢迎到爱发电请作者喝杯柠檬水，让检测规则持续更新、误报持续修复。</p>
+          <a class="sponsor-btn" href="https://afdian.com/a/silverfox" target="_blank" rel="noopener">前往爱发电赞助</a>
+          <div class="sponsor-list" id="sponsorList" hidden>
+            <div class="sponsor-list-title">鸣谢 · 以下赞助者让银狐防护走得更远</div>
+            <ul class="sponsor-names" id="sponsorNames"></ul>
+          </div>
+        </div>
+
         <div class="tip">银狐（又称"游蛇"）木马常通过仿冒知名软件官网、网盘分发带毒安装包、钓鱼诱导话术传播。本扩展基于网页代码特征分析进行预警，仅供参考，无法替代专业杀毒软件。</div>
       </section>
 
@@ -587,9 +619,9 @@
           <div class="cl-track" id="clTrack">
 
             <!-- 0 · 封面 -->
-            <article class="cl-slide cl-cover" data-kicker="SILVERFOX GUARD · 大版本更新">
-              <div class="cl-cover-mark" aria-hidden="true">
-                <svg viewBox="0 0 120 120" width="150" height="150" class="gemini-mark">
+            <article class="cl-slide cl-cover" data-kicker="SILVERFOX GUARD · 持续进化">
+              <div class="cl-cover-mark" id="clStarWrap" aria-hidden="true">
+                <svg viewBox="0 0 120 120" width="150" height="150" class="gemini-mark" id="clGemini">
                   <defs>
                     <linearGradient id="gmA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4285F4"/><stop offset="1" stop-color="#A142F4"/></linearGradient>
                     <linearGradient id="gmB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EA4335"/><stop offset="1" stop-color="#FBBC04"/></linearGradient>
@@ -605,10 +637,10 @@
                   <circle cx="60" cy="60" r="7" fill="#fff"/>
                 </svg>
               </div>
-              <h1 class="cl-title">让 AI 更聪明<span class="cl-title-sub">听得懂，更做得到</span></h1>
-              <div class="cl-ver-big">v1.4.6</div>
-              <p class="cl-lead">Max 模式升级：AI 不再只会回答，还能理解你的意图去操作设置；模糊 / 复合指令一次完成，安全边界仍牢牢握在本地。</p>
-              <div class="cl-scroll-hint" aria-hidden="true"><span></span>翻页键 / ← → 切换 · 3 秒自动播放</div>
+              <h1 class="cl-title" id="clCoverTitle">品牌提取更强了<span class="cl-title-sub">更多网站，认得出官网</span></h1>
+              <div class="cl-ver-big">v1.4.9</div>
+              <p class="cl-lead">重写后台 AI 官网核验的「品牌名 / 官方域名」提取算法：提示词强化 + 解析器容错重写 + 核验口径放宽，显著改善大量网站抽不出品牌词、导致仿冒比对失效的问题。解析器新增 14 项单元测试全部通过。</p>
+              <div class="cl-scroll-hint" aria-hidden="true"><span></span>翻页键 / ← → 切换 · 自动播放</div>
             </article>
 
             <!-- 1 · AI 助手悬浮球 -->
@@ -617,8 +649,8 @@
                 <div class="cl-fab-demo" aria-hidden="true">
                   <div class="cl-fab-core"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 3a4 4 0 0 1 4 4v1a4 4 0 0 1-8 0V7a4 4 0 0 1 4-4Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 20a7 7 0 0 1 14 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
                   <div class="cl-fab-bubble">
-                    <p>怎么把主题换成深色？</p>
-                    <p class="cl-bubble-a">在「外观」里选暗夜深空即可，我帮你打开 ›</p>
+                    <p>打开银狐急救</p>
+                    <p class="cl-bubble-a">已在本地直达，秒开设置页 ›</p>
                   </div>
                 </div>
               </div>
@@ -627,7 +659,7 @@
                 <ul class="cl-points">
                   <li>右下角悬浮球，随问随答扩展用法</li>
                   <li>本地规则引擎离线秒回，零延迟零流量</li>
-                  <li>云端大模型兜底，复杂问题也能接住</li>
+                  <li>打开页面、改设置本地直达，不再看云端脸色</li>
                 </ul>
               </div>
             </article>
@@ -675,82 +707,18 @@
               </div>
             </article>
 
-            <!-- 3.5 · 后台自动 AI 网页分析（v1.4.4） -->
-            <article class="cl-slide cl-feature" data-kicker="后台 AI 分析">
-              <div class="cl-stage">
-                <div class="cl-analyze-demo" aria-hidden="true">
-                  <div class="cl-analyze-card">
-                    <div class="cl-analyze-url">rpcs3.io</div>
-                    <div class="cl-analyze-bar"><span class="cl-analyze-fill"></span></div>
-                    <div class="cl-analyze-verdict">风险等级：高 · 疑似仿冒（官方 rpcs3.net）</div>
-                  </div>
-                </div>
+            <!-- 4 · 版本时间轴（一页讲清历代，不再逐版堆砌） -->
+            <article class="cl-slide cl-timeline" data-kicker="一路走来">
+              <h2 class="cl-recap-h">银狐防护 · 版本演进</h2>
+              <div class="cl-tl">
+                <div class="cl-tl-item"><span class="cl-tl-ver">v1.4.4</span><span class="cl-tl-txt">后台自动 AI 网页分析 · 悬浮球语音播报</span></div>
+                <div class="cl-tl-item"><span class="cl-tl-ver">v1.4.5</span><span class="cl-tl-txt">AI 融合更彻底 · 扫描借云端 AI · 报毒浮层修复</span></div>
+                <div class="cl-tl-item"><span class="cl-tl-ver">v1.4.6</span><span class="cl-tl-txt">让 AI 更聪明 · Max 工具调用 · 模糊意图秒操作</span></div>
+                <div class="cl-tl-item"><span class="cl-tl-ver">v1.4.7</span><span class="cl-tl-txt">更稳的 AI 防护 · 指令路由重构 · 云端开页可靠化</span></div>
+                <div class="cl-tl-item"><span class="cl-tl-ver">v1.4.8</span><span class="cl-tl-txt">AI 核验官网 · 仿冒判定更准 · 两项 AI 能力转正</span></div>
+                <div class="cl-tl-item cl-tl-cur"><span class="cl-tl-ver">v1.4.9</span><span class="cl-tl-txt">品牌提取算法升级 · 更多网站认得出官网 · 解析器容错重写</span></div>
               </div>
-              <div class="cl-copy">
-                <h2>浏览网页，AI 在后台自动守护</h2>
-                <ul class="cl-points">
-                  <li>开启 Max 模式 + 后台自动 AI 分析，随页面加载自动运行</li>
-                  <li>无需手动触发，也不占用 AI 悬浮球</li>
-                  <li>按钓鱼 / 仿冒 / 诈骗 / 品牌核验等规则输出风险等级，命中时在页面提示</li>
-                  <li>实验性功能，建议仅在可信网络下启用</li>
-                </ul>
-              </div>
-            </article>
-
-            <!-- 3.6 · v1.4.5 新特性：AI 融合更彻底 -->
-            <article class="cl-slide cl-feature" data-kicker="v1.4.5 · AI 融合更彻底">
-              <div class="cl-stage">
-                <div class="cl-analyze-demo" aria-hidden="true">
-                  <div class="cl-analyze-card">
-                    <div class="cl-analyze-url">银狐扫描 · setup_xyz.exe</div>
-                    <div class="cl-analyze-bar"><span class="cl-analyze-fill"></span></div>
-                    <div class="cl-analyze-verdict">云端 AI 辅助：高 · 疑似银狐载荷（伪装安装包）</div>
-                  </div>
-                </div>
-              </div>
-              <div class="cl-copy">
-                <h2>AI 融合更彻底</h2>
-                <ul class="cl-points">
-                  <li>银狐扫描新增「借助云端 AI 分析文件」：仅发本地提取的可疑特征摘要，不传文件正文</li>
-                  <li>网页 AI 分析遇额度耗尽 / 限流 / 密钥失效时，页面内一次性提示并建议关闭 Max</li>
-                  <li>修复报毒浮层在「继续浏览 → 二次确认」后被重复弹出的问题</li>
-                  <li>本地规则引擎始终离线生效，云端仅作兜底，互不影响</li>
-                </ul>
-              </div>
-            </article>
-
-            <!-- 3.7 · v1.4.6 新特性：让 AI 更聪明 -->
-            <article class="cl-slide cl-feature" data-kicker="v1.4.6 · 让 AI 更聪明">
-              <div class="cl-stage">
-                <div class="cl-analyze-demo" aria-hidden="true">
-                  <div class="cl-analyze-card">
-                    <div class="cl-analyze-url">你说：帮我安静点</div>
-                    <div class="cl-analyze-bar"><span class="cl-analyze-fill"></span></div>
-                    <div class="cl-analyze-verdict">AI 调用工具：关闭警告 ＋ 关闭通知 ＋ 关闭下载拦截</div>
-                  </div>
-                </div>
-              </div>
-              <div class="cl-copy">
-                <h2>让 AI 更聪明</h2>
-                <ul class="cl-points">
-                  <li>Max 模式开放云端模型工具调用：AI 理解模糊 / 复合意图，直接操作设置</li>
-                  <li>「帮我安静点」这类口语，AI 一次调用多个工具（关警告 ＋ 关通知 ＋ 关拦截）</li>
-                  <li>本地白名单校验：模型只能从预设操作里选，越权一律拒绝，绝无任意代码执行</li>
-                  <li>本地指令层仍是最高的安全网：明确死词（如「关闭防护」）秒回本地、不耗云端</li>
-                </ul>
-              </div>
-            </article>
-
-            <!-- 4 · 历史一句话 -->
-            <article class="cl-slide cl-recap" data-kicker="此前版本">
-              <h2 class="cl-recap-h">一路走来</h2>
-              <div class="cl-recap-grid">
-                <div class="cl-recap-item"><b>v1.4.6</b><span>让 AI 更聪明 · Max 工具调用 · 模糊意图秒操作</span></div>
-                <div class="cl-recap-item"><b>v1.4.5</b><span>AI 融合更彻底 · 扫描借云端 AI · 失败提示 · 报毒修复</span></div>
-                <div class="cl-recap-item"><b>v1.4.4</b><span>后台自动 AI 网页分析 · 悬浮球语音</span></div>
-                <div class="cl-recap-item"><b>v1.4.2</b><span>AI 助手悬浮球 · 多模型切换 · 场景路由</span></div>
-              </div>
-              <p class="cl-recap-foot">本次 v1.4.6 让 AI 不仅听得懂，更能做得到——理解意图、操作设置，安全边界依旧牢牢握在本地。</p>
+              <p class="cl-recap-foot">从「后台守护」到「会聊天、能操作、靠得住」——本地规则始终离线生效，云端只作兜底，安全边界牢牢握在本地。</p>
             </article>
 
           </div>
@@ -763,7 +731,7 @@
         <!-- 进度点 + 倒计时环（卡片外底部） -->
         <div class="cl-foot">
           <div class="cl-dots" id="clDots" role="tablist" aria-label="幻灯片导航"></div>
-          <div class="cl-count" id="clCount" aria-hidden="true"><span class="cl-count-ring"></span><b id="clIdx">1</b>/8</div>
+          <div class="cl-count" id="clCount" aria-hidden="true"><span class="cl-count-ring"></span><b id="clIdx">1</b>/5</div>
         </div>
       </section>
 
@@ -791,8 +759,8 @@
       </svg>
     </div>
     <div class="upd-body">
-      <div class="upd-title">银狐防护已更新到版本 <b id="updVer">v1.4.6</b></div>
-      <div class="upd-sub">让 AI 更聪明：Max 模式开放云端模型工具调用，AI 现可理解模糊 / 复合意图直接操作设置（如「帮我安静点」一次关闭警告、通知与下载拦截）；本地白名单校验守住安全边界，越权指令一律拒绝；明确死词仍由本地指令层秒回。</div>
+      <div class="upd-title">银狐防护已更新到版本 <b id="updVer">v1.4.8</b></div>
+      <div class="upd-sub">AI 会核验官网了：后台 AI 分析网页正式转正，云端 AI 先推断页面所属品牌的官方域名，后台再比对当前域名是否匹配官方，不匹配即判定仿冒并提示；AI 分析网页与扫描文件两项能力摘掉「实验性」标签，作为 Max 模式的标准能力提供。</div>
       <a class="upd-link" id="updLink" href="#" rel="noreferrer">查看本次更新内容 ›</a>
     </div>
     <button class="upd-close" id="updClose" type="button" aria-label="关闭提示">
