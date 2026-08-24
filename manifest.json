@@ -1,13 +1,13 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
-  "version": "1.4.6",
+  "version": "1.4.10",
   "default_locale": "zh_CN",
   "description": "__MSG_extensionDescription__",
   "permissions": ["storage", "downloads", "activeTab", "webNavigation", "notifications"],
-  "host_permissions": ["<all_urls>", "https://open.bigmodel.cn/*"],
+  "host_permissions": ["<all_urls>", "https://open.bigmodel.cn/*", "https://api.moonshot.cn/*", "https://api.deepseek.com/*", "https://api.openai.com/*"],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://speech.platform.bing.com wss://speech.platform.bing.com https://open.bigmodel.cn https://api.moonshot.cn https://api.deepseek.com https://api.openai.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'"
   },
   "background": {
     "service_worker": "background.js"
@@ -22,7 +22,6 @@
     }
   },
   "options_page": "ui/options.html",
-  "privacy_policy": "https://yinbo345.github.io/silverfox-guard/PRIVACY.md",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
