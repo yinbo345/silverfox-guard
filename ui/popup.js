@@ -14,7 +14,7 @@ const DEFAULTS = {
   enabled: {},
   allowlist: [], customKeywords: [], customBadDomains: [],
   aiPersona: 'balanced',   // AI 助手性格档
-  remindMode: 'normal',    // 扩展整体报读/提醒偏好：'normal' 正常 | 'quiet' 安静（仅危险告警）
+  remindMode: 'normal',    // 扩展整体报毒识别/提醒偏好：'normal' 正常 | 'quiet' 安静（仅危险告警）
   fontScale: 1          // 0.85 ~ 1.40，界面字号缩放系数
 };
 
