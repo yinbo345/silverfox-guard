@@ -2,12 +2,14 @@
 
 Chrome / Edge 浏览器扩展（Manifest V3），实时检测并拦截「银狐木马（Silver Fox / 游蛇）」钓鱼与仿冒下载站点，保护你免受恶意软件下载与欺诈页面侵害。
 
+🌐 **官方网站**：[silverfoxguard.dpdns.org](https://silverfoxguard.dpdns.org/) —— 扩展最新版下载、更新日志与官方说明均以本站为准，谨防仿冒镜像。
+
 > 💡 **算法致敬**：本项目的检测引擎基于 [@Lolitide](https://github.com/Lolitide) 的开源作品
 > [VirusDetector](https://github.com/Lolitide/VirusDetector)（MIT License）的规则算法，
 > 在其基础上使用 AI 进行了大幅改良与扩展（加权评分、组合信号升级、自动下载竞速兜底、跳转链污染追踪等）。
 > 特此致谢原作者，本改良版同样以 MIT License 发布。
 
-当前版本：**v1.5.0（首次开机引导 · AI 性格与报毒识别偏好）**
+当前版本：**v1.5.5（一键上报直连 GitHub · 官方网站上线）**
 
 > 🆕 **v1.5.0 更新摘要**：新增「初始化设置向导」——首次安装像手机开机一样分步引导（灵敏度 / 主题 / 字体 / 字号 / 材质 / AI 性格档 / 报毒识别偏好），每步可单独跳过、右上角一键跳过，所有选择实时预览；AI 悬浮球改为默认开启，开箱即用。
 
@@ -44,6 +46,8 @@ Chrome / Edge 浏览器扩展（Manifest V3），实时检测并拦截「银狐�
 5. **AI 融合（可选）**：开启 Max 模式后，网页/文件的可疑信号可经本地提取后送 AI 服务商复核，结论回写拦截浮层与扫描卡片。
 
 ## 📦 安装
+
+🌐 **官方网站（推荐）**：访问 [silverfoxguard.dpdns.org](https://silverfoxguard.dpdns.org/) 直接下载最新版扩展 zip，免商店审核等待、下载更快更稳定。
 
 - **微软 Edge 外接程序**：在 Edge 外接程序商店搜索「银狐防护」安装（商店审核通过后上架）。
 - **Chrome 应用商店 / 开发者模式加载**：克隆本仓库 → 打开 `chrome://extensions`（或 Edge 的 `edge://extensions`）→
