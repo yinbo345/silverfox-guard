@@ -32,6 +32,16 @@ const navCommitTime = {};
 // 自动下载判定窗口：页面提交后该时间窗内发起的高危文件下载，视为「自动下载」而非用户手动点击
 const AUTO_WINDOW_MS = 1500;
 
+// 云端官网库（#384，#420 病毒库式改造）：独立、低调托管的公开域名清单，仅作本地 OFFICIAL_DOMAINS 的补充。
+// 病毒库式：SW 启动从 storage.local 秒级载入整库到内存 set（检测不再阻塞网络）；
+// 后台异步轮询极小的 version.json，仅云端版本号变化才重新下载整库并落本地缓存。
+// 绝不接收用户域名 → 零隐私上报。
+const CLOUD_OFFICIAL_URL = 'https://site-directory-cache.pages.dev/official-domains.json';
+const CLOUD_CACHE_KEY = 'sf_cloud_official';
+let _cloudOfficialSet = null;
+let _cloudOfficialLoading = null;
+let _cloudOfficialMeta = { version: null, count: 0, updated: null, etag: null, cachedAt: 0 };
+
 // 分析闸门：标签页「检测未出结果前默认拒绝下载」的状态机
 //   analyzing = 已加载、内容脚本尚未回传判定 → 该标签全部下载先取消挂起
 //   safe      = 已判定安全 → 挂起下载静默重下，后续下载直接放行
@@ -130,6 +140,21 @@ function isKnownBadHost(h) {
   return _KNOWN_BAD_HOSTS.some(function (d) { return d && (h === d || h.endsWith('.' + d)); });
 }
 
+// 已知木马化投递物文件名（来自样本静态分析 IOC）：bzy.exe / shanlian_VPN_64.exe 等。
+// MV3 扩展读不到下载字节，文件名为最稳定可观测锚点；命中即强拦。
+const _KNOWN_BAD_FILENAMES = (self.SF_IOCS && self.SF_IOCS.KNOWN_BAD_FILENAMES) || [];
+const _SUSPICIOUS_NAME_PATTERNS = (self.SF_IOCS && self.SF_IOCS.SUSPICIOUS_DOWNLOAD_NAME_PATTERNS) || [];
+function _fileNameOf(ref) {
+  if (!ref) return '';
+  return String(ref).split(/[?#]/)[0].split('/').pop().toLowerCase().trim();
+}
+function isKnownBadFilename(ref) {
+  const name = _fileNameOf(ref);
+  if (!name) return false;
+  if (_KNOWN_BAD_FILENAMES.some(function (f) { return name === f; })) return true;
+  return _SUSPICIOUS_NAME_PATTERNS.some(function (p) { return p && p.test && p.test(name); });
+}
+
 // 判断本次下载的「发起页面」是否为危险且未放行，并返回命中的标签页 id 列表
 function sourceHostOf(item, state) {
   const dt = state.dangerTabs || {};
@@ -212,7 +237,24 @@ chrome.runtime.onInstalled.addListener(function (details) {
     chrome.storage.sync.get({ oobeDone: false }, function (s) {
       if (!s.oobeDone) chrome.storage.sync.set({ oobeDone: true });
     });
+    // 升级后自动打开更新日志放映页（#sec=changelog 由 options.js 的 hash 跳转逻辑接管放映）
+    // 关键：在扩展管理页点「重新加载」也会触发 onInstalled(reason=update)，但此时
+    // previousVersion 与当前版本号相同、并非真实升级——通过比较版本号过滤，
+    // 避免每次重新加载扩展都误弹更新日志。
+    var _curVer = (chrome.runtime && chrome.runtime.getManifest && chrome.runtime.getManifest().version) || '';
+    if (details.previousVersion && details.previousVersion !== _curVer) {
+      try {
+        chrome.tabs.create({ url: chrome.runtime.getURL('ui/options.html') + '#sec=changelog', active: true });
+      } catch (e) {
+        try { chrome.runtime.openOptionsPage(); } catch (_) {}
+      }
+    }
   }
+});
+
+// 浏览器启动 → 强制同步云端库缓存（用户要求：每次打开浏览器自动从云端拉取并缓存）
+chrome.runtime.onStartup.addListener(function () {
+  syncCloudOfficial(true);
 });
 
 // ===== 危险弹窗系统通知（Windows 右下角 toast）=====
@@ -487,8 +529,227 @@ async function queryIcp(domain) {
   return failed;
 }
 
+// ===== 一键上报：后台 service worker 直连 GitHub Issues API 创建 Issue =====
+// 早期版本经 Cloudflare Worker 代理，但 *.workers.dev 在部分网络下不可达，导致上报
+// 静默失败。改为后台直连 api.github.com（用户网络可直连 GitHub），移除中间链路，最稳。
+// 公开仓库不内置 Token——内置凭证等同公开泄露，GitHub 推送保护亦会拦截提交。
+const GITHUB_REPORT_TOKEN = '';   // 公开仓库占位：真实 Token 由维护者构建时注入（缺失时上报自动回退预填 Issue 页）
+const GITHUB_ISSUE_ENDPOINT = 'https://api.github.com/repos/yinbo345/silverfox-guard/issues';
+const REPORT_VALID_TYPES = ['false_positive', 'confirmed_phish'];
+const REPORT_LABELS = {
+  false_positive: ['false-positive', '用户上报'],
+  confirmed_phish: ['confirmed-phish', '用户上报']
+};
+function handleSubmitReport(payload) {
+  payload = payload || {};
+  const reportType = payload.reportType;
+  const domain = String(payload.domain || '').replace(/^www\./i, '');
+  if (REPORT_VALID_TYPES.indexOf(reportType) < 0) return Promise.resolve({ success: false, error: '类型无效' });
+  if (!domain) return Promise.resolve({ success: false, error: '域名缺失' });
+  if (!GITHUB_REPORT_TOKEN) return Promise.resolve({ success: false, fallback: true });
+  const manifest = (chrome.runtime.getManifest && chrome.runtime.getManifest()) || {};
+  const typeLabel = reportType === 'false_positive' ? '误报反馈（正常站点被拦截）' : '恶意 / 钓鱼站点举报';
+  const timeStr = payload.timestamp ? new Date(payload.timestamp).toISOString().replace('T', ' ').slice(0, 19) : '未知';
+  const body = '## 上报信息\n\n| 字段 | 值 |\n|------|----|\n'
+    + '| 类型 | ' + typeLabel + ' |\n'
+    + '| 域名 | `' + domain + '` |\n'
+    + '| 风险评分 | ' + (payload.score != null ? payload.score : '未知') + ' |\n'
+    + '| 扩展版本 | ' + (manifest.version || '未知') + ' |\n'
+    + '| 时间 | ' + timeStr + ' |\n'
+    + (payload.note ? '\n## 用户备注\n\n' + payload.note + '\n' : '')
+    + '\n---\n<sub>🤖 由 SilverFox Guard 扩展自动上报</sub>\n';
+  const title = (reportType === 'false_positive' ? '[误报反馈] ' : '[恶意站点举报] ') + domain;
+  return fetch(GITHUB_ISSUE_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + GITHUB_REPORT_TOKEN,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+      'User-Agent': 'SilverFoxGuard-Report/1.0'
+    },
+    body: JSON.stringify({ title: title, body: body, labels: REPORT_LABELS[reportType] })
+  }).then(function (r) {
+    if (!r.ok) return r.text().then(function (t) { throw new Error('GitHub API ' + r.status + ': ' + t.slice(0, 300)); });
+    return r.json();
+  }).then(function (j) { return { success: true, issueUrl: j.html_url }; })
+    .catch(function (e) { return { success: false, error: e.message }; });
+}
+
+// ===== 云端官网库（按需拉取 + 内存缓存 + 标签对齐后缀匹配）=====
+function _cloudSuffixHit(set, hostname) {
+  const h = (hostname || '').toLowerCase().replace(WWW_RE, '');
+  if (!h) return null;
+  if (set.has(h)) return h;
+  let idx = h.indexOf('.');
+  while (idx !== -1) {
+    const suf = h.slice(idx + 1);
+    if (set.has(suf)) return suf;
+    idx = h.indexOf('.', idx + 1);
+  }
+  return null;
+}
+
+async function ensureCloudOfficialSet() {
+  if (_cloudOfficialSet) return _cloudOfficialSet;
+  if (_cloudOfficialLoading) return _cloudOfficialLoading;
+  _cloudOfficialLoading = (async () => {
+    try {
+      const resp = await fetch(CLOUD_OFFICIAL_URL, { cache: 'force-cache' });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const j = await resp.json();
+      const arr = (j && j.domains) || [];
+      if (!Array.isArray(arr)) throw new Error('bad payload');
+      const set = _buildCloudSet(arr);
+      _cloudOfficialSet = set;
+      _cloudOfficialMeta = {
+        version: (j && j.version) || null,
+        count: arr.length,
+        updated: (j && j.updated) || null,
+        cachedAt: Date.now()
+      };
+      await _persistCloudFull({ version: _cloudOfficialMeta.version, domains: arr, updated: _cloudOfficialMeta.updated, cachedAt: Date.now() });
+    } catch (e) {
+      _cloudOfficialSet = new Set();
+    } finally {
+      _cloudOfficialLoading = null;
+    }
+    return _cloudOfficialSet;
+  })();
+  return _cloudOfficialLoading;
+}
+
+// 从 domains 数组构建 Set（含校验防篡改注入）
+function _buildCloudSet(arr) {
+  const set = new Set();
+  if (!Array.isArray(arr)) return set;
+  for (const d of arr) {
+    if (typeof d === 'string' && d.indexOf(' ') === -1 && d.indexOf('/') === -1 && d.indexOf('..') === -1) set.add(d.toLowerCase());
+  }
+  return set;
+}
+
+// SW 每次唤醒都会重新执行顶层代码，故在文件末尾顶层调用 syncCloudOfficial() 即可保证后台内存常驻云端库：
+// ① 优先从 storage.local 秒级载入已缓存的整库到内存 Set（检测不阻塞网络）；
+// ② 异步用极小的 HEAD 请求比对远端 ETag / Last-Modified，仅当云端变化（或本地为空 / 强制）才下载整库并落本地缓存；
+// ③ 设置页（纯前端）直接 fetch CDN 公开名单、写 storage.local，后台通过 storage.onChanged 同步内存 Set，零消息端口、零隐私上报。
+// 全程纯前端消费 CDN 静态 JSON，绝不接收用户域名 → 零隐私上报。
+const CLOUD_SYNC_THROTTLE_MS = 6 * 60 * 60 * 1000; // 非启动场景下 6 小时节流，避免每次导航都拉 3.9MB
+
+// SW 每次唤醒执行：先同步载入内存，再异步决定是否需要从云端刷新缓存
+function syncCloudOfficial(force) {
+  // ① 同步从 storage.local 载入内存（检测不阻塞）
+  chrome.storage.local.get(CLOUD_CACHE_KEY, function (res) {
+    const data = res && res[CLOUD_CACHE_KEY];
+    if (data && Array.isArray(data.domains) && data.domains.length) {
+      _cloudOfficialSet = _buildCloudSet(data.domains);
+      _cloudOfficialMeta = {
+        version: data.version || null,
+        count: data.domains.length,
+        updated: data.updated || null,
+        etag: data.etag || null,
+        cachedAt: data.cachedAt || 0
+      };
+    }
+    // ② 节流：非强制（非启动 / 非升级）且距上次成功同步不足 6h → 跳过联网检查
+    if (!force && _cloudOfficialMeta.cachedAt && (Date.now() - _cloudOfficialMeta.cachedAt) < CLOUD_SYNC_THROTTLE_MS) {
+      return;
+    }
+    // ③ 异步检查远端是否变化，必要时拉取整库
+    refreshCloudOfficialCache(force);
+  });
+}
+
+// 用 HEAD 比对远端变更；仅变化 / 本地为空 / 强制时才下载整库并写 storage.local
+function refreshCloudOfficialCache(force) {
+  // MV3 保活心跳：HEAD 很快，但随后的 GET 整库（3.9MB）较慢，期间用定时器维持 SW 运行直到完成
+  const keepAlive = setInterval(function () {}, 20000);
+  const finish = function () { try { clearInterval(keepAlive); } catch (e) {} };
+  fetch(CLOUD_OFFICIAL_URL, { method: 'HEAD', cache: 'no-store' })
+    .then(function (head) {
+      if (!head.ok) throw new Error('HEAD ' + head.status);
+      const remoteEtag = head.headers.get('etag');
+      const remoteLM = head.headers.get('last-modified');
+      const changed = !_cloudOfficialMeta.etag ||
+        (remoteEtag && remoteEtag !== _cloudOfficialMeta.etag) ||
+        (remoteLM && _cloudOfficialMeta.updated && remoteLM !== _cloudOfficialMeta.updated);
+      if (!changed && !force) {
+        // 未变化：仅刷新 cachedAt，避免重复写整库
+        _cloudOfficialMeta.cachedAt = Date.now();
+        _persistCloudMeta();
+        return;
+      }
+      return fetch(CLOUD_OFFICIAL_URL, { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('GET ' + r.status); return r.json(); })
+        .then(function (j) {
+          const arr = (j && j.domains) || [];
+          if (!Array.isArray(arr)) throw new Error('bad payload');
+          _cloudOfficialSet = _buildCloudSet(arr);
+          _cloudOfficialMeta = {
+            version: (j && j.version) || null,
+            count: arr.length,
+            updated: (j && j.updated) || remoteLM || null,
+            etag: remoteEtag || null,
+            cachedAt: Date.now()
+          };
+          return _persistCloudFull({ version: _cloudOfficialMeta.version, domains: arr, updated: _cloudOfficialMeta.updated, etag: remoteEtag || null, cachedAt: Date.now() });
+        });
+    })
+    .catch(function () { /* 失败静默，保留旧缓存 */ })
+    .then(finish, finish);
+}
+
+// 设置页（纯前端）更新了云端库缓存 → 同步内存 Set，无需任何消息端口
+chrome.storage.onChanged.addListener(function (changes, area) {
+  if (area !== 'local' || !changes[CLOUD_CACHE_KEY]) return;
+  const data = changes[CLOUD_CACHE_KEY].newValue;
+  if (data && Array.isArray(data.domains)) {
+    _cloudOfficialSet = _buildCloudSet(data.domains);
+    _cloudOfficialMeta = {
+      version: data.version || null,
+      count: data.domains.length,
+      updated: data.updated || null,
+      etag: data.etag || null,
+      cachedAt: data.cachedAt || Date.now()
+    };
+  }
+});
+
+// SW 每次唤醒都执行本顶层调用（MV3 Service Worker 无传统全局单例，靠顶层代码保证初始化）
+syncCloudOfficial(false);
+
+function _persistCloudFull(data) {
+  return new Promise(function (resolve) {
+    chrome.storage.local.set({ [CLOUD_CACHE_KEY]: data }, resolve);
+  });
+}
+
+// 轻量更新 meta（仅 cachedAt 等），不重写整库
+function _persistCloudMeta() {
+  chrome.storage.local.get(CLOUD_CACHE_KEY, function (res) {
+    const data = res && res[CLOUD_CACHE_KEY];
+    if (!data) return;
+    data.cachedAt = _cloudOfficialMeta.cachedAt;
+    chrome.storage.local.set({ [CLOUD_CACHE_KEY]: data });
+  });
+}
+
+function getCloudOfficialMeta() { return _cloudOfficialMeta; }
+
+
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
   if (!msg || !msg.type) return;
+
+  // （云端官网库展示已改为「设置页纯前端直接 fetch CDN 公开名单 + 读 storage.local」，不再经此后台消息端口）
+
+  // ===== 一键上报网站 → 直连 GitHub Issues API 创建 Issue（token 仅本仓库 issues 写权限）=====
+  if (msg.type === 'sf-submitReport') {
+    handleSubmitReport(msg.payload).then(function (res) {
+      try { sendResponse(res); } catch (e) {}
+    }).catch(function (err) {
+      try { sendResponse({ success: false, error: (err && err.message) || '上报失败' }); } catch (e2) {}
+    });
+    return true; // 异步 sendResponse
+  }
 
   // ===== AI 浮球请求打开设置子页面（content script 无 tabs 权限时的兜底通道）=====
   if (msg.type === 'SF_OPEN_OPTIONS_SECTION') {
@@ -508,6 +769,16 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
       try { sendResponse(res); } catch (e) {}
     }).catch(function (err) {
       try { sendResponse({ ok: false, err: (err && err.message) || '分析失败' }); } catch (e2) {}
+    });
+    return true; // 异步 sendResponse
+  }
+
+  // ===== AI 解读「为什么拦」：仅 Max 模式可用，云端用自然语言解释拦截原因 =====
+  if (msg.type === 'sf-ai-explain') {
+    handleAiExplain(msg, sender).then(function (res) {
+      try { sendResponse(res); } catch (e) {}
+    }).catch(function (err) {
+      try { sendResponse({ ok: false, err: (err && err.message) || '解读失败' }); } catch (e2) {}
     });
     return true; // 异步 sendResponse
   }
@@ -578,6 +849,19 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
       try { sendResponse({ days: (typeof days === 'number') ? days : null }); } catch (e) {}
     }).catch(function () {
       try { sendResponse({ days: null }); } catch (e) {}
+    });
+    return true; // 异步 sendResponse
+  }
+
+  if (msg.type === 'sf-cloud-official') {
+    // 内容脚本问「本页域名是否命中云端官网库」。后台拉取云端公开名单（仅内存），
+    // 用标签对齐后缀匹配（与 isOfficialDomain 同语义）；不接收任何用户域名 → 零隐私上报。
+    const host = (msg.host || '').toLowerCase().replace(WWW_RE, '');
+    ensureCloudOfficialSet().then(function (set) {
+      const hit = _cloudSuffixHit(set, host);
+      try { sendResponse({ official: !!hit, matched: hit || '' }); } catch (e) {}
+    }).catch(function () {
+      try { sendResponse({ official: false, matched: '' }); } catch (e) {}
     });
     return true; // 异步 sendResponse
   }
@@ -780,6 +1064,12 @@ if (chrome.downloads && chrome.downloads.onCreated) {
       const srcHost = downloadSourceHost(item);
       if (srcHost && isKnownBadHost(srcHost)) {
         cancelDownload(item.id, srcHost, item.tabId >= 0 ? [item.tabId] : [], item.url, item.filename);
+        return;
+      }
+      // ★ 已知木马化投递物文件名（样本静态分析 IOC）：bzy.exe / shanlian_VPN_64.exe 等
+      //   命中即强制取消下载，不受「来源页是否判危」影响（无法读下载字节，文件名是最稳锚点）。
+      if (isKnownBadFilename(item.filename) || isKnownBadFilename(item.url)) {
+        cancelDownload(item.id, host || srcHost || '', item.tabId >= 0 ? [item.tabId] : [], item.url, item.filename);
         return;
       }
       // ★ 下载黑名单跨站复用（#16）：该载荷域名此前已因投递木马被拦过 → 直接取消。
@@ -1126,10 +1416,39 @@ async function callAiCloud(cfgObj, prompt) {
     err.needAction = needAction;
     throw err;
   }
-  const data = await resp.json();
+  let data;
+  try { data = await resp.json(); }
+  catch (pe) { throw new Error('云端返回格式异常（非 JSON），无法解析解读结果'); }
   const text = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
   return { level: parseAiLevel(text), summary: text.trim() };
 }
+async function handleAiExplain(msg, sender) {
+  // 解读"为什么拦"依赖 Max 模式：仅 Max 开启（开放云端模型 tool-use）时才走云端自然语言解读；
+  // 非 Max 模式不调用云端，交由 content 侧回退本地命中特征说明。
+  const s = await new Promise(function (resolve) {
+    chrome.storage.sync.get({
+      aiMaxMode: false, aiProvider: 'zhipu', aiModel: '', aiKeys: {}, aiBaseUrls: {}
+    }, function (r) { resolve(r || {}); });
+  });
+  if (!s.aiMaxMode) return { ok: false, skipped: true, err: 'AI 解读依赖 Max 模式，请先在「AI 设置」开启 Max 模式' };
+  const d = msg.data || {};
+  const reasons = (d.reasons || []).map(function (r) {
+    return '- ' + (r.label || '') + (r.detail ? '：' + r.detail : '');
+  }).join('\n');
+  const prompt = '你是银狐防护（反木马浏览器扩展）的 AI 助手。\n' +
+    '当前站点「' + (d.hostname || '未知') + '」被本地规则判定为银狐木马风险网站，风险分 ' + (d.score || 0) + ' / 阈值 ' + (d.threshold || 0) + '。\n' +
+    '命中的风险特征如下：\n' + (reasons || '（无）') + '\n\n' +
+    '请用通俗易懂的中文（2-4 句）向普通用户解释：为什么这个网站会被拦下来、可能有什么风险、应该怎么做（不要点击下载、尽快离开）。不要使用技术黑话，不要编造未提供的信息。';
+  const cfgObj = aiResolveCfg(s);
+  if (!cfgObj.endpoint || !cfgObj.key) return { ok: false, err: '未配置可用的 AI 模型（请在「AI 设置」填写 Key，或开启 Max 模式使用内置额度）', needAction: true };
+  try {
+    const r = await callAiCloud(cfgObj, prompt);
+    return { ok: true, text: (r.summary || '').trim() };
+  } catch (e) {
+    return { ok: false, err: (e && e.message) || '云端解读失败', needAction: !!(e && e.needAction) };
+  }
+}
+
 async function handleAiPageAnalyze(msg, sender) {
   // 守门：仅当开关开启才分析（content 已做过一次判断，这里双保险）
   const s = await new Promise(function (resolve) {

@@ -24,13 +24,20 @@
     zhipu:    { label: '智谱 GLM（默认免费）', endpoint: GLM_ENDPOINT, defaultModel: 'glm-4.7-flash', builtinKey: GLM_DEFAULT_KEY, showBaseUrl: false },
     deepseek: { label: 'DeepSeek', endpoint: 'https://api.deepseek.com/chat/completions', defaultModel: 'deepseek-chat', showBaseUrl: false },
     openai:   { label: 'OpenAI 兼容', endpoint: 'https://api.openai.com/v1/chat/completions', defaultModel: 'gpt-4o-mini', showBaseUrl: false },
-    moonshot: { label: 'Kimi / Moonshot', endpoint: 'https://api.moonshot.cn/v1/chat/completions', defaultModel: 'moonshot-v1-8k', showBaseUrl: false },
+    moonshot: { label: 'Kimi / Moonshot', endpoint: 'https://api.moonshot.cn/v1/chat/completions', defaultModel: 'kimi-k2.6', showBaseUrl: false },
     custom:   { label: '自定义（OpenAI 兼容）', endpoint: '', defaultModel: '', showBaseUrl: true }
   };
   const DEFAULT_PROVIDER = 'zhipu';
   const DEFAULT_MODEL = 'glm-4.7-flash';
 
   // 把 provider + model 解析为真正请求用的 endpoint / key / model
+  // 已下线的旧模型名 → 当前可用模型（Moonshot/Kimi 于 2026 年陆续下线 moonshot-v1-* 与 kimi-k2.5 等）
+  const DEPRECATED_MODEL_MAP = {
+    'moonshot-v1-8k': 'kimi-k2.6', 'moonshot-v1-32k': 'kimi-k2.6', 'moonshot-v1-128k': 'kimi-k2.6',
+    'moonshot-v1-auto': 'kimi-k2.6', 'kimi-k2.5': 'kimi-k2.6', 'kimi-latest': 'kimi-k2.6',
+    'kimi-k2-thinking': 'kimi-k2.6', 'kimi-k2-turbo-preview': 'kimi-k2.6'
+  };
+
   function resolveModelCfg(provider, model) {
     const p = PROVIDERS[provider] || PROVIDERS.custom;
     let endpoint = p.endpoint || '';
@@ -39,7 +46,9 @@
       endpoint = base ? base + '/chat/completions' : '';
     }
     const key = (cfg.keys && cfg.keys[provider] && cfg.keys[provider].trim()) || p.builtinKey || '';
-    return { endpoint: endpoint, key: key, model: model || p.defaultModel || cfg.model, provider: provider, label: p.label };
+    let modelName = model || p.defaultModel || cfg.model;
+    if (DEPRECATED_MODEL_MAP[modelName]) modelName = DEPRECATED_MODEL_MAP[modelName];  // 旧模型名自动迁移，避免「Not found the model」报错
+    return { endpoint: endpoint, key: key, model: modelName, provider: provider, label: p.label };
   }
 
   // 判定用户这句话属于哪种场景，用于「场景→模型」路由规则
@@ -602,6 +611,7 @@
     { id: 'onIcp', need: ['icpApiVerify', 'enable'], phrases: ['开启备案核验', '打开备案查询', '开启icp', '开备案', '打开备案核验'], run: () => setToggle('icpApiVerify', true, 'icpApiVerify'), done: '已开启 ICP 备案权威核验。' },
     { id: 'offIcp', need: ['icpApiVerify', 'disable'], phrases: ['关闭备案核验', '关掉备案查询', '关闭icp', '关备案', '关闭备案核验'], run: () => setToggle('icpApiVerify', false, 'icpApiVerify'), done: '已关闭 ICP 备案权威核验（仅做页面文字扫描）。' },
     { id: 'rescue', phrases: ['下载急救箱', '下急救箱', '360急救箱', '中招下载', '下载360', '急救箱下载', '下360'], run: () => clickSel('#rescueBtn'), done: '已为你触发 360 系统急救箱下载（官方绿色版）。', tip: '解压后双击主程序 .exe；若被病毒拦住打不开，改双击同目录的 .com 文件。' },
+    { id: 'hrkill', phrases: ['火绒专杀', '下载火绒', '下火绒', '火绒杀毒', '下载火绒专杀', '专杀工具', '下载专杀', '火绒专杀下载', '下火绒专杀'], run: () => clickSel('#hrkillBtn'), done: '已为你触发火绒专杀（无签名版）下载。', tip: '该工具为无签名版，Windows Defender 与安全下载检测会拦截它，属正常现象，放行即可。有签名版同样会被银狐类病毒拦掉，故仅提供无签名版。' },
     { id: 'reduceOn', phrases: ['减弱动画', '关掉动画', '关闭动画', '不要动画', '去掉动画', '关动效', '没动画'], run: () => setReduceMotion(true), done: '已减弱全部动画效果。' },
     { id: 'reduceOff', phrases: ['恢复动画', '开启动画', '打开动画', '要动画', '开动画', '开动效', '有动画'], run: () => setReduceMotion(false), done: '已恢复全部动画效果。' },
     // —— 以下为「全部设置项可操作」补充：灵敏度 / 云端增强 / 本地模型 / 像素彩蛋 / 白名单与自定义词清空 ——
@@ -783,7 +793,12 @@
     { name: 'open_subpage',           label: '打开设置子页面', open: true,
       param: { name: 'section', type: 'string',
         enum: ['general','detect','behavior','rules','rules-allowlist','rules-keywords','rules-baddomains','stats','rescue','scanner','ai','personal','about','changelog'],
-        desc: '要打开的设置页：general=常规 / detect=检测维度 / behavior=拦截行为 / rules=规则与白名单 / rules-allowlist=信任白名单 / rules-keywords=自定义关键词 / rules-baddomains=危险域名 / stats=防护统计 / rescue=银狐急救 / scanner=银狐扫描 / ai=AI设置 / personal=个性化 / about=关于 / changelog=更新日志' } }
+        desc: '要打开的设置页：general=常规 / detect=检测维度 / behavior=拦截行为 / rules=规则与白名单 / rules-allowlist=信任白名单 / rules-keywords=自定义关键词 / rules-baddomains=危险域名 / stats=防护统计 / rescue=银狐急救 / scanner=银狐扫描 / ai=AI设置 / personal=个性化 / about=关于 / changelog=更新日志' } },
+    // —— 触发下载类（点击急救模块按钮，非设置项）——
+    { name: 'download_rescue',        label: '下载 360 系统急救箱', action: 'click', sel: '#rescueBtn',
+      desc: '触发下载 360 系统急救箱（官方绿色版，无需安装）。当中招银狐木马时使用。' },
+    { name: 'download_huorong_kill',  label: '下载火绒专杀（无签名版）', action: 'click', sel: '#hrkillBtn',
+      desc: '触发下载火绒专杀工具（无签名版）。该工具可解除银狐木马对常规杀毒软件的打开限制；因无签名，Windows Defender 与下载检测会拦截它，属正常现象需放行；有签名版同样会被银狐类病毒拦掉，故只提供无签名版。' }
   ];
 
   // 子页面：友好 key → 实际 DOM id / 标签
@@ -893,6 +908,14 @@
     const spec = FIXED_TOOLS.find((t) => t.name === name);
     if (!spec) return { ok: false, reason: '未知工具「' + name + '」' };
     if (spec.open) return openOptionsSection(args && args.section);
+    if (spec.action === 'click') {
+      const ok = clickSel(spec.sel);
+      // 点击急救模块按钮会自行触发 chrome.downloads.download 或降级 window.open；
+      // 同时在非设置页（AI 浮球注入的普通网页）无法点击 DOM 按钮，提示用户去设置页「银狐急救」点。
+      const inOptions = !!document.getElementById('hrkillBtn') || !!document.getElementById('rescueBtn');
+      if (!inOptions) return { ok: false, reason: '下载需在设置页「银狐急救」里点按钮触发，我先帮你打开该页面。', open: 'rescue' };
+      return ok ? { ok: true, msg: '已为你触发「' + spec.label + '」下载。' } : { ok: false, reason: '未找到下载按钮（' + spec.label + '）。' };
+    }
     if (spec.dimension) {
       const ok = setDetectDimension(args && args.dimension, args && args.enabled);
       const label = dimLabel(args && args.dimension);
@@ -911,7 +934,8 @@
       grp('外观', ['set_theme_mode(dark/light)', 'set_palette(经典/暖金/霓虹/雾灰/深空/Pixel)', 'set_material(磨砂/琉声)', 'set_font(系统/得意黑)', 'set_sensitivity(严格/适中/宽松)', 'set_font_scale(0.85~1.40)']),
       grp('清空', ['clear_allowlist', 'clear_keywords', 'clear_bad_domains']),
       grp('检测维度', ['set_detect_dimension(dimension=维度id, enabled=true/false)']),
-      grp('打开页面', ['open_subpage(section=常规/检测维度/拦截行为/规则与白名单/信任白名单/自定义关键词/危险域名/防护统计/银狐急救/银狐扫描/AI设置/个性化/关于/更新日志)'])
+      grp('打开页面', ['open_subpage(section=常规/检测维度/拦截行为/规则与白名单/信任白名单/自定义关键词/危险域名/防护统计/银狐急救/银狐扫描/AI设置/个性化/关于/更新日志)']),
+      grp('下载工具', ['download_rescue(下载360系统急救箱)', 'download_huorong_kill(下载火绒专杀·无签名版)'])
     ];
     return '【固定工具清单】用户命令式要求改设置 / 打开设置页时，只能调用下列固定工具之一（可一次调用多个满足复合意图，如「帮我安静点」同时调用 set_warning_banner(false) 与 set_system_notify(false)）；不要只复述步骤，也不要自创工具名。\n' + lines.join('\n') +
       '\n注意：所有工具名与参数均已固定，按意图选对工具即可，参数类型明确（布尔填 true/false，枚举填给定取值，数字填数值）；清空类与打开页面无需多余参数。检测维度可逐项开/关（dimension 取维度 id）。';
@@ -971,17 +995,52 @@
     row.className = 'ai-msg ' + (role === 'user' ? 'ai-u' : 'ai-a');
     const bubble = document.createElement('div');
     bubble.className = 'ai-bubble';
-    bubble.textContent = text;
-    if (tag) {
+
+    const tagEl = tag ? (function () {
       const t = document.createElement('span');
       t.className = 'ai-tag';
       t.textContent = tag;
-      bubble.appendChild(t);
-    }
+      return t;
+    })() : null;
+
     row.appendChild(bubble);
     logEl.appendChild(row);
+
+    // AI 回复：逐字渐入；用户消息：保持原滑入
+    if (role === 'assistant') revealText(bubble, text, tagEl);
+    else {
+      bubble.textContent = text;
+      if (tagEl) bubble.appendChild(tagEl);
+    }
+
     logEl.scrollTop = logEl.scrollHeight;
     if (role === 'assistant' && tag !== '回退') speakTTS(text);
+  }
+
+  // 逐字渐入：AI 回复文字按字符错峰淡入，避免"一次性全部展示完"
+  function revealText(bubble, text, tagEl) {
+    const reduce = document.documentElement.classList.contains('reduce-motion');
+    const chars = Array.from(text);
+    const frag = document.createDocumentFragment();
+    const step = 24;   // 每字间隔(ms)，节奏可在此微调
+    let k = 0;         // 非空白字符计数（用于错峰延迟）
+    for (const ch of chars) {
+      if (ch === '\n') { frag.appendChild(document.createTextNode('\n')); continue; }
+      const s = document.createElement('span');
+      s.className = 'ai-char';
+      s.textContent = ch;
+      if (reduce) {
+        s.style.opacity = '1';
+      } else if (/\s/.test(ch)) {
+        s.classList.add('ai-char-space');   // 空白立即可见，不参与渐入
+      } else {
+        s.style.animationDelay = (k * step) + 'ms';
+        k++;
+      }
+      frag.appendChild(s);
+    }
+    bubble.appendChild(frag);
+    if (tagEl) bubble.appendChild(tagEl);
   }
 
   // ── 免费 TTS：微软 Edge 神经语音（与 Edge「大声朗读」同源）──────────────
@@ -1124,7 +1183,10 @@
     // Max 模式下带 tools，让模型可调用本地预定义的操作（白名单校验后执行）
     if (override && override.tools) {
       body.tools = override.tools;
-      body.tool_choice = 'auto';
+      // 命令式意图强制模型至少调一个工具，根治 DeepSeek 等在 tool_choice:'auto' 下
+      // 「先嘴上答应、不调工具」导致用户要确认第二回合才执行的「两回合」问题；
+      // 疑问/闲聊仍走 auto，让其正常文本回复、不要误把提问当操作。
+      body.tool_choice = override.forceTools ? 'required' : 'auto';
     }
     const resp = await fetch(mcfg.endpoint, {
       method: 'POST',
@@ -1149,8 +1211,8 @@
     };
   }
 
-  async function send() {
-    const text = (inputEl && inputEl.value || '').trim();
+  async function send(textOverride) {
+    const text = (textOverride != null ? String(textOverride) : (inputEl && inputEl.value || '')).trim();
     if (!text) return;
     cloudFallback = false;   // 每轮重置，避免上一轮的回退标记污染本轮
     appendMsg('user', text);
@@ -1237,9 +1299,14 @@
         // 仅当用户【命令式】要求改设置时才挂这组固定工具，避免把疑问/闲聊误当成操作去调工具。
         const looksCmd = /(开|关|启|停|换|设|调|改|切|增|减|打|帮我|恢复|默认|安静|深色|浅色|暖金|霓虹|雾灰|深空|像素|得意黑|磨砂|琉声|字号|灵敏度|防护|警告|横幅|拦截|通知|备案|语音|音色|主题|材质|字体|打开|白名单|关键词|危险域名|检测维度|维度)/.test(text);
         const useTools = scenario !== 'casual' && looksCmd;
+        // 疑问式（怎么换 / 为什么 / 是什么）不强制调工具，避免把提问误当成操作去改设置；
+        // 仅当【命令式】要求改设置时才强制 required，让模型第一回合就调工具、免二次确认。
+        const isQuestion = /(怎么|如何|为啥|为什么|为何|是什么|啥|是多少|\?|？|吗|呢|吧|会不会|能不能|是否|区别|建议|推荐|解释|说明|介绍|教我|哪些)/.test(text);
+        const forceTools = useTools && !isQuestion;
         const ans = await callCloud(text, {
           provider: ovProvider, model: ovModel,
           tools: useTools ? buildFixedTools() : undefined,
+          forceTools: forceTools,
           systemExtra: maxSettingsBlock()
         });
         const hasText = !!(ans.text && ans.text.trim() && !/^（?无(返回内容|错误|结果|输出)/.test(ans.text));
@@ -1513,7 +1580,7 @@
         closePanel();
       };
     }
-    if (sendBtn) sendBtn.onclick = send;
+    if (sendBtn) sendBtn.onclick = function () { send(); };
 
     // 语音输入：Web Speech API（浏览器原生、零配置、支持中文）；不支持时按钮自动隐藏
     setupVoiceInput();
@@ -1542,6 +1609,16 @@
     closePanel = function () { _close(); disarmOutsideClose(); };
 
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && panel && !panel.hidden) closePanel(); });
+
+    // 实时同步 AI 相关设置变更（enabled / TTS 开关 / 音色），保证悬浮球 cfg 不滞后
+    if (chrome.storage && chrome.storage.onChanged) {
+      chrome.storage.onChanged.addListener(function (changes, area) {
+        if (area !== 'sync') return;
+        if (changes.aiEnabled) { cfg.enabled = !!changes.aiEnabled.newValue; if (fab) fab.hidden = !cfg.enabled; }
+        if (changes.aiTtsEnabled) cfg.ttsEnabled = changes.aiTtsEnabled.newValue === true;
+        if (changes.aiTtsVoice) cfg.ttsVoice = changes.aiTtsVoice.newValue || cfg.ttsVoice;
+      });
+    }
 
     // 同步最新 open/close（含外部关闭武装逻辑）到导出对象
     if (window.SilverFoxAI) { window.SilverFoxAI.open = openPanel; window.SilverFoxAI.close = closePanel; }
@@ -1580,4 +1657,6 @@
     },
     _gecInput: edgeTtsGecInput
   };
+
+  // ai.js 仅由 options.html 引入执行，不再作为 content script 自举注入普通网页
 })();

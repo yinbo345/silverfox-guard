@@ -118,7 +118,9 @@
     'ghproxy.com', 'mirror.ghproxy.com', 'ghproxy.net', 'ghproxy.cfd',
     'kgithub.com', 'github.moeyy.xyz', 'github.bibaiyu.com', 'githubproxy.com',
     'gitclone.com', 'hub.gitmirror.com', 'github.coolapk.com', 'hub.fastgit.xyz',
-    'fastgit.org', 'gh.api.99988866.xyz'
+    'fastgit.org', 'gh.api.99988866.xyz',
+    // 银狐防护 · SilverFox Guard 项目官网（扩展分发页）
+    'silverfoxguard.dpdns.org'
   ];
   function isTrustedDispatch(hostname) {
     hostname = (hostname || '').toLowerCase();
@@ -169,21 +171,30 @@
   function collectMetrics() {
     let domElementCount = 0;
     try { domElementCount = document.getElementsByTagName('*').length; } catch (e) {}
-    let extRes = 0, scriptCount = 0, inlineScriptCount = 0, externalScriptCount = 0, iframeCount = 0;
+    // ⚠️ extRes 只统计【跨域绝对 URL】资源。它衡量的是「用了多少第三方 CDN」，
+    // 并不等于「页面工程化程度」——把 CSS/JS/图片全部同域自托管的站点（蓝奏云、
+    // 大量政企与自建站）extRes 恒为 0，却被下游检测器当成「页面简陋」的证据。
+    // 因此额外统计 resourceCount：不区分同域/跨域的资源引用总数，作为工程化程度的
+    // 真实度量；extRes 保留原语义供第三方依赖分析使用。
+    let extRes = 0, resourceCount = 0;
+    let scriptCount = 0, inlineScriptCount = 0, externalScriptCount = 0, iframeCount = 0;
     try {
       document.querySelectorAll('script').forEach((s) => {
         scriptCount++;
         const src = s.getAttribute('src') || '';
         if (src) {
           externalScriptCount++;
+          resourceCount++;
           if (ABS_URL_RE.test(src) && src.indexOf(location.hostname) === -1) extRes++;
         } else { inlineScriptCount++; }
       });
     } catch (e) {}
     try {
-      document.querySelectorAll('img[src],link[href],iframe[src],source[src],video[src],audio[src],object[data],embed[src]')
+      document.querySelectorAll('img[src],img[data-src],link[href],iframe[src],source[src],video[src],audio[src],object[data],embed[src]')
         .forEach((el) => {
           const a = el.getAttribute('src') || el.getAttribute('href') || el.getAttribute('data-src') || el.getAttribute('data') || '';
+          if (!a || /^(?:data:|javascript:|#)/i.test(a)) return;
+          resourceCount++;
           if (ABS_URL_RE.test(a) && a.indexOf(location.hostname) === -1) extRes++;
         });
     } catch (e) {}
@@ -214,7 +225,7 @@
     try { emojiCount = (_sampleText.match(/\p{Emoji_Presentation}|\p{Emoji}/gu) || []).length; } catch (e) {}
     const emojiDensity = _sampleLen > 0 ? (emojiCount / _sampleLen) * 1000 : 0;
     return {
-      domElementCount, externalResourceCount: extRes, framework,
+      domElementCount, externalResourceCount: extRes, resourceCount, framework,
       textLength, cjkCount: cjk, cjkRatio: textLength ? cjk / textLength : 0,
       hasCJK, emojiCount, emojiDensity: Math.round(emojiDensity * 100) / 100,
       scriptCount, inlineScriptCount, externalScriptCount, iframeCount
@@ -392,21 +403,44 @@
       }
     } catch (e) { /* 解析器异常不影响主判定 */ }
 
+    // 4) 云端官网库补充（#384）：仅当本地判定非安全（可能误报）时才咨询后台，避免无谓拉取。
+    //    命中则将域名注册进本地 EXTRA_OFFICIAL_SET，使后续 isOfficialDomain 同步判为官方 → 根除误报。
+    if (lastResult.analyzed && lastResult.level && lastResult.level !== 'safe') {
+      try {
+        const rc = await sendMsg({ type: 'sf-cloud-official', host: location.hostname });
+        if (rc && rc.official && rc.matched) {
+          if (SF.registerCloudOfficial) SF.registerCloudOfficial([rc.matched]);
+          data.cloudOfficial = true;
+          changed = true;
+        }
+      } catch (e) {}
+    }
+
     if (changed) analyzeAndAct(settings, chained, data);
   }
 
+  // ⚠️ 2026-08-31 加固：原实现只读 document.body.innerText，取不到三类常见写法 ——
+  //   ① 备案号写在被 CSS 折叠/隐藏的页脚容器里（innerText 跳过不可见文本）；
+  //   ② 备案号只作为 <a title="..."> / alt 属性存在；
+  //   ③ 页脚仅放一个指向 beian.miit.gov.cn 的官方备案查询链接。
+  // 采集不到就会被「缺备案号」维度扣分，实测 www.52pojie.cn / www.lanzou.com 均因此误报。
+  // 现改为 innerText → textContent → innerHTML 三级兜底，并额外识别官方备案查询链接。
   function extractIcp() {
-    let hasIcpNumber = false, hasGovIcp = false, icpNumber = null;
+    let hasIcpNumber = false, hasGovIcp = false, hasBeianLink = false, icpNumber = null;
     try {
-      const t = (document.body && document.body.innerText) || '';
-      const m = t.match(/ICP备[\s]*[A-Za-z0-9]+号?-?\d*/i) ||
-                t.match(/ICP备案号[\s]*[：:]?[\s]*[A-Za-z0-9]+号?/i) ||
-                t.match(/京ICP证\d+号/i) ||
-                t.match(/沪ICP备\d+号/i);
-      if (m) { hasIcpNumber = true; icpNumber = m[0]; }
-      if (/京公网安备\s*\d+号?|公网安备\s*\d+号?|网安备/i.test(t)) hasGovIcp = true;
+      const body = document.body;
+      const t = (body && (body.innerText || body.textContent)) || '';
+      const raw = (body && body.innerHTML) || '';
+      const scan = t + '\n' + raw;
+      const m = scan.match(/[\u4e00-\u9fa5]?ICP备[\s]*[A-Za-z0-9]+号?-?\d*/i) ||
+                scan.match(/ICP备案号[\s]*[：:]?[\s]*[A-Za-z0-9]+号?/i) ||
+                scan.match(/[\u4e00-\u9fa5]?ICP证\s*\d+号/i);
+      if (m) { hasIcpNumber = true; icpNumber = m[0].trim(); }
+      if (/公网安备\s*\d+号?|网安备|联网备案/i.test(scan)) hasGovIcp = true;
+      // 官方备案查询入口：工信部 / 全国互联网安全管理服务平台
+      if (/beian\.miit\.gov\.cn|beian\.gov\.cn|tsm\.miit\.gov\.cn/i.test(raw)) hasBeianLink = true;
     } catch (e) {}
-    return { hasIcpNumber, hasGovIcp, icpNumber };
+    return { hasIcpNumber, hasGovIcp, hasBeianLink, icpNumber };
   }
 
   // ===== 下载入口识别 =====
@@ -722,10 +756,68 @@
       '<button class="sf-btn sf-btn-leave" id="sf-leave">离开此网站</button>' +
       '<button class="sf-btn sf-btn-continue" id="sf-continue">继续访问（仍拦截下载）</button>' +
       '</div>' +
+      '<button class="sf-link-btn" id="sf-ai-explain" type="button" style="display:none">🤖 AI 解读为什么拦</button>' +
+      '<div class="sf-explain-box" id="sf-explain-box" hidden></div>' +
       '<p class="sf-foot">银狐（游蛇）木马常通过仿冒官网投递带毒安装包，请勿轻易放行下载。<br>若已安装 IDM 等第三方下载器，请临时关闭其「浏览器接管」，以免其从链接直接抓取下载。</p>';
 
     card.querySelector('#sf-leave').addEventListener('click', leaveSite);
     card.querySelector('#sf-continue').addEventListener('click', () => showContinueConfirm(card, result));
+    const exBtn = card.querySelector('#sf-ai-explain');
+    const exBox = card.querySelector('#sf-explain-box');
+    if (exBtn && exBox) {
+      exBtn.addEventListener('click', () => explainBlock(result, exBtn, exBox));
+      // AI 解读依赖 Max 模式：仅当 Max 开启时才显示该按钮
+      getSettings().then((st) => { if (st.aiMaxMode === true) exBtn.style.display = ''; });
+    }
+  }
+
+  // AI 解读为什么拦：Max 模式走云端自然语言解读，否则用本地命中特征拼大白话
+  async function explainBlock(result, btn, box) {
+    if (btn.disabled) return;
+    btn.disabled = true;
+    const oldText = btn.textContent;
+    btn.textContent = '解读中…';
+    box.hidden = false;
+    box.innerHTML = '<div class="sf-explain-loading">正在分析拦截原因…</div>';
+    let text = '';
+    try {
+      const st = await getSettings();
+      if (st.aiMaxMode) {
+        // 仅 Max 模式：走云端自然语言解读（开放云端模型 tool-use）
+        const r = await new Promise((res) => {
+          try {
+            chrome.runtime.sendMessage({
+              type: 'sf-ai-explain', data: {
+                hostname: location.hostname, score: result.score, threshold: result.threshold,
+                reasons: (result.reasons || []).map((x) => ({ label: x.label, detail: x.detail || '' }))
+              }
+            }, (resp) => res(resp || {}));
+          } catch (e) { res({}); }
+        });
+        if (r && r.ok && r.text) {
+          text = r.text;
+        } else if (r && r.skipped) {
+          const lines = (result.reasons || []).map((x) => '• ' + x.label + (x.detail ? '：' + x.detail : ''));
+          text = '本次拦截原因（本地规则）：\n' + (lines.join('\n') || '• 命中多项银狐木马风险特征')
+            + '\n\nAI 解读需开启 Max 模式，请在「AI 设置」开启后重试。';
+        } else {
+          const lines = (result.reasons || []).map((x) => '• ' + x.label + (x.detail ? '：' + x.detail : ''));
+          text = '本次拦截原因（本地规则）：\n' + (lines.join('\n') || '• 命中多项银狐木马风险特征');
+          if (r && r.needAction && r.err) text += '\n\n（云端 AI 解读暂不可用：' + r.err + '）';
+          else text += '\n\n云端 AI 解读暂不可用，已为你展示本地判定依据；可在「AI 设置」填写自己的模型 Key 后重试。';
+        }
+      } else {
+        // 非 Max 模式：仅展示本地命中特征说明，并提示开启 Max 可由 AI 解读
+        const lines = (result.reasons || []).map((x) => '• ' + x.label + (x.detail ? '：' + x.detail : ''));
+        text = '本次拦截原因（本地规则）：\n' + (lines.join('\n') || '• 命中多项银狐木马风险特征')
+          + '\n\n开启 Max 模式后，可由 AI 用更自然的语言为你解读。';
+      }
+    } catch (e) {
+      text = '解读失败，请稍后重试。';
+    }
+    box.innerHTML = '<div class="sf-explain-text">' + escapeHtml(text).replace(/\n/g, '<br>') + '</div>';
+    btn.disabled = false;
+    btn.textContent = oldText;
   }
 
   // 二次确认：用户点击「继续访问」后，再次确认是否进入被判定为银狐木马的风险站点

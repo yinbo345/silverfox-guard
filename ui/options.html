@@ -1,851 +1,1034 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="options.css">
+<html lang="zh-CN" data-page-node-id="avb7zxDkLyMCVtO98Djhcd">
+<head data-page-node-id="81KAsaFcaYcxcl9eKMQGIa">
+  <meta charset="UTF-8" data-page-node-id="TiKiToe2DkSXA5DyeAZSTZ">
+  <meta name="viewport" content="width=device-width, initial-scale=1" data-page-node-id="0hKgigSsRCGrCphUQ76StR">
+  <link rel="stylesheet" href="options.css" data-page-node-id="C1F3se8wxmxXSheCQDAPm4">
   <title>银狐防护 · 设置</title>
 </head>
-<body>
-  <!-- AI 提供商图标库（内联 SVG symbol，原色，不联网） -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <symbol id="prov-zhipu" viewBox="0 0 24 24">
-      <rect x="3" y="3" width="18" height="18" rx="5" fill="#4C5BE8"/>
-      <path d="M8 16V8h4.2a3 3 0 0 1 0 6H11" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="16.5" cy="9" r="1.4" fill="#fff"/>
+<body data-page-node-id="D29IL5pFGf6790hGXFxGlf">
+  <!-- AI 提供商图标：均取自官方/公开品牌 SVG（Simple Icons / Iconify），非自行绘制 -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" data-page-node-id="Hlpo6gAaqHM3Ac9jdILYdt">
+    <symbol id="prov-openai" viewBox="0 0 24 24" data-page-node-id="7B1iSPyLHEEJ3WB6iH9uBD"><path fill="#10A37F" d="M22.282 9.821a6 6 0 0 0-.516-4.91a6.05 6.05 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a6 6 0 0 0-3.998 2.9a6.05 6.05 0 0 0 .743 7.097a5.98 5.98 0 0 0 .51 4.911a6.05 6.05 0 0 0 6.515 2.9A6 6 0 0 0 13.26 24a6.06 6.06 0 0 0 5.772-4.206a6 6 0 0 0 3.997-2.9a6.06 6.06 0 0 0-.747-7.073M13.26 22.43a4.48 4.48 0 0 1-2.876-1.04l.141-.081l4.779-2.758a.8.8 0 0 0 .392-.681v-6.737l2.02 1.168a.07.07 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494M3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085l4.783 2.759a.77.77 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646M2.34 7.896a4.5 4.5 0 0 1 2.366-1.973V11.6a.77.77 0 0 0 .388.677l5.815 3.354l-2.02 1.168a.08.08 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.387L15.119 7.2a.08.08 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667m2.01-3.023l-.141-.085l-4.774-2.782a.78.78 0 0 0-.785 0L9.409 9.23V6.897a.07.07 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.8.8 0 0 0-.393.681zm1.097-2.365l2.602-1.5l2.607 1.5v2.999l-2.597 1.5l-2.607-1.5Z" data-page-node-id="eOrqJTTaZd4VwbN523hs5y"/></symbol>
+    <symbol id="prov-deepseek" viewBox="0 0 24 24" data-page-node-id="D7Qf8VNjhhUVtKFYoxJS57"><path fill="#4D6BFE" d="M23.748 4.651c-.254-.124-.364.113-.512.233c-.051.04-.094.09-.137.137c-.372.397-.806.657-1.373.626c-.829-.046-1.537.214-2.163.848c-.133-.782-.575-1.248-1.247-1.548c-.352-.155-.708-.311-.955-.65c-.172-.24-.219-.509-.305-.774c-.055-.16-.11-.323-.293-.35c-.2-.031-.278.136-.356.276c-.313.572-.434 1.202-.422 1.84c.027 1.436.633 2.58 1.838 3.393c.137.094.172.187.129.323c-.082.28-.18.553-.266.833c-.055.179-.137.218-.328.14a5.5 5.5 0 0 1-1.737-1.179c-.857-.828-1.631-1.743-2.597-2.46a12 12 0 0 0-.689-.47c-.985-.957.13-1.743.387-1.836c.27-.098.094-.433-.778-.428c-.872.003-1.67.295-2.687.685a3 3 0 0 1-.465.136a9.6 9.6 0 0 0-2.883-.101c-1.885.21-3.39 1.1-4.497 2.622C.082 8.776-.231 10.854.152 13.02c.403 2.284 1.568 4.175 3.36 5.653c1.857 1.533 3.997 2.284 6.438 2.14c1.482-.085 3.132-.284 4.994-1.86c.47.234.962.328 1.78.398c.629.058 1.235-.031 1.705-.129c.735-.155.684-.836.418-.961c-2.155-1.004-1.682-.595-2.112-.926c1.095-1.295 2.768-3.598 3.284-6.733c.05-.346.115-.834.108-1.114c-.004-.171.035-.238.23-.257a4.2 4.2 0 0 0 1.545-.475c1.397-.763 1.96-2.016 2.093-3.517c.02-.23-.004-.467-.247-.588M11.58 18.168c-2.088-1.642-3.101-2.183-3.52-2.16c-.39.024-.32.472-.234.763c.09.288.207.487.371.74c.114.167.192.416-.113.603c-.673.416-1.842-.14-1.897-.168c-1.361-.801-2.5-1.86-3.301-3.306c-.775-1.393-1.225-2.888-1.299-4.482c-.02-.385.094-.522.477-.592a4.7 4.7 0 0 1 1.53-.038c2.131.311 3.946 1.264 5.467 2.774c.868.86 1.525 1.887 2.202 2.89c.72 1.066 1.494 2.082 2.48 2.915c.348.291.626.513.892.677c-.802.09-2.14.109-3.055-.615zm1.001-6.44a.306.306 0 0 1 .415-.287a.3.3 0 0 1 .113.074a.3.3 0 0 1 .086.214c0 .17-.136.307-.308.307a.303.303 0 0 1-.306-.307m3.11 1.596c-.2.081-.4.151-.591.16a1.25 1.25 0 0 1-.798-.254c-.274-.23-.47-.358-.551-.758a1.7 1.7 0 0 1 .015-.588c.07-.327-.007-.537-.238-.727c-.188-.156-.426-.199-.689-.199a.6.6 0 0 1-.254-.078a.253.253 0 0 1-.114-.358a1 1 0 0 1 .192-.21c.356-.202.767-.136 1.146.016c.352.144.618.408 1.001.782c.392.451.462.576.685.915c.176.264.336.536.446.848c.066.194-.02.353-.25.45" data-page-node-id="2nN7XlDmzv8Bg9U6D1GEor"/></symbol>
+    <symbol id="prov-moonshot" viewBox="0 0 24 24" data-page-node-id="Cz2aqCfGOD4m1y9YxZ4uXX"><path fill="#5B5BF5" d="m1.053 16.91l9.538 2.55a21 20.981 0 0 0 .06 2.031l5.956 1.592a12 11.99 0 0 1-15.554-6.172m-1.02-5.79l11.352 3.035a21 20.981 0 0 0-.469 2.01l10.817 2.89a12 11.99 0 0 1-1.845 2.004L.658 15.918a12 11.99 0 0 1-.625-4.796m1.593-5.146L13.573 9.17a21 20.981 0 0 0-1.01 1.874l11.297 3.02a21 20.981 0 0 1-.67 2.362l-11.55-3.087L.125 10.26a12 11.99 0 0 1 1.499-4.285ZM6.067 1.58l11.285 3.016a21 20.981 0 0 0-1.688 1.719l7.824 2.091a21 20.981 0 0 1 .513 2.664L2.107 5.218a12 11.99 0 0 1 3.96-3.638M21.68 4.866L7.222 1.003A12 11.99 0 0 1 21.68 4.866" data-page-node-id="ZRkV1YIClOEeFnFI5qOB9J"/></symbol>
+    <symbol id="prov-kimi" viewBox="0 0 24 24" data-page-node-id="hBGAUDcsObudrgyAFVMOjn"><path fill="#3B6BFF" d="M21.765.351C22.998.351 24 1.353 24 2.586S22.998 4.82 21.765 4.82h-1.974c-.15 0-.26-.12-.26-.26V2.586A2.237 2.237 0 0 1 21.765.35M9.41 13.388l8.447-8.377c.16-.16.07-.471-.14-.471h-4.55s-.1.02-.14.06l-9.099 9.029c-.14.14-.35.02-.35-.21V4.81c0-.15-.1-.27-.221-.27H.22c-.12 0-.22.12-.22.27v18.57c0 .15.1.27.22.27h3.137c.12 0 .22-.12.22-.27v-3.79c0-.08.03-.16.08-.21l2.826-2.796c.07-.07.16-.08.241-.03l7.546 5.551a8.9 8.9 0 0 0 4.018 1.493c.12.01.23-.11.23-.27V19.76c0-.14-.08-.25-.19-.26a5.8 5.8 0 0 1-2.355-.942l-6.533-4.73c-.14-.09-.15-.32-.03-.441" data-page-node-id="Eep1zV6eB6P0r7w6V2LfVh"/></symbol>
+    <!-- 智谱 GLM：用户提供的官方图标 SVG（32x32 方形 Z 标志，黑底白Z） -->
+    <symbol id="prov-zhipu" viewBox="0 0 32 32" data-page-node-id="pCwumBJ0NfDwh94Nz3XbsR">
+      <path d="M23.8899 5H8.11011C6.39244 5 5 6.39244 5 8.11011V23.8899C5 25.6076 6.39244 27 8.11011 27H23.8899C25.6076 27 27 25.6076 27 23.8899V8.11011C27 6.39244 25.6076 5 23.8899 5Z" fill="#000000" data-page-node-id="LGYsdjyfNdDuYQtAGuNGYs"/>
+      <path d="M16.3809 9.56601L15.3215 11.0715C15.2382 11.1898 15.1279 11.2864 14.9996 11.3533C14.8713 11.4201 14.7289 11.4552 14.5842 11.4556H8.81006V9.55981L16.3809 9.56601Z" fill="#ffffff" data-page-node-id="qwki38bJ3pqMd0FOoTrG7M"/>
+      <path d="M23.5741 9.56616L14.4854 22.4403H8.42627L17.515 9.56616H23.5741Z" fill="#ffffff" data-page-node-id="u8pgCIuLQZYN5bIBbiHJi4"/>
+      <path d="M15.625 22.4402L16.6906 20.9285C16.7742 20.8109 16.8848 20.7152 17.0131 20.6494C17.1414 20.5837 17.2837 20.5497 17.4279 20.5506H23.1958V22.4092L15.625 22.4402Z" fill="#ffffff" data-page-node-id="let6J8j7IRxX8asSMj5BFq"/>
     </symbol>
-    <symbol id="prov-deepseek" viewBox="0 0 24 24">
-      <rect x="3" y="3" width="18" height="18" rx="5" fill="#3C5DFF"/>
-      <path d="M6.5 15.5c2.2-1 3.3-2.6 3.3-4.6C9.8 8.4 8.4 7 6.5 7v2c1 .6 1.8 1.3 1.8 2.4 0 1-.7 1.7-1.8 2.3v1.8Zm11 0c-2.2-1-3.3-2.6-3.3-4.6 0-2.5 1.4-3.9 3.3-3.9v2c-1 .6-1.8 1.3-1.8 2.4 0 1 .7 1.7 1.8 2.3v1.8Z" fill="#fff"/>
-    </symbol>
-    <symbol id="prov-openai" viewBox="0 0 24 24">
-      <rect x="3" y="3" width="18" height="18" rx="5" fill="#10A37F"/>
-      <path d="M12 7.2c-2.6 0-4.8 1.7-4.8 4.2 0 1.8 1.1 3.1 2.9 3.8v2.1l2.1-1.2c.3.1.6.1.9.1 2.6 0 4.7-1.8 4.7-4.2S14.6 7.2 12 7.2Z" fill="none" stroke="#fff" stroke-width="1.4"/>
-    </symbol>
-    <symbol id="prov-moonshot" viewBox="0 0 24 24">
-      <rect x="3" y="3" width="18" height="18" rx="5" fill="#5B5BF5"/>
-      <path d="M15.5 8.5a5 5 0 1 0 0 7 4 4 0 0 1 0-7Z" fill="#fff"/>
-    </symbol>
-    <symbol id="prov-custom" viewBox="0 0 24 24">
-      <rect x="3" y="3" width="18" height="18" rx="5" fill="#7C8698"/>
-      <path d="M12 7.5v9M7.5 12h9" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-      <circle cx="12" cy="12" r="2.4" fill="#fff"/>
+    <symbol id="prov-custom" viewBox="0 0 24 24" data-page-node-id="00LONRDODPHkctO1UYWeAN">
+      <rect x="3" y="3" width="18" height="18" rx="5" fill="#7C8698" data-page-node-id="oS7NypACHaMvit8w8opEHt"/>
+      <path d="M12 7.5v9M7.5 12h9" stroke="#fff" stroke-width="2" stroke-linecap="round" data-page-node-id="QnEj835khBFh7WHIGbbkz6"/>
+      <circle cx="12" cy="12" r="2.4" fill="#fff" data-page-node-id="TE8t6JxFBRIN8YBULHyC8R"/>
     </symbol>
   </svg>
-  <div class="app">
+  <div class="app" data-page-node-id="vaGO3HUgrtCuCoBnnsyCyA">
     <!-- 左侧边栏 -->
-    <aside class="sidebar">
-      <div class="brand" id="brandEgg" role="button" tabindex="0" aria-label="银狐防护">
-        <svg class="logo" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z" fill="rgba(120,180,255,.18)" stroke="#7db4ff" stroke-width="1.4"/>
-          <path d="M9 11.5l2 2 4-4" stroke="#9fe0c0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <aside class="sidebar" data-page-node-id="hGbDNilxopqAFHDH3IsXIZ">
+      <div class="brand" id="brandEgg" role="button" tabindex="0" aria-label="银狐防护" data-page-node-id="2X4f0A1w5wr3CwuRBNYCkE">
+        <svg class="logo" viewBox="0 0 24 24" fill="none" data-page-node-id="NkDf1XxLSICSP9bdU8AOMp">
+          <path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z" fill="rgba(120,180,255,.18)" stroke="#7db4ff" stroke-width="1.4" data-page-node-id="NOeVkY9PBf2g64JLhxXoXG"/>
+          <path d="M9 11.5l2 2 4-4" stroke="#9fe0c0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="vZvCfKWNpjdQQ9mvlQTlBz"/>
         </svg>
-        <div class="brand-t">
-          <div class="b1">银狐防护</div>
-          <div class="b2">SILVERFOX GUARD</div>
+        <div class="brand-t" data-page-node-id="9aohTHY4hcsEPXZF2apDQY">
+          <div class="b1" data-page-node-id="jiEWVDBnAWkq5Scg8V6OjB">银狐防护</div>
+          <div class="b2" data-page-node-id="6SlxDNEPAvCuloZ0E8fyU7">SILVERFOX GUARD</div>
         </div>
       </div>
 
-      <nav class="nav" id="nav">
-        <button class="nav-item active" data-target="general" data-title="常规" data-desc="总开关与检测灵敏度">
-          <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 13a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 0 1-4 0v-.1A1.7 1.7 0 0 0 7 19.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H3a2 2 0 0 1 0-4h.1A1.7 1.7 0 0 0 4.7 7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 2.9-1.2V3a2 2 0 0 1 4 0v.1A1.7 1.7 0 0 0 17 4.7l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" opacity=".9"/></svg>
-          <span>常规</span>
+      <nav class="nav" id="nav" data-page-node-id="sBB2gUSalM16DgBZLXVegO">
+        <button class="nav-item active" data-target="general" data-title="常规" data-desc="总开关与检测灵敏度" data-page-node-id="dJfAIWBI1TEtNqzEbG2kAJ">
+          <svg viewBox="0 0 24 24" data-page-node-id="6HcOnvHQabM2EOSUJxYw66"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" data-page-node-id="WVTcmZgm4AisJMSg9Vp8AI"/><path d="M19.4 13a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 0 1-4 0v-.1A1.7 1.7 0 0 0 7 19.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H3a2 2 0 0 1 0-4h.1A1.7 1.7 0 0 0 4.7 7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 2.9-1.2V3a2 2 0 0 1 4 0v.1A1.7 1.7 0 0 0 17 4.7l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" opacity=".9" data-page-node-id="dpdxIXBozqQXtKxYuBMQ5G"/></svg>
+          <span data-page-node-id="p3Cefos6eFkJzua0zpgfRe">常规</span>
         </button>
-        <button class="nav-item" data-target="detect" data-title="检测维度" data-desc="独立评分的检测项，可逐项开关">
-          <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
-          <span>检测维度</span>
+        <button class="nav-item" data-target="detect" data-title="检测维度" data-desc="独立评分的检测项，可逐项开关" data-page-node-id="kCszHPKKhmn8D8hHROJXmz">
+          <svg viewBox="0 0 24 24" data-page-node-id="Bq3Jf3eMvOBikdZBstwJuH"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" data-page-node-id="5TAVFqo8iQndYaRR69BRAv"/></svg>
+          <span data-page-node-id="GkEizow1tkNYGyFLY2vsQO">检测维度</span>
         </button>
-        <button class="nav-item" data-target="behavior" data-title="拦截行为" data-desc="命中风险时如何提醒与处置">
-          <svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z"/><path d="M9 12l2 2 4-4" stroke-width="2" fill="none"/></svg>
-          <span>拦截行为</span>
+        <button class="nav-item" data-target="behavior" data-title="拦截行为" data-desc="命中风险时如何提醒与处置" data-page-node-id="tBctwAlwXEHzaH6I5cs0IE">
+          <svg viewBox="0 0 24 24" data-page-node-id="KYBXSJ1PKQmaJ3nLMDNys7"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z" data-page-node-id="eHbiqtw6H48IaglOqM92iN"/><path d="M9 12l2 2 4-4" stroke-width="2" fill="none" data-page-node-id="NZ2KATsdaUjuNQsOKqcXJE"/></svg>
+          <span data-page-node-id="VnQnvmSm9bZjZ1loRcjgVc">拦截行为</span>
         </button>
-        <button class="nav-item" data-target="rules" data-title="规则与白名单" data-desc="信任域名、自定义关键词与黑名单">
-          <svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 11h8M8 15h8M8 7h4" stroke-width="1.8" fill="none"/></svg>
-          <span>规则白名单</span>
+        <button class="nav-item" data-target="rules" data-title="规则与白名单" data-desc="信任域名、自定义关键词与黑名单" data-page-node-id="juN3TIa37ALsqG7v48F3B7">
+          <svg viewBox="0 0 24 24" data-page-node-id="79Gf9T3IpmGIDZl3Ki8wH3"><path d="M5 4h11l3 3v13H5z" data-page-node-id="S5VDbhIzJL4EFiziTnqA91"/><path d="M8 11h8M8 15h8M8 7h4" stroke-width="1.8" fill="none" data-page-node-id="OFl8Tv481zHRvgnyvd2Y2S"/></svg>
+          <span data-page-node-id="RjyYPUzBW27eLWh7kCpE7E">规则白名单</span>
         </button>
-        <button class="nav-item" data-target="stats" data-title="防护统计" data-desc="已拦截风险与下载次数">
-          <svg viewBox="0 0 24 24"><path d="M5 19V5M5 19h14M9 15v-4M13 15V8M17 15v-7"/></svg>
-          <span>防护统计</span>
+        <button class="nav-item" data-target="stats" data-title="防护统计" data-desc="已拦截风险与下载次数" data-page-node-id="fEE4ms6g7h4SyyGJk5txGR">
+          <svg viewBox="0 0 24 24" data-page-node-id="flwMexte8aBeNtHdbXmFpa"><path d="M5 19V5M5 19h14M9 15v-4M13 15V8M17 15v-7" data-page-node-id="pymLHWfl7PWNF4KPae8CoH"/></svg>
+          <span data-page-node-id="p7a4r4K8yGdH1gElNN58BZ">防护统计</span>
         </button>
-        <button class="nav-item" data-target="rescue" data-title="银狐急救" data-desc="中招后的下载与查杀引导">
-          <svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z"/><path d="M12 8v8M8 12h8" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-          <span>银狐急救</span>
+        <button class="nav-item" data-target="rescue" data-title="银狐急救" data-desc="中招后的下载与查杀引导" data-page-node-id="NyiDmeVdFlqWVqK3KaESqp">
+          <svg viewBox="0 0 24 24" data-page-node-id="3ExVNkisqa5WgeG4XL9dTY"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z" data-page-node-id="epnoz4pKw7RiHAz2JOdYhj"/><path d="M12 8v8M8 12h8" stroke-width="2" fill="none" stroke-linecap="round" data-page-node-id="54qGzFEYXxBiAPCo2CYRvM"/></svg>
+          <span data-page-node-id="WxVH7sV5wcTMRnMr6mn8Mi">银狐急救</span>
         </button>
-        <button class="nav-item" data-target="scanner" data-title="银狐扫描" data-desc="上传样本做静态检测">
-          <svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7 9m5-5l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <span>银狐扫描</span>
+        <button class="nav-item" data-target="scanner" data-title="银狐扫描" data-desc="上传样本做静态检测" data-page-node-id="yIWYfNRI6so8vqx5Z0sUxp">
+          <svg viewBox="0 0 24 24" data-page-node-id="BMQoatyhvi5blwJxGdZWZb"><path d="M12 16V4m0 0L7 9m5-5l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="zsWh3uzF3zdUGpq6DjCiS7"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-page-node-id="Yvtkwv9IRLiFSkzfCZxyjc"/></svg>
+          <span data-page-node-id="pTdlXHTWv00ygMP3dTf1bv">银狐扫描</span>
         </button>
-        <button class="nav-item" data-target="ai" data-title="AI 设置" data-desc="AI 助手悬浮球与增强开关">
-          <svg viewBox="0 0 24 24"><path d="M12 2.5 4 5.2v6.3c0 4.8 3.1 8.3 8 9.4 4.9-1.1 8-4.6 8-9.4V5.2L12 2.5Z"/><path d="M8.2 12.2l2.5 2.5 4.9-5.1" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>AI 设置</span>
+        <button class="nav-item" data-target="envscan" data-title="环境检测" data-desc="联动本地银狐环境检测程序" data-page-node-id="envscanNav">
+          <svg viewBox="0 0 24 24" data-page-node-id="envscanNavIco"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 8v5M9.5 12.5 12 15l2.5-2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          <span data-page-node-id="envscanNavTxt">环境检测</span>
         </button>
-        <button class="nav-item" data-target="personal" data-title="个性化" data-desc="字体与深浅色外观">
-          <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18c1.7 0 2-1.3 1.2-2.2-.8-.9-.3-2.1.9-2.1H15a3 3 0 0 0 0-6h-1.9c-1.2 0-1.7-1.4-.9-2.1.8-.9.5-2.2-1.2-2.2Z" opacity=".9"/><circle cx="12" cy="12" r="9" fill="none"/></svg>
-          <span>个性化</span>
+        <button class="nav-item" data-target="ai" data-title="AI 设置" data-desc="AI 助手悬浮球与增强开关" data-page-node-id="AR77nDrpLwTSDibuSH9g6v">
+          <svg viewBox="0 0 24 24" data-page-node-id="0Knm2lPu41KSi5wd7JiP3V"><path d="M12 2.5 4 5.2v6.3c0 4.8 3.1 8.3 8 9.4 4.9-1.1 8-4.6 8-9.4V5.2L12 2.5Z" data-page-node-id="9YLLCcPEOAimM73fbvBCow"/><path d="M8.2 12.2l2.5 2.5 4.9-5.1" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="J2hn6pDwTtIwAQmrETZcmc"/></svg>
+          <span data-page-node-id="92sAcnbd45tD4hrcH7MO2m">AI 设置</span>
         </button>
-        <button class="nav-item" data-target="about" data-title="关于" data-desc="版本信息与说明">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-          <span>关于</span>
+        <button class="nav-item" data-target="personal" data-title="个性化" data-desc="字体与深浅色外观" data-page-node-id="BdDzDCNAXyXyedgrGQGllq">
+          <svg viewBox="0 0 24 24" data-page-node-id="54MyyvUMC3pojNBtTmPWVA"><path d="M12 3a9 9 0 0 0 0 18c1.7 0 2-1.3 1.2-2.2-.8-.9-.3-2.1.9-2.1H15a3 3 0 0 0 0-6h-1.9c-1.2 0-1.7-1.4-.9-2.1.8-.9.5-2.2-1.2-2.2Z" opacity=".9" data-page-node-id="T9FO6hHJMFzlIgahPbIZRj"/><circle cx="12" cy="12" r="9" fill="none" data-page-node-id="eg1ZPG1TrdsmFka7ljpkg3"/></svg>
+          <span data-page-node-id="fylJEJtD3c3Lz1Hv8E5pAc">个性化</span>
+        </button>
+        <button class="nav-item" data-target="about" data-title="关于" data-desc="版本信息与说明" data-page-node-id="yhCQcVhST1YyfUdWXHGNF7">
+          <svg viewBox="0 0 24 24" data-page-node-id="1yDe9R3OzC8umLbxuX9EbU"><circle cx="12" cy="12" r="9" data-page-node-id="xRR1VlK4yTG4UwdZWUw2io"/><path d="M12 11v5M12 8h.01" stroke-width="2" fill="none" stroke-linecap="round" data-page-node-id="96GdKEUoGQkg9FTDiG9ab1"/></svg>
+          <span data-page-node-id="EiEXoE1lazQ26UmyzPmjaS">关于</span>
         </button>
       </nav>
 
-      <div class="side-foot">
-        <span class="mini-pill on" id="masterPill">防护中</span>
-        <span class="ver" id="verTop">v1.3.9</span>
+      <div class="side-foot" data-page-node-id="IO99sfsOJDzMqQ4peye3zi">
+        <span class="mini-pill on" id="masterPill" data-page-node-id="Dyp9jDnKs1TJRRvRDxaR86">防护中</span>
+        <span class="ver" id="verTop" data-page-node-id="xuNk59EQj77jDSZgBCbNGk">v1.3.9</span>
       </div>
     </aside>
 
     <!-- 右侧内容 -->
-    <main class="content" id="content">
-      <header class="content-head">
-        <button class="back-btn" id="backBtn" type="button" hidden>
-          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>返回</span>
+    <main class="content" id="content" data-page-node-id="8bi2RXeE06SiFru803z6ro">
+      <header class="content-head" data-page-node-id="sIHxXW7pAj5chRCDhUK4Gh">
+        <button class="back-btn" id="backBtn" type="button" hidden data-page-node-id="Ok97xUrFvMhpgkSUPl3fzM">
+          <svg viewBox="0 0 24 24" data-page-node-id="muI3zFCiyFFU23nZW49muH"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="w6CqAG04TdBttx5CU2NERE"/></svg>
+          <span data-page-node-id="ZrBobTLvAmRS6iVGHgn946">返回</span>
         </button>
-        <div>
-          <h1 id="secTitle">常规</h1>
-          <p id="secDesc">总开关与检测灵敏度</p>
+        <div data-page-node-id="qo5fYhklVUSS7xnkRvWoPo">
+          <h1 id="secTitle" data-page-node-id="q26o7CTk5PxtyJ5rxim8Xs">常规</h1>
+          <p id="secDesc" data-page-node-id="tx7SPsFfk45ELVe8GAZJM4">总开关与检测灵敏度</p>
         </div>
       </header>
 
       <!-- 常规 -->
-      <section class="sec active" id="general">
-        <div class="card">
-          <div class="row">
-            <div class="rl"><div class="rt">启用银狐木马网站防护</div><div class="rd">关闭后扩展将不再分析页面、不再拦截下载</div></div>
-            <label class="switch"><input type="checkbox" id="enabledGlobal"><span class="slider"></span></label>
+      <section class="sec active" id="general" data-page-node-id="TZApV6rwPEC4bNp74D82Fn">
+        <!-- 卡巴式防护状态总览（Hero） -->
+        <div class="kav-hero" id="kavHero" data-page-node-id="kavHero">
+          <div class="kav-shield" id="kavShield" data-page-node-id="kavShield">
+            <svg viewBox="0 0 24 24" data-page-node-id="kavShieldSvg"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" data-page-node-id="kavShieldP1"/><path d="M8.4 12.2l2.4 2.4 4.8-5.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="kavShieldP2"/></svg>
           </div>
-          <div class="row">
-            <div class="rl"><div class="rt">检测灵敏度</div><div class="rd">越高越易触发警告；低=需更强证据，高=宁可误报也不放过</div></div>
-            <div class="seg" id="sensitivity">
-              <span class="seg-glider" aria-hidden="true"></span>
-              <button data-v="low">低</button>
-              <button data-v="medium">中</button>
-              <button data-v="high">高</button>
+          <div class="kav-hero-txt" data-page-node-id="kavHeroTxt">
+            <div class="kav-hero-title" id="kavTitle" data-page-node-id="kavTitle">正在检查防护状态…</div>
+            <div class="kav-hero-sub" id="kavSub" data-page-node-id="kavSub">扩展已就绪，正在检测本机主防程序…</div>
+          </div>
+          <div class="kav-hero-side" data-page-node-id="kavHeroSide">
+            <button class="btn btn-rescue" id="kavInstallBtn" type="button" hidden data-page-node-id="kavInstallBtn">下载安装主防程序</button>
+          </div>
+        </div>
+
+        <!-- 本机环境检测（主防程序）状态卡 -->
+        <div class="card kav-grid kav-single" data-page-node-id="kavGrid">
+          <div class="kav-mod" id="kavModSys" data-page-node-id="kavModSys">
+            <div class="kav-mod-ico sys" data-page-node-id="kavModSysIco">
+              <svg viewBox="0 0 24 24" data-page-node-id="kavModSysIcoS"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-page-node-id="kavModSysIcoL"/><circle cx="18" cy="18" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8" data-page-node-id="kavModSysIcoC"/></svg>
+            </div>
+            <div class="kav-mod-txt" data-page-node-id="kavModSysTxt">
+              <div class="kav-mod-name" data-page-node-id="kavModSysName">本机环境检测</div>
+              <div class="kav-mod-desc" data-page-node-id="kavModSysDesc">常驻服务扫描进程与持久化痕迹，联动浏览器扩展联防</div>
+            </div>
+            <div class="kav-mod-st" id="kavModSysSt" data-page-node-id="kavModSysSt">…</div>
+          </div>
+        </div>
+
+        <div class="card" data-page-node-id="gkTve6qgMhJ6WHUm68kfJl">
+          <div class="row" data-page-node-id="JxXEhOxOraM9rrag6D8I2P">
+            <div class="rl" data-page-node-id="suIG4S6raA9FMh6rDDK4Gb"><div class="rt" data-page-node-id="RILCu0qhOKaW5XRnCaZIKR">启用银狐木马网站防护</div><div class="rd" data-page-node-id="LaBifdKzhuAqgp99vm9a3p">关闭后扩展将不再分析页面、不再拦截下载</div></div>
+            <label class="switch" data-page-node-id="CMBDXFwxovWSD3kRV9dI6N"><input type="checkbox" id="enabledGlobal" data-page-node-id="d51gOMVuuTwUBGmDC4Xn7r"><span class="slider" data-page-node-id="mFEI10Ij4vFUkFDRrEZUy6"></span></label>
+          </div>
+          <div class="row" data-page-node-id="TvICLwAnZibTA4LZZdixEn">
+            <div class="rl" data-page-node-id="6eebEcPk8K14CIs9DzgtxZ"><div class="rt" data-page-node-id="2oP4Cma5R1WOYgNJjAaPeh">检测灵敏度</div><div class="rd" data-page-node-id="h59PhtkjAIAs9pPwsrjNO9">越高越易触发警告；低=需更强证据，高=宁可误报也不放过</div></div>
+            <div class="seg" id="sensitivity" data-page-node-id="VJIDSFXArFXK5WeZlyKGTm">
+              <span class="seg-glider" aria-hidden="true" data-page-node-id="S4EwExYWAuwpBtVCZ9ni8e"></span>
+              <button data-v="low" data-page-node-id="P10k6XxjVymVn82CYypaJz">低</button>
+              <button data-v="medium" data-page-node-id="kDDH4CkXV513YqpuMamTmv">中</button>
+              <button data-v="high" data-page-node-id="g8opwl7yr83gNDBT68uaYB">高</button>
             </div>
           </div>
         </div>
-        <div class="tip">提示：灵敏度调高会增加误报概率，建议在频繁误报的站点加入信任白名单，而非一味调低。</div>
+        <div class="tip" data-page-node-id="xQ5aOEJLDDL72mgTCRxZt7">提示：灵敏度调高会增加误报概率，建议在频繁误报的站点加入信任白名单，而非一味调低。</div>
       </section>
 
       <!-- 检测维度 -->
-      <section class="sec" id="detect">
-        <div class="card">
-          <p class="sec-desc">下列每一项都会独立评分并累加风险分。可单独关闭你认为易误报的维度。</p>
-          <div id="catList"></div>
+      <section class="sec" id="detect" data-page-node-id="Yee5TDjaXYVKhJYv52k1W6">
+        <div class="card" data-page-node-id="Fh3APDsfvsWYU5vZyjvdXw">
+          <p class="sec-desc" data-page-node-id="oPiNuQfxTNdeAdF7MVWrz9">下列每一项都会独立评分并累加风险分。可单独关闭你认为易误报的维度。</p>
+          <div id="catList" data-page-node-id="rFH2yC95MYiCKgEltFCtVN"></div>
         </div>
       </section>
 
       <!-- 拦截行为 -->
-      <section class="sec" id="behavior">
-        <div class="card">
-          <div class="row">
-            <div class="rl"><div class="rt">弹出警告浮层</div><div class="rd">命中风险时，在页面上弹出美观的警告提示</div></div>
-            <label class="switch"><input type="checkbox" id="showWarning"><span class="slider"></span></label>
+      <section class="sec" id="behavior" data-page-node-id="QkcILvJtKCWOc2F9L3ZmQV">
+        <div class="card" data-page-node-id="NK4E36GvTPuS0Q5pMjIJyN">
+          <div class="row" data-page-node-id="8KD4KX8QfjSxhhIsh5bE1C">
+            <div class="rl" data-page-node-id="RE0eCvtRreR3xLCt97rJsA"><div class="rt" data-page-node-id="a6AzFj0z9OK7iqoZLf5dBK">弹出警告浮层</div><div class="rd" data-page-node-id="68KQ9QC6gsQi8Kck3hdeXQ">命中风险时，在页面上弹出美观的警告提示</div></div>
+            <label class="switch" data-page-node-id="oKKDR23f2d6hsFhzC28EGw"><input type="checkbox" id="showWarning" data-page-node-id="j6NuxR00MsCKK5fwAGGwL6"><span class="slider" data-page-node-id="BCMZZvEw28Zyp1sE9P4CTa"></span></label>
           </div>
-          <div class="row">
-            <div class="rl"><div class="rt">自动禁用下载/跳转链接</div><div class="rd">命中风险后，禁用页面全部下载与重定向链接（推荐保持开启）</div></div>
-            <label class="switch"><input type="checkbox" id="autoBlockDownloads"><span class="slider"></span></label>
+          <div class="row" data-page-node-id="ZdETCnVc3IbQ4UGgEF6CSI">
+            <div class="rl" data-page-node-id="1B8BTc76Kij1ODLueKVAxz"><div class="rt" data-page-node-id="1xthWSHHZsZuDwoQUbTc9A">自动禁用下载/跳转链接</div><div class="rd" data-page-node-id="trVZlAJ5Vikdj1jkrlFdhm">命中风险后，禁用页面全部下载与重定向链接（推荐保持开启）</div></div>
+            <label class="switch" data-page-node-id="UOnCCyis8KLY5ZoMMsmoBw"><input type="checkbox" id="autoBlockDownloads" data-page-node-id="tQGJEttsEvdFXb1zQZmaCg"><span class="slider" data-page-node-id="Pwp6AuRhLPVsxVdJyaBjHL"></span></label>
           </div>
-          <div class="row">
-            <div class="rl"><div class="rt">Windows 系统弹窗提醒</div><div class="rd">命中风险时在 Windows 右下角弹出系统通知（toast），更易引起注意（默认开启）</div></div>
-            <label class="switch"><input type="checkbox" id="notify"><span class="slider"></span></label>
+          <div class="row" data-page-node-id="asjUb6kPzi7o1BzJgJElLf">
+            <div class="rl" data-page-node-id="94fTv5JrgV6fEUREZLGqwP"><div class="rt" data-page-node-id="btUxFFXfB8yq6Hn0qR5AHY">Windows 系统弹窗提醒</div><div class="rd" data-page-node-id="JzYnRX6mcZZJ13mLwffXXG">命中风险时在 Windows 右下角弹出系统通知（toast），更易引起注意（默认开启）</div></div>
+            <label class="switch" data-page-node-id="vy3Rr4I0YQSwYHpDSIeFSk"><input type="checkbox" id="notify" data-page-node-id="lctJC4lCFBg8w0FyOqQjcW"><span class="slider" data-page-node-id="8RMHJXuDnrRywTBvR0Y8uS"></span></label>
           </div>
-          <div class="row">
-            <div class="rl"><div class="rt">ICP 备案权威核验</div><div class="rd">向公开备案查询接口核实域名备案真伪：确有备案则不再误判仿冒，页面写了备案号但查无记录则判定为盗用他人备案。仅在核验有价值时才发起（页面展示备案号、.cn 站查不到备案标识、或已判仿冒），且只发送域名、不发送任何浏览内容。关闭后仅做页面文字扫描</div></div>
-            <label class="switch"><input type="checkbox" id="icpApiVerify"><span class="slider"></span></label>
+          <div class="row" data-page-node-id="ysProwmv0DaMcqPHPjh88q">
+            <div class="rl" data-page-node-id="sanHwCrBJLZFI7lwnvM94b"><div class="rt" data-page-node-id="DSNRMZFGCgG0TCnjdSw3u1">ICP 备案权威核验</div><div class="rd" data-page-node-id="LiGfADR5ayiW75tEjvp0CD">向公开备案查询接口核实域名备案真伪：确有备案则不再误判仿冒，页面写了备案号但查无记录则判定为盗用他人备案。仅在核验有价值时才发起（页面展示备案号、.cn 站查不到备案标识、或已判仿冒），且只发送域名、不发送任何浏览内容。关闭后仅做页面文字扫描</div></div>
+            <label class="switch" data-page-node-id="LKyNO2knmOG3uy5oCVfGGn"><input type="checkbox" id="icpApiVerify" data-page-node-id="WGZsogT2ltw1kHtlNN2m2d"><span class="slider" data-page-node-id="7Hhy7YrKNspBHLpcD9WSrb"></span></label>
           </div>
         </div>
       </section>
 
       <!-- 规则白名单（枢纽页：点各卡片进入独立子页面） -->
-      <section class="sec" id="rules">
-        <div class="card">
-          <p class="sec-desc">下列三类规则各自独立成页，点击进入编辑。修改后均需点击底部「保存设置」生效。</p>
-          <div class="rule-cards">
-            <button class="rule-card" data-sub="rules-allowlist" type="button">
-              <span class="rc-ico">
-                <svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.6 7 9 4-1.4 7-4.5 7-9V6l-7-3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <section class="sec" id="rules" data-page-node-id="upkBCwMV8LGlcpMdVUqFvB">
+        <div class="card" data-page-node-id="lG7m5Fz0oaghWLCMRVmO1P">
+          <p class="sec-desc" data-page-node-id="HbVBZNdQwm9yr0MHpCBCiX">下列三类规则各自独立成页，点击进入编辑。修改后均需点击底部「保存设置」生效。</p>
+          <div class="rule-cards" data-page-node-id="ggwIAKA2iCwGD303uYRYOd">
+            <button class="rule-card" data-sub="rules-allowlist" type="button" data-page-node-id="Rwx7jj3qwpYOVjE9qWlO7l">
+              <span class="rc-ico" data-page-node-id="itDQEJEBMTi0snQlFLqnVD">
+                <svg viewBox="0 0 24 24" data-page-node-id="mkAgQDiJJxDDfnV8s5WaqM"><path d="M12 3 5 6v6c0 4.5 3 7.6 7 9 4-1.4 7-4.5 7-9V6l-7-3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" data-page-node-id="zKKDisoQEfnDHmr6zA3ePp"/><path d="M9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="0cw1xxT7b2CvXk0LLQ5g9c"/></svg>
               </span>
-              <span class="rc-t">信任域名白名单</span>
-              <span class="rc-d">命中后完全不拦截，支持精确与后缀匹配</span>
+              <span class="rc-t" data-page-node-id="TJplIPLWxQsPNny2J8VNpp">信任域名白名单</span>
+              <span class="rc-d" data-page-node-id="1yBzULwqKXAgrPTkAFLJAb">命中后完全不拦截，支持精确与后缀匹配</span>
             </button>
-            <button class="rule-card" data-sub="rules-keywords" type="button">
-              <span class="rc-ico">
-                <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="18" cy="17" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+            <button class="rule-card" data-sub="rules-keywords" type="button" data-page-node-id="3BFVlEvheoelsbOFBEbHww">
+              <span class="rc-ico" data-page-node-id="NDaV4qZaUtr611GcGYQ7o1">
+                <svg viewBox="0 0 24 24" data-page-node-id="m3BZbWhEkc05h6RafYTGME"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-page-node-id="AZab7bYs1ieVPs3GFLI4xl"/><circle cx="18" cy="17" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8" data-page-node-id="YsQh1YhiPSqEcNiao9khU4"/></svg>
               </span>
-              <span class="rc-t">自定义风险关键词</span>
-              <span class="rc-d">页面命中即加风险分</span>
+              <span class="rc-t" data-page-node-id="A9aotrwKIgSrgoC0qouz7d">自定义风险关键词</span>
+              <span class="rc-d" data-page-node-id="crJdS2AsaOaJcZJwagC6RE">页面命中即加风险分</span>
             </button>
-            <button class="rule-card" data-sub="rules-baddomains" type="button">
-              <span class="rc-ico">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7.5 7.5l9 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <button class="rule-card" data-sub="rules-baddomains" type="button" data-page-node-id="EBcW7INJxwdmECG26hvfuo">
+              <span class="rc-ico" data-page-node-id="3dAyMcxDjSM1bWTRV1B3Nj">
+                <svg viewBox="0 0 24 24" data-page-node-id="u9GzjPliij5vouQdkN3LVq"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6" data-page-node-id="ZWHrTsY5rpN5PfpdIPKcfj"/><path d="M7.5 7.5l9 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-page-node-id="C2p1KFP2cQ8cb64Rs7jDvc"/></svg>
               </span>
-              <span class="rc-t">自定义恶意域名黑名单</span>
-              <span class="rc-d">命中直接判危</span>
+              <span class="rc-t" data-page-node-id="BpmzdKrswQSD2aYIMcziG7">自定义恶意域名黑名单</span>
+              <span class="rc-d" data-page-node-id="WbYsBTlFwPiOeoI5UuYdSK">命中直接判危</span>
             </button>
           </div>
         </div>
-        <div class="card">
-          <div class="field">
-            <label>自动学习的下载黑名单</label>
-            <div class="hint" style="margin:0 0 10px">每次成功拦截一次可疑下载，该文件所在域名会被自动记下；此后任何页面指向同一域名都会加分或直接拦截（银狐换落地页不换载荷服务器）。90 天未再命中自动移除，最多保留 500 条。GitHub、微软等可信下载源与你的信任白名单永不入库。如遇误拦，删除对应条目即可恢复下载。</div>
-            <div id="dlBlList" class="dlbl-list"><div class="dlbl-empty">暂无记录</div></div>
-            <div class="row" style="border:0;padding:10px 0 0">
-              <div class="rl"><div class="rd" id="dlBlCount">共 0 条</div></div>
-              <button class="btn ghost" id="dlBlClear" type="button">清空全部</button>
+        <div class="card" data-page-node-id="hvI1rBRFFdyf3KJVEHkYAz">
+          <div class="field" data-page-node-id="oOItSmLqHP6DxMGlyjQtdD">
+            <label data-page-node-id="Ol7axpG3tDeKZDnTWkWPDA">自动学习的下载黑名单</label>
+            <div class="hint" style="margin:0 0 10px" data-page-node-id="sBAydBiDlqog7AExbalZSf">每次成功拦截一次可疑下载，该文件所在域名会被自动记下；此后任何页面指向同一域名都会加分或直接拦截（银狐换落地页不换载荷服务器）。90 天未再命中自动移除，最多保留 500 条。GitHub、微软等可信下载源与你的信任白名单永不入库。如遇误拦，删除对应条目即可恢复下载。</div>
+            <div id="dlBlList" class="dlbl-list" data-page-node-id="QqOYCkUFdlkjxhAgD5Qnst"><div class="dlbl-empty" data-page-node-id="n8ABGTP8WjHPSA2pUBKNXD">暂无记录</div></div>
+            <div class="row" style="border:0;padding:10px 0 0" data-page-node-id="P4nUgox4RtsqIe7N2y7UNu">
+              <div class="rl" data-page-node-id="LJQEqK6sFEuwws5KWPWMGh"><div class="rd" id="dlBlCount" data-page-node-id="2jyArmVFPgNNywIxcGquFE">共 0 条</div></div>
+              <button class="btn ghost" id="dlBlClear" type="button" data-page-node-id="4IMwR0NqzjzlgmNhZNIjb7">清空全部</button>
             </div>
+          </div>
+        </div>
+        <div class="card" data-page-node-id="bHnC8LeOotNOPYVMe5sokZ">
+          <p class="sec-desc" data-page-node-id="WabToYe47XI8DFrMI11jbc">白名单与规则可导出为 JSON 备份，或导入他人分享的配置（仅含信任域名、风险关键词、恶意域名黑名单，不含其他设置）。</p>
+          <div class="row" style="border:0;padding:6px 0 0;flex-wrap:wrap;gap:10px" data-page-node-id="Kir4HPuvU2wnxGW1ONgbHz">
+            <button type="button" class="btn btn-ghost" id="rulesExport" data-page-node-id="FZTYVjdHF9bq5YmIWjNeAh">导出配置 (JSON)</button>
+            <button type="button" class="btn btn-ghost" id="rulesImport" data-page-node-id="dUE2HgT6Le9adw3xVQZsZs">导入配置 (JSON)</button>
+            <input type="file" id="rulesImportFile" accept="application/json,.json" hidden data-page-node-id="UQtSBAycncTuR2ENdm3I8d">
           </div>
         </div>
       </section>
 
       <!-- 子页面：信任域名白名单 -->
-      <section class="sec subpage" id="rules-allowlist">
-        <div class="card">
-          <div class="field">
-            <label>信任域名白名单（每行一个，命中后完全不拦截）</label>
+      <section class="sec subpage" id="rules-allowlist" data-page-node-id="DZKQUmjQuTV6vnmpQmOPE4">
+        <div class="card" data-page-node-id="NWddfWkhJ8LTtYgw6ZkJXz">
+          <div class="field" data-page-node-id="jDlQ29lEEyfjarTIksHNJn">
+            <label data-page-node-id="uVK2NcPxJOx7wrHK2FKdsP">信任域名白名单（每行一个，命中后完全不拦截）</label>
             <textarea id="allowlist" placeholder="例如：&#10;my-company.com&#10;trusted-site.cn"></textarea>
-            <div class="hint">支持精确域名与后缀匹配，如填写 example.com 将同时信任 a.example.com。</div>
+            <div class="hint" data-page-node-id="hxewy5k5Ol9hGfa8FSKkjc">支持精确域名与后缀匹配，如填写 example.com 将同时信任 a.example.com。</div>
           </div>
         </div>
       </section>
 
       <!-- 子页面：自定义风险关键词 -->
-      <section class="sec subpage" id="rules-keywords">
-        <div class="card">
-          <div class="field">
-            <label>自定义风险关键词（命中即加风险分）</label>
+      <section class="sec subpage" id="rules-keywords" data-page-node-id="rU1QebEBGNa2FkQ4xmUJ98">
+        <div class="card" data-page-node-id="CJMZa96DjrM56ALhuHg7aV">
+          <div class="field" data-page-node-id="lOHXyLHvWrUBxcIktVHCVh">
+            <label data-page-node-id="soNkyv8vvkAree4nZymOKa">自定义风险关键词（命中即加风险分）</label>
             <textarea id="customKeywords" placeholder="每行一个，例如：&#10;内部福利&#10;专属客服"></textarea>
-            <div class="hint">页面 HTML 中出现这些词会触发风险提示。</div>
+            <div class="hint" data-page-node-id="NEwJisO7QAxg8DPHkCCJWO">页面 HTML 中出现这些词会触发风险提示。</div>
           </div>
         </div>
       </section>
 
       <!-- 子页面：自定义恶意域名黑名单 -->
-      <section class="sec subpage" id="rules-baddomains">
-        <div class="card">
-          <div class="field">
-            <label>自定义恶意域名黑名单（命中直接判危）</label>
+      <section class="sec subpage" id="rules-baddomains" data-page-node-id="XjZwnkAAFxKrmb5hmqDW8x">
+        <div class="card" data-page-node-id="66srwWN5kEVmpuM3PTCaS7">
+          <div class="field" data-page-node-id="y3DDoYBoz80Vu1XJdUEsIf">
+            <label data-page-node-id="mYDrheFoC3k5YjwRnTUJ4Q">自定义恶意域名黑名单（命中直接判危）</label>
             <textarea id="customBadDomains" placeholder="每行一个域名，例如：&#10;bad-site.top"></textarea>
-            <div class="hint">这些域名一旦出现即视为银狐风险站点。</div>
+            <div class="hint" data-page-node-id="DuU6p8uIlapO2ICPNd88hI">这些域名一旦出现即视为银狐风险站点。</div>
           </div>
         </div>
       </section>
 
       <!-- 防护统计 -->
-      <section class="sec" id="stats">
-        <div class="card">
-          <div class="stat-grid">
-            <div class="stat-box"><div class="n" id="stWarn">0</div><div class="c">拦截风险网站</div></div>
-            <div class="stat-box"><div class="n" id="stBlock">0</div><div class="c">拦截下载次数</div></div>
+      <section class="sec" id="stats" data-page-node-id="VNWXt4Td9GZJDaJqSPAytm">
+        <div class="card" data-page-node-id="336suCDF9LKVqDCit4ROSW">
+          <div class="stat-grid" data-page-node-id="GMJzw0APxTLgvQhTMOKCKA">
+            <div class="stat-box" data-page-node-id="zuvH4tAXGGOSFUlvn6x2X8"><div class="n" id="stWarn" data-page-node-id="lWvT3dfMwjJZRZkWSezMFs">0</div><div class="c" data-page-node-id="GLuSvOknrZrYc3wRY7f8AA">拦截风险网站</div></div>
+            <div class="stat-box" data-page-node-id="lOmUxYb8Wrv8IXirgO83FJ"><div class="n" id="stBlock" data-page-node-id="MOmr17wnTN9GN8g1AB8mle">0</div><div class="c" data-page-node-id="cbGFQHCltPrj2MUU1kWHtL">拦截下载次数</div></div>
           </div>
-          <div class="tip">统计仅保存在本地浏览器，不会上传。重置只清空计数，不影响白名单与规则。</div>
+          <div class="dash-levels" data-page-node-id="8DaCV8vBqVHgY6ZUrH7bYn">
+            <div class="dl-title" data-page-node-id="YHSfcHBt4GAEoI07nj36OZ">最近 30 次拦截等级分布</div>
+            <div class="dl-bar" id="dlBar" data-page-node-id="NPFBOzbyKvgv8jtgrAGCIg"><span class="dl-empty" data-page-node-id="hSdXx8Bhk05vjpULHR4nMK">暂无记录</span></div>
+            <div class="dl-legend" id="dlLegend" data-page-node-id="eOffc1UL5k220CdafmC7BJ"></div>
+          </div>
+          <div class="dash-recent" data-page-node-id="di0WC0fi3YGbbE9A8gmGSf">
+            <div class="dl-title" data-page-node-id="tI6AIQmsYQ6U0vOIKKuuy1">最近拦截记录</div>
+            <div id="dlRecent" class="dl-recent-list" data-page-node-id="XVIidCeLsWYuqqiY7HLCNB"><div class="dl-empty" data-page-node-id="avmtcjUV32k0kBtciFN6kD">暂无记录</div></div>
+          </div>
+          <div class="tip" data-page-node-id="RkcydIhGC7fC2EHxHW27vA">统计仅保存在本地浏览器，不会上传。重置只清空计数，不影响白名单与规则。</div>
         </div>
       </section>
 
       <!-- 银狐急救 -->
-      <section class="sec" id="rescue">
-        <div class="card rescue-hero">
-          <div class="rescue-ico">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z" stroke="#9fe0c0" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 8v8M8 12h8" stroke="#9fe0c0" stroke-width="2" stroke-linecap="round"/></svg>
+      <section class="sec" id="rescue" data-page-node-id="rIQrVFDFHtkoyZ8ZkYlTG5">
+        <div class="card rescue-hero" data-page-node-id="NE5Dr486rx4qBOVAGhHBEw">
+          <div class="rescue-ico" data-page-node-id="SLjM6idKeJMGD2okIrLWwM">
+            <svg viewBox="0 0 24 24" fill="none" data-page-node-id="lYD3oQioAfPEvgGygvNgYq"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z" stroke="#9fe0c0" stroke-width="1.5" stroke-linejoin="round" data-page-node-id="MFWPDyivlUpGS32vfNGyD4"/><path d="M12 8v8M8 12h8" stroke="#9fe0c0" stroke-width="2" stroke-linecap="round" data-page-node-id="nbh7lsfUd6hbEtS6CCnHtW"/></svg>
           </div>
-          <div class="rescue-txt">
-            <h2>银狐急救</h2>
-            <p>当你已经中了银狐病毒后，可点击右侧按钮下载 360 系统急救箱进行急救。</p>
+          <div class="rescue-txt" data-page-node-id="kBAaICSvgHTfJrKbPcWzRQ">
+            <h2 data-page-node-id="6u3AQx93VVjLVWHFlNA2jp">银狐急救</h2>
+            <p data-page-node-id="oTVg3IeD8wiqWk4p2TULCT">当你已经中了银狐病毒后，可点击右侧按钮下载 360 系统急救箱进行急救。</p>
           </div>
-          <button class="btn btn-rescue" id="rescueBtn">下载 360 系统急救箱</button>
+          <button class="btn btn-rescue" id="rescueBtn" data-page-node-id="U0q9FstPenD2kOQSZ1Phxh">下载 360 系统急救箱</button>
         </div>
 
-        <div class="card rescue-linkcard">
-          <p class="sec-desc">官方下载直链（360 更新后可能变动，可手动复制备用）：</p>
-          <div class="rescue-url" id="rescueUrl" title="点击复制">加载中…</div>
+        <div class="card rescue-linkcard" data-page-node-id="en3TeUhULicXsrBhcuX8Ep">
+          <p class="sec-desc" data-page-node-id="0BiD08OAmII24P2hpxG4Ap">官方下载直链（360 更新后可能变动，可手动复制备用）：</p>
+          <div class="rescue-url" id="rescueUrl" title="点击复制" data-page-node-id="e4db8NlvmxdBIOtKeePsYu">加载中…</div>
         </div>
 
-        <div class="card">
-          <p class="sec-desc">中招后急救步骤：</p>
-          <ol class="rescue-steps">
-            <li>点击上方按钮下载 <b>360 系统急救箱</b>（官方绿色版，无需安装）。</li>
-            <li>用解压软件（如 7-Zip）把压缩包解压到桌面等好找的位置。</li>
-            <li>进入解压后的文件夹，双击主程序（.exe）打开急救箱主界面。</li>
-            <li>若双击无反应或被拦截——部分银狐病毒会禁掉一切 .exe 程序——请改双击同目录下的 <b>.com</b> 文件。.com 是 Windows 最底层的 DOS 应用程序，通常不被此类病毒拦截。</li>
-            <li>勾选 <b>全盘扫描</b> 与 <b>强力模式</b>，点击 <b>开始查杀</b>，等待完成后重启电脑。</li>
+        <!-- 火绒专杀（无签名版）：可解除银狐对杀毒软件的打开限制 -->
+        <div class="card rescue-hero rescue-hero-hr" data-page-node-id="6algCBbgMesEFcZs9uJdEe">
+          <div class="rescue-ico rescue-ico-hr" data-page-node-id="fFlepUgj8imQ5WA6zx3SWm">
+            <svg viewBox="0 0 24 24" fill="none" data-page-node-id="WuCUjlmSvAPOvmdZH9uCOp"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z" stroke="#7db4ff" stroke-width="1.5" stroke-linejoin="round" data-page-node-id="BEIrfiKKC3cxmHu3hNjq8x"/><path d="M9 12l2 2 4-4" stroke="#7db4ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="F32pi3UdIiBUa13BzDMsG1"/></svg>
+          </div>
+          <div class="rescue-txt" data-page-node-id="fufvL4OLmEqrnMFBGi6IB2">
+            <h2 data-page-node-id="fNWo6Y5QAXY1UJzhnHJHUF">火绒专杀（无签名版）</h2>
+            <p data-page-node-id="foLkH2sAwontyqRaJ1jL6n">银狐木马常会屏蔽常规杀毒软件的打开。火绒专杀工具可解除此类限制，便于你正常启动杀软做彻底查杀。</p>
+            <div class="tip tip-warn" data-page-node-id="zRgy8Ff1wjfHDpiFNSpE0R">注意：本工具为<strong data-page-node-id="seWdc9YkLjdkQpqZ1T3IDY">无签名版</strong>，Windows Defender 与安全下载检测会<strong data-page-node-id="LuS2n5P1H4iu3DdzPjNVBo">拦截它</strong>——这是正常现象，放行即可。有签名版同样会被银狐类病毒拦掉，故只提供无签名版。</div>
+          </div>
+          <button class="btn btn-rescue btn-rescue-hr" id="hrkillBtn" data-page-node-id="WwJ3Iat5leNsTisFTDHIYk">下载火绒专杀</button>
+        </div>
+
+        <div class="card rescue-linkcard" data-page-node-id="OGbG0Cu0zmg79zqncNiGb4">
+          <p class="sec-desc" data-page-node-id="Kq2J8fgbCvVmlQVE6ouT3P">火绒专杀官方下载直链（无签名版，可手动复制备用）：</p>
+          <div class="rescue-url" id="hrkillUrl" title="点击复制" data-page-node-id="CgUlKFP1fdk0bVjONhvvDm">加载中…</div>
+        </div>
+
+        <div class="card" data-page-node-id="gTah7gKPbKroVgQZjpBvfB">
+          <p class="sec-desc" data-page-node-id="6lgtt3tsiDbkbavYDeIq0B">中招后急救步骤：</p>
+          <ol class="rescue-steps" data-page-node-id="VWrJdUd5nZ8mioitT0HO5o">
+            <li data-page-node-id="mKmDPGv4LIkErP6rQKywuf">点击上方按钮下载 <b data-page-node-id="o0eknFmppILvfWnGJ2sAG7">360 系统急救箱</b>（官方绿色版，无需安装）。</li>
+            <li data-page-node-id="MCsTfuqmVEslBIjNo31c7a">用解压软件（如 7-Zip）把压缩包解压到桌面等好找的位置。</li>
+            <li data-page-node-id="78KliDvEdX4b2XFQsqAtvg">进入解压后的文件夹，双击主程序（.exe）打开急救箱主界面。</li>
+            <li data-page-node-id="LBBrDMv0VoZijx6JG8OPwM">若双击无反应或被拦截——部分银狐病毒会禁掉一切 .exe 程序——请改双击同目录下的 <b data-page-node-id="D4gAdy9hxMjRxt4AWZCKnV">.com</b> 文件。.com 是 Windows 最底层的 DOS 应用程序，通常不被此类病毒拦截。</li>
+            <li data-page-node-id="UrIVobHgaKqDxP1J2BXkNW">勾选 <b data-page-node-id="jOVnbSyvY1HecakIMhYeYN">全盘扫描</b> 与 <b data-page-node-id="Mv3DrXrSoB7UNmT5BE4iJN">强力模式</b>，点击 <b data-page-node-id="14omBBTNFWp1Bk9p1iRD0X">开始查杀</b>，等待完成后重启电脑。</li>
           </ol>
-          <div class="tip">银狐木马常会屏蔽常规杀毒软件。360 系统急救箱为独立绿色版，不依赖已安装的安全软件，更适合中招后急救。</div>
+          <div class="tip" data-page-node-id="zwqPk1YvhIXYC2Zox3zCHM">银狐木马常会屏蔽常规杀毒软件。360 系统急救箱为独立绿色版，不依赖已安装的安全软件，更适合中招后急救。</div>
         </div>
       </section>
 
-      <!-- 银狐扫描（父页面：小卡片入口 → 子页面） -->
-      <section class="sec" id="scanner">
-        <div class="card">
+      <!-- 急救与工具（父页面：工具中心，卡片 → 子页） -->
+      <section class="sec" id="tools" data-page-node-id="toolsSec">
+        <div class="card" data-page-node-id="toolsCard">
+          <p class="sec-desc">中招急救、样本静态检测与本机环境检测三个工具，点击卡片进入对应页面。</p>
           <div class="rule-cards">
-            <button class="rule-card" data-sub="scanner-main" type="button">
+            <button class="rule-card" data-sub="rescue" data-sub-title="银狐急救" data-sub-desc="中招后的下载与查杀引导" type="button">
+              <span class="rc-ico">
+                <svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 8v8M8 12h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+              <span class="rc-t">银狐急救</span>
+              <span class="rc-d">中招后的下载与查杀引导</span>
+            </button>
+            <button class="rule-card" data-sub="scanner" data-sub-title="银狐样本扫描" data-sub-desc="上传程序 / 安装包 / 脚本做静态检测" type="button">
               <span class="rc-ico">
                 <svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7 9m5-5l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
               </span>
               <span class="rc-t">银狐样本扫描</span>
               <span class="rc-d">上传程序 / 安装包 / 脚本做静态检测</span>
             </button>
+            <button class="rule-card" data-sub="envscan" data-sub-title="环境检测" data-sub-desc="联动本地银狐环境检测程序" type="button">
+              <span class="rc-ico">
+                <svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.5 12l2.4 2.4 4.6-4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span class="rc-t">环境检测</span>
+              <span class="rc-d">联动本地银狐环境检测程序</span>
+            </button>
           </div>
-          <div class="tip" style="margin-top:12px">当你下载了不确定的程序，这个功能可以提供银狐扫描，但扫描结果不一定 100% 正确，请谨慎运行从网上下载的文件。</div>
+        </div>
+      </section>
+
+      <!-- 银狐扫描（父页面：小卡片入口 → 子页面） -->
+      <section class="sec" id="scanner" data-page-node-id="Ex4QstYGuHZRA7hcAI4uva">
+        <div class="card" data-page-node-id="58ySSHBAP6xFmlRCKayJsx">
+          <div class="rule-cards" data-page-node-id="X4kbGEvANZ2vyVlj6u7r6E">
+            <button class="rule-card" data-sub="scanner-main" type="button" data-page-node-id="K9QlcAfGVVEytVl8ovDsRM">
+              <span class="rc-ico" data-page-node-id="05W7TkBqlLdy3TinTViadT">
+                <svg viewBox="0 0 24 24" data-page-node-id="TLE6kH1vitfq0upSG1GrXe"><path d="M12 16V4m0 0L7 9m5-5l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="fg2KsrdIhVTbLOIXo5BOQL"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-page-node-id="EwFrBXlc4tLRAxi3pndvu5"/></svg>
+              </span>
+              <span class="rc-t" data-page-node-id="JuWE1nBcVy4vxBw3RIqPEd">银狐样本扫描</span>
+              <span class="rc-d" data-page-node-id="Y59V13CLkEX3xSly24cGVy">上传程序 / 安装包 / 脚本做静态检测</span>
+            </button>
+          </div>
+          <div class="tip" style="margin-top:12px" data-page-node-id="gYJ4ErW52sECBBacAjmAu9">当你下载了不确定的程序，这个功能可以提供银狐扫描，但扫描结果不一定 100% 正确，请谨慎运行从网上下载的文件。</div>
+        </div>
+      </section>
+
+      <!-- 环境检测（联动本地银狐环境检测程序） -->
+      <section class="sec" id="envscan" data-page-node-id="envscanSec">
+        <div class="card rescue-hero" data-page-node-id="envscanHero">
+          <div class="rescue-ico shield-normal" id="envscanShield" data-page-node-id="envscanIco">
+            <svg viewBox="0 0 128 128" width="44" height="44" data-page-node-id="envscanIcoSvg">
+              <g transform="translate(16,13) scale(4.0)">
+                <path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M8.5 12l2.4 2.4 4.6-4.8" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+              </g>
+            </svg>
+          </div>
+          <div class="rescue-txt" data-page-node-id="envscanTxt">
+            <h2 data-page-node-id="envscanH2">银狐环境检测</h2>
+            <p data-page-node-id="envscanP">本功能由常驻 Windows 服务的「银狐环境检测程序」（单个 EXE，兼作系统服务与浏览器联动宿主）提供实时检测——安装后作为后台服务自动运行，无需手动打开、无托盘、无独立窗口。约每 3 分钟扫描本机进程 / 注册表 / 计划任务 / 网络连接 / 文件，盾牌图标绿=环境正常、红=疑似中银狐，结果仅在扩展内显示。</p>
+          </div>
+          <button class="btn btn-rescue" id="envscanDownload" data-page-node-id="envscanDl">下载安装包（EXE）</button>
+        </div>
+
+        <div class="card" data-page-node-id="envscanStatusCard">
+          <div class="row" data-page-node-id="envscanRow">
+            <div class="rl" data-page-node-id="envscanRl">
+              <div class="rt" data-page-node-id="envscanRt">实时环境状态</div>
+              <div class="rd" data-page-node-id="envscanRd">面板显示服务端最新一轮扫描的缓存结果，每 30 秒自动读取一次（仅读取结果，不触发扫描，不占 CPU）。扫描由服务端按节奏执行：每 3 分钟自动巡检，或点右侧「立即检查」手动全量扫描。</div>
+            </div>
+            <button class="btn" id="envscanCheck" type="button" data-page-node-id="envscanCheckBtn">立即检查</button>
+          </div>
+          <div id="envscanStatus" class="envscan-status" data-page-node-id="envscanStatus">正在连接本地检测程序…</div>
+          <div id="envscanFindings" class="envscan-findings" data-page-node-id="envscanFindings"></div>
+          <div id="envscanHint" class="tip tip-warn" style="display:none" data-page-node-id="envscanHint">未能连接本地检测程序。请确认已用 SilverFoxEnvScan-Setup.exe 安装包完成安装（安装后服务自动后台常驻，无需手动运行、无托盘图标）；若已安装仍连不上，请检查安装时填写的 Chrome/Edge 扩展 ID 与当前扩展是否一致。</div>
+        </div>
+        <div class="card" id="envscanHistoryCard" hidden>
+          <div class="row">
+            <div class="rl">
+              <div class="rt">清除记录</div>
+              <div class="rd">环境检测程序的历史清除动作（保留最近 50 次），按处理结果分类展示。</div>
+            </div>
+          </div>
+          <div id="envscanHistory" class="envscan-history"><div class="hst-empty">暂无清除记录</div></div>
         </div>
       </section>
 
       <!-- 子页面：银狐样本扫描 -->
-      <section class="sec subpage" id="scanner-main">
-        <div class="card">
-          <div class="row">
-            <div class="rl">
-              <div class="rt">静态样本扫描</div>
-              <div class="rd">选择文件或整个文件夹，纯本地分析、文件不上传、绝不运行样本。</div>
+      <section class="sec subpage" id="scanner-main" data-page-node-id="o28eZIogEKtUi7xFk7pCb4">
+        <div class="card" data-page-node-id="xI9yFZKZM0p6PYFaHLfOfL">
+          <div class="row" data-page-node-id="D3Q7sW7XVdcP4RHELrCcFH">
+            <div class="rl" data-page-node-id="4rSUPTKWF002TuQvninrBg">
+              <div class="rt" data-page-node-id="n3AMJIbzOIDcxYepZC4FEq">静态样本扫描</div>
+              <div class="rd" data-page-node-id="cmzBIDqn3zDbKL2BQguVSo">选择文件或整个文件夹，纯本地分析、文件不上传、绝不运行样本。</div>
             </div>
-            <div style="display:flex;gap:8px;flex:0 0 auto">
-              <button class="btn" id="scScanFiles" type="button">扫描文件</button>
-              <button class="btn ghost" id="scScanDir" type="button">扫描文件夹</button>
+            <div style="display:flex;gap:8px;flex:0 0 auto" data-page-node-id="MlgrDIXo0JdKM4KWNvdCSA">
+              <button class="btn" id="scScanFiles" type="button" data-page-node-id="8GkfsDaisG2QxrRgXP8ECn">扫描文件</button>
+              <button class="btn ghost" id="scScanDir" type="button" data-page-node-id="LDONe5LjqNcqIvUL22iCQW">扫描文件夹</button>
             </div>
           </div>
-          <div id="scannerRoot"></div>
+          <div id="scannerRoot" data-page-node-id="aBh0vPb7KtJvKKYAFNq6L1"></div>
         </div>
       </section>
 
       <!-- 个性化 -->
-      <section class="sec" id="personal">
-        <div class="card">
-          <p class="sec-desc">自定义扩展界面外观，设置即时生效（自动保存），无需点击「保存设置」。</p>
-          <div class="row">
+      <section class="sec" id="personal" data-page-node-id="Xke98fXNSURlhnpumRYeO1">
+        <div class="card" data-page-node-id="Zq6us6h17UT4Y3UMMC3Gsu">
+          <p class="sec-desc" data-page-node-id="2YenrrTYsSwPrG30nI4TfW">自定义扩展界面外观，设置即时生效（自动保存），无需点击「保存设置」。</p>
+          <div class="row" style="flex-direction: column; align-items: stretch; gap: 10px;" data-page-node-id="layoutRow">
             <div class="rl">
-              <div class="rt">切换字体</div>
-              <div class="rd">得意黑为内嵌字体，跨系统显示一致；跟随系统使用你的系统默认无衬线字体。</div>
+              <div class="rt">界面布局</div>
+              <div class="rd">新版为分组导航（8 项），整理同类入口、语义更清晰；旧版为原来的 11 项平铺导航。切换即时生效。</div>
             </div>
-            <details class="font-fold" id="fontFold">
-              <summary>选择字体</summary>
-              <div class="font-fold-body">
-                <button class="font-opt active" data-font="system">跟随系统（默认无衬线）</button>
-                <button class="font-opt" data-font="smiley">得意黑 Smiley Sans（内嵌）</button>
+            <div class="seg" id="layoutSeg" role="tablist">
+              <span class="seg-glider"></span>
+              <button type="button" data-layout="new" class="active">新版布局</button>
+              <button type="button" data-layout="old">旧版布局</button>
+            </div>
+          </div>
+          <div class="row" data-page-node-id="1Hb7k4Nrmwf10dHgDeQ4nX">
+            <div class="rl" data-page-node-id="kSGGNM7zsF7F00Uk86RvL7">
+              <div class="rt" data-page-node-id="Gj2cUJquqI3lJy3jsAZZA6">切换字体</div>
+              <div class="rd" data-page-node-id="CVVSDbGB14lLRRkD5y9Brw">得意黑为内嵌字体，跨系统显示一致；跟随系统使用你的系统默认无衬线字体。</div>
+            </div>
+            <details class="font-fold" id="fontFold" data-page-node-id="yJvgpdBKN21f6qFPGlNdlA">
+              <summary data-page-node-id="hJblV241FaugkFSmLJbQlu">选择字体</summary>
+              <div class="font-fold-body" data-page-node-id="uEAYuyq5IlXwXYbqb916sk">
+                <button class="font-opt active" data-font="system" data-page-node-id="ao3rHKtQO0z9xPufT0AihC">跟随系统（默认无衬线）</button>
+                <button class="font-opt" data-font="smiley" data-page-node-id="FlSBv9e3m5sBSeIEGRmJnx">得意黑 Smiley Sans（内嵌）</button>
               </div>
             </details>
           </div>
-          <div class="row" style="flex-direction: column; align-items: stretch; gap: 10px;">
-            <div class="rl">
-              <div class="rt">外观主题</div>
-              <div class="rd">选择界面配色风格；每套主题都支持深色 / 浅色。默认「经典」即当前主题。</div>
+          <div class="row" style="flex-direction: column; align-items: stretch; gap: 10px;" data-page-node-id="mhCvfpUzcBt2LLMWwoxJoK">
+            <div class="rl" data-page-node-id="iu9frirgUq2OAA5tlVNPJj">
+              <div class="rt" data-page-node-id="o1sZzWbu9J1rRccA6FzbcM">外观主题</div>
+              <div class="rd" data-page-node-id="y5JXFJqkNq2zBXm1H8NFnU">选择界面配色风格；每套主题都支持深色 / 浅色。默认「经典」即当前主题。</div>
             </div>
             <button type="button" class="rule-card rule-card--sm" data-sub="personal-theme"
-                    data-sub-title="外观主题" data-sub-desc="选择界面配色风格，每套主题都支持深色 / 浅色">
-              <span class="rc-ico">
-                <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.5 0 2.4-1.1 1.7-2.3-.7-1.2.1-2.2 1.3-2.2H16a3 3 0 0 0 0-6h-1.5c-1.1 0-1.9-.9-1.4-1.9.5-.9 0-1.9-1.3-1.9-2.6 0-5 1.1-6.6 2.9A9 9 0 0 0 12 3Z"/><circle cx="7.5" cy="11.5" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="15" cy="7.5" r="1"/><circle cx="16.5" cy="11.5" r="1"/></svg>
+                    data-sub-title="外观主题" data-sub-desc="选择界面配色风格，每套主题都支持深色 / 浅色" data-page-node-id="PSpydEZt3ZU1SGHdLgcCpf">
+              <span class="rc-ico" data-page-node-id="3SWUa0btJuIEEMLH5Fyh3E">
+                <svg viewBox="0 0 24 24" data-page-node-id="y6OKFw4yAfBqKTtJFQe7Bo"><path d="M12 3a9 9 0 1 0 0 18c1.5 0 2.4-1.1 1.7-2.3-.7-1.2.1-2.2 1.3-2.2H16a3 3 0 0 0 0-6h-1.5c-1.1 0-1.9-.9-1.4-1.9.5-.9 0-1.9-1.3-1.9-2.6 0-5 1.1-6.6 2.9A9 9 0 0 0 12 3Z" data-page-node-id="UOiQybNhmeSbOjArMsPgFR"/><circle cx="7.5" cy="11.5" r="1" data-page-node-id="A3nJON9UCRGrdr93cZQGLA"/><circle cx="10" cy="7.5" r="1" data-page-node-id="KkCcfdbuEMeyNXafTfJ9rl"/><circle cx="15" cy="7.5" r="1" data-page-node-id="5mgEcoL8DeqoPhal0vgMya"/><circle cx="16.5" cy="11.5" r="1" data-page-node-id="9nUqjsJKOUiGwWOQpO4nGx"/></svg>
               </span>
-              <span class="rc-sm-body">
-                <span class="rc-t">外观主题</span>
-                <span class="rc-d">当前：<span id="themeCurrent">经典</span></span>
+              <span class="rc-sm-body" data-page-node-id="g8nG81DfKnLKInOPlrBDYl">
+                <span class="rc-t" data-page-node-id="ZMIolnjQrPrEnBADjrAbQp">外观主题</span>
+                <span class="rc-d" data-page-node-id="nkxWmyiIyu0ZxhqF0s4gIq">当前：<span id="themeCurrent" data-page-node-id="7Ei0ZY4Yuiywd3oK5RgsK6">经典</span></span>
               </span>
-              <span class="theme-preview" aria-hidden="true">
-                <span class="tp-check">✓</span>
+              <span class="theme-preview" aria-hidden="true" data-page-node-id="lk2bMFI54pppmcVGc70nGL">
+                <span class="tp-check" data-page-node-id="5MPnUBGKHikFoSMobNt1BD">✓</span>
               </span>
             </button>
           </div>
-          <div class="row">
-            <div class="rl">
-              <div class="rt">深浅色模式</div>
-              <div class="rd">深色护眼，浅色明亮。当前仅设置页与弹窗支持切换。</div>
+          <div class="row" data-page-node-id="HMal6owDX1y8I3e6TqhOX5">
+            <div class="rl" data-page-node-id="URNT1wjYx0hEmpEw0iDw86">
+              <div class="rt" data-page-node-id="ICTkLhYMBmfsgZCrbS7JuN">深浅色模式</div>
+              <div class="rd" data-page-node-id="038Rwvh0vQxDrZbCm18tVL">深色护眼，浅色明亮。当前仅设置页与弹窗支持切换。</div>
             </div>
-            <label class="switch"><input type="checkbox" id="themeLight"><span class="slider"></span></label>
+            <label class="switch" data-page-node-id="2CKZroWb4IuFZJqjn7Q2TD"><input type="checkbox" id="themeLight" data-page-node-id="000zXwWyeg2c5cyyacLGej"><span class="slider" data-page-node-id="575upiHxuf2J7tmViOLBdL"></span></label>
           </div>
-          <div class="row" style="flex-direction: column; align-items: stretch; gap: 10px;">
-            <div class="rl">
-              <div class="rt">界面材质</div>
-              <div class="rd">磨砂玻璃为默认质感；琉声液态玻璃为真实折射玻璃质感（仅非 Pixel 主题下可切换，Pixel 主题锁定磨砂玻璃）。</div>
+          <div class="row" style="flex-direction: column; align-items: stretch; gap: 10px;" data-page-node-id="lMMFUVLbdWLHYrgeryfevQ">
+            <div class="rl" data-page-node-id="YR92Sb8FhtP5wTHEnwMJow">
+              <div class="rt" data-page-node-id="H4paaQyly6PMSWBBaCvyuI">界面材质</div>
+              <div class="rd" data-page-node-id="EBal8TxplXjeMI49GFfbuF">磨砂玻璃为默认质感；琉声液态玻璃为真实折射玻璃质感（仅非 Pixel 主题下可切换，Pixel 主题锁定磨砂玻璃）。</div>
             </div>
-            <div class="seg" id="materialSeg" role="tablist">
-              <span class="seg-glider"></span>
-              <button type="button" data-material="frosted" class="active">磨砂玻璃</button>
-              <button type="button" data-material="liquid">琉声液态玻璃</button>
-            </div>
-          </div>
-          <div class="row" style="flex-direction: column; align-items: stretch; gap: 10px;">
-            <div class="rl">
-              <div class="rt">自定义背景</div>
-              <div class="rd">上传图片作为设置页背景（自动压缩存储，不影响检测逻辑）。留空则使用主题默认背景。</div>
-            </div>
-            <div class="bg-ctrl">
-              <button type="button" id="bgUploadBtn" class="btn btn-ghost">上传图片</button>
-              <input type="file" id="bgFile" accept="image/*" hidden>
-              <span class="bg-preview" id="bgPreview" hidden></span>
-              <button type="button" id="bgClearBtn" class="btn btn-ghost" hidden>清除</button>
+            <div class="seg" id="materialSeg" role="tablist" data-page-node-id="9a3nrvqLzup5DUl97FbpOt">
+              <span class="seg-glider" data-page-node-id="4tAGLbZKOIeCKtjF2ORUmT"></span>
+              <button type="button" data-material="frosted" class="active" data-page-node-id="r6214iGm0TvaOE6w74dqb3">磨砂玻璃</button>
+              <button type="button" data-material="liquid" data-page-node-id="qfDETeUBReqbOS9goXJDLF">琉声液态玻璃</button>
             </div>
           </div>
-          <div class="row">
-            <div class="rl">
-              <div class="rt">字体大小</div>
-              <div class="rd">拖动滑块调整界面字号，范围 85%–140%，立即生效。</div>
+          <div class="row" style="flex-direction: column; align-items: stretch; gap: 10px;" data-page-node-id="dtXmrWyMWalLznMKtXR6G8">
+            <div class="rl" data-page-node-id="RcVRmBDzMFEQ9DnmukzakD">
+              <div class="rt" data-page-node-id="jLd1b9SOC1udVKrre0rBH7">自定义背景</div>
+              <div class="rd" data-page-node-id="BCI9AR9D7rwkdcHraAGy2T">上传图片作为设置页背景（自动压缩存储，不影响检测逻辑）。留空则使用主题默认背景。</div>
             </div>
-            <div class="fs-ctrl">
-              <input type="range" id="fontScale" min="85" max="140" step="5" value="100">
-              <span class="fs-val" id="fontScaleVal">100%</span>
-              <button type="button" id="fontScaleReset" class="fs-reset" title="重置为默认 100%">↺</button>
+            <div class="bg-ctrl" data-page-node-id="zBAZFiBY2u2lNDNvLCEtky">
+              <button type="button" id="bgUploadBtn" class="btn btn-ghost" data-page-node-id="SgFFLM0jyG73UG7uAg1qfG">上传图片</button>
+              <input type="file" id="bgFile" accept="image/*" hidden data-page-node-id="1K3Xs5Cj9VVzh3Q64twwF0">
+              <span class="bg-preview" id="bgPreview" hidden data-page-node-id="cAIQHYz5LCFuWnkwdnstT0"></span>
+              <button type="button" id="bgClearBtn" class="btn btn-ghost" hidden data-page-node-id="UnAmDRieyvhjDNixE3bXuL">清除</button>
             </div>
           </div>
-          <div class="row">
-            <div class="rl">
-              <div class="rt">减弱动画效果</div>
-              <div class="rd">关闭全部界面动画（过渡、弹跳、悬停光晕等），适合对动效敏感或使用低性能设备。开启后立即生效。</div>
+          <div class="row" data-page-node-id="hlQZnH7TB6tTnfWIpkIrfN">
+            <div class="rl" data-page-node-id="b5rVkX39ce9PEuVdQN5fYQ">
+              <div class="rt" data-page-node-id="2G4HatLX320PTz5uv2Teaz">字体大小</div>
+              <div class="rd" data-page-node-id="4PA6VEuxwB4e5m5jg4vFSy">拖动滑块调整界面字号，范围 85%–140%，立即生效。</div>
             </div>
-            <label class="switch"><input type="checkbox" id="reduceMotion"><span class="slider"></span></label>
+            <div class="fs-ctrl" data-page-node-id="H8PFfsRQ8xVxdp52LS0RP1">
+              <input type="range" id="fontScale" min="85" max="140" step="5" value="100" data-page-node-id="wOfAWH1F31iPVN8X1vu1M5">
+              <span class="fs-val" id="fontScaleVal" data-page-node-id="k4mTJPKjARpd18PCwNVyx4">100%</span>
+              <button type="button" id="fontScaleReset" class="fs-reset" title="重置为默认 100%" data-page-node-id="BnxjqLMUPpJAgVGLEMzEaO">↺</button>
+            </div>
+          </div>
+          <div class="row" data-page-node-id="HnkC5wIKyKnMiL9aUVZqHC">
+            <div class="rl" data-page-node-id="U1y7YSPwxQNG3b5VkaIjnA">
+              <div class="rt" data-page-node-id="cwtH7Rv7Utb89tICTMZ1mZ">减弱动画效果</div>
+              <div class="rd" data-page-node-id="Ci1duDG09CbVUoaGKrwvQw">关闭全部界面动画（过渡、弹跳、悬停光晕等），适合对动效敏感或使用低性能设备。开启后立即生效。</div>
+            </div>
+            <label class="switch" data-page-node-id="r3Gm716BX1ENwfLj5luEXj"><input type="checkbox" id="reduceMotion" data-page-node-id="fhTuTbBfZanSjUc3hp7OgU"><span class="slider" data-page-node-id="awt5kvVkSgEr28fCVDFmni"></span></label>
           </div>
         </div>
-        <div class="tip">提示：浅色模式目前应用于「设置页」与「弹窗」；欢迎页与网页内警告横幅保持深色设计，以维持醒目警示作用。</div>
+        <div class="tip" data-page-node-id="50kzCXSGwIuMsNO30F1og3">提示：浅色模式目前应用于「设置页」与「弹窗」；欢迎页与网页内警告横幅保持深色设计，以维持醒目警示作用。</div>
       </section>
 
       <!-- AI 设置（父页面） -->
-      <section class="sec" id="ai">
-        <div class="card">
-          <p class="sec-desc">配置 AI 助手悬浮球与回答能力。设置即时生效（自动保存），无需点击「保存设置」。</p>
-          <div class="row">
-            <div class="rl">
-              <div class="rt">AI 助手（悬浮球）</div>
-              <div class="rd">开启后设置页右下角出现 AI 悬浮球，可询问扩展用法、主题/字号/检测开关等设置问题（基于 GLM 大模型，不分析当前网页）。</div>
+      <section class="sec" id="ai" data-page-node-id="Dpc2BwaqYIvGZHiwNWBlkc">
+        <div class="card" data-page-node-id="QCL6lu8vMm9sphDSczqiZG">
+          <p class="sec-desc" data-page-node-id="m6Mpt80DiIpkFaQhlafRJf">配置 AI 助手悬浮球与回答能力。设置即时生效（自动保存），无需点击「保存设置」。</p>
+          <div class="row" data-page-node-id="slIdfWQRF2omJYrjiWAnsb">
+            <div class="rl" data-page-node-id="aUzkCblgoLryvzmsDZZ0e9">
+              <div class="rt" data-page-node-id="h2qOBTV30aufTMoiYUCJKP">AI 助手（悬浮球）</div>
+              <div class="rd" data-page-node-id="dVN9FdkliVFebOdFSk31Dr">开启后设置页右下角出现 AI 悬浮球，可询问扩展用法、主题/字号/检测开关等设置问题（基于 GLM 大模型，不分析当前网页）。</div>
             </div>
-            <label class="switch"><input type="checkbox" id="aiEnabled"><span class="slider"></span></label>
+            <label class="switch" data-page-node-id="CBGBR6sa5NIdH2G0NQ3ZEA"><input type="checkbox" id="aiEnabled" data-page-node-id="V7wtqbtusIEZBKFBa0SwyA"><span class="slider" data-page-node-id="9oYgGpYtPU1aEnwwHmbJ7P"></span></label>
           </div>
-          <div class="row">
-            <div class="rl">
-              <div class="rt">本地规则引擎（离线秒回）</div>
-              <div class="rd">内置关键词规则引擎，覆盖扩展设置 / 主题 / 字号 / 检测开关 / 急救箱等常见问答，零延迟、离线可用、零体积。可随时开关：关闭后仅在你开启「允许云端 GLM 增强」时走云端。</div>
+          <div class="row" data-page-node-id="ypadoRv20iCzohx6r9DvZ7">
+            <div class="rl" data-page-node-id="YSjm8xZdgpOsjDhHgFs8uO">
+              <div class="rt" data-page-node-id="09yudIOFVfq0bFH6VoUcVE">本地规则引擎（离线秒回）</div>
+              <div class="rd" data-page-node-id="EbS3uZnhCU2jINBseSx20B">内置关键词规则引擎，覆盖扩展设置 / 主题 / 字号 / 检测开关 / 急救箱等常见问答，零延迟、离线可用、零体积。可随时开关：关闭后仅在你开启「允许云端 GLM 增强」时走云端。</div>
             </div>
-            <label class="switch"><input type="checkbox" id="localModelEnabled"><span class="slider"></span></label>
+            <label class="switch" data-page-node-id="GsircIYqOedl380ISvDMX9"><input type="checkbox" id="localModelEnabled" data-page-node-id="XFIFOW78o3OQEmKKUu8eIY"><span class="slider" data-page-node-id="bwXIsQBMhTLLfxbBO7Uhm5"></span></label>
           </div>
-          <div class="row">
-            <div class="rl">
-              <div class="rt">允许云端增强</div>
-              <div class="rd">本地规则未命中时，是否允许调用云端大模型作补充。默认关闭，避免频繁消耗云端额度；开启后仅在本地规则未命中时兜底（使用所选模型）。</div>
+          <div class="row" data-page-node-id="EwV0KPmO4EdClA9VKujeym">
+            <div class="rl" data-page-node-id="KgBAfdYhllFVEhFrT5EQKb">
+              <div class="rt" data-page-node-id="GmHchAi5mmlJ1LYy6hFHBX">允许云端增强</div>
+              <div class="rd" data-page-node-id="7NssqXHkQqwjUXMa0pFcB1">本地规则未命中时，是否允许调用云端大模型作补充。默认关闭，避免频繁消耗云端额度；开启后仅在本地规则未命中时兜底（使用所选模型）。</div>
             </div>
-            <label class="switch"><input type="checkbox" id="cloudEnhance"><span class="slider"></span></label>
+            <label class="switch" data-page-node-id="vPFUUwwZFNMip0aCZ8kpf5"><input type="checkbox" id="cloudEnhance" data-page-node-id="Tsl5tV2huGYXVS1n0qSClz"><span class="slider" data-page-node-id="RYDFn8ORAWVXcA9w6f7tma"></span></label>
           </div>
-          <div class="row">
-            <div class="rl">
-              <div class="rt">Max 模式</div>
-              <div class="rd">开启后系统优先调用云端模型辅助（更聪明、更自由），并自动关闭下方的「本地规则引擎」与「允许云端增强」开关，仅保留云端 AI 模型辅助；当云端遇到无法处理的问题时再回退到本地规则。关闭本模式即恢复本地引擎默认开启。</div>
+          <div class="row" data-page-node-id="H1aU99IspG83mRjmYqpSKi">
+            <div class="rl" data-page-node-id="R83kgme5fmwDX6KVcEkB1d">
+              <div class="rt" data-page-node-id="PDylBsqR57IOu6hFGvwbDE">Max 模式</div>
+              <div class="rd" data-page-node-id="h5KBEla1ILF0udwePOa6Sb">开启后系统优先调用云端模型辅助（更聪明、更自由），并自动关闭下方的「本地规则引擎」与「允许云端增强」开关，仅保留云端 AI 模型辅助；当云端遇到无法处理的问题时再回退到本地规则。关闭本模式即恢复本地引擎默认开启。</div>
             </div>
-            <label class="switch"><input type="checkbox" id="aiMaxMode"><span class="slider"></span></label>
+            <label class="switch" data-page-node-id="KvwxGE4UMhGylirgWwnDh5"><input type="checkbox" id="aiMaxMode" data-page-node-id="FCJdi4Qd1DmoI6ECieEY1B"><span class="slider" data-page-node-id="MoOPXXtvhrMXF4y38vwIwE"></span></label>
           </div>
-          <div class="row sub-row collapsed" id="maxModeSub">
-            <div class="rl">
-              <div class="rt">后台自动 AI 分析网页</div>
-              <div class="rd">开启后，浏览网页时由扩展在后台自动将页面内容发送给云端 AI，按钓鱼 / 仿冒 / 诈骗 / 品牌核验等规则研判风险；AI 会先推断页面所属品牌的官方域名，后台再比对当前域名是否匹配官方，不匹配即判定仿冒并以页面提示呈现。无需手动触发，随页面加载自动生效（依赖 Max 模式）。</div>
+          <div class="row sub-row collapsed" id="maxModeSub" data-page-node-id="gMWXOTQ9zMaGkssatc3R9Z">
+            <div class="rl" data-page-node-id="7JamL29ymbpGYHtUJaai6F">
+              <div class="rt" data-page-node-id="OlcCnNjfdXL9f1KKHuY2iL">后台自动 AI 分析网页</div>
+              <div class="rd" data-page-node-id="T47ves03l1rAmp0tzMWaiX">开启后，浏览网页时由扩展在后台自动将页面内容发送给云端 AI，按钓鱼 / 仿冒 / 诈骗 / 品牌核验等规则研判风险；AI 会先推断页面所属品牌的官方域名，后台再比对当前域名是否匹配官方，不匹配即判定仿冒并以页面提示呈现。无需手动触发，随页面加载自动生效（依赖 Max 模式）。</div>
             </div>
-            <label class="switch"><input type="checkbox" id="aiCloudWebAnalyse"><span class="slider"></span></label>
+            <label class="switch" data-page-node-id="9bhVu2FRFUJa0gStTG6e7M"><input type="checkbox" id="aiCloudWebAnalyse" data-page-node-id="hZ3uiHtIOQeTvJXMtmf7QX"><span class="slider" data-page-node-id="8n9nfHqsrJwc6wyilVb82N"></span></label>
           </div>
-          <div class="row sub-row collapsed" id="maxModeFileSub">
-            <div class="rl">
-              <div class="rt">借助云端 AI 分析扫描文件</div>
-              <div class="rd">开启后，在「银狐扫描」中扫描出可疑 / 报毒文件时，扩展将本地提取的可疑特征摘要（文件名、大小、魔数、导入表、命中特征等，不含文件正文）发送给云端 AI 作辅助研判，并在结果卡片追加「云端 AI 辅助分析」一行。纯本地判定不受影响，失败静默（依赖 Max 模式）。</div>
+          <div class="row sub-row collapsed" id="maxModeFileSub" data-page-node-id="gG5aMTeEyVK4hPlGHPHgkX">
+            <div class="rl" data-page-node-id="mw8qlPdANcP4MAsbyjeyTG">
+              <div class="rt" data-page-node-id="l9HjzgpmC45EzpludrPcIF">借助云端 AI 分析扫描文件</div>
+              <div class="rd" data-page-node-id="9F4BmuVk3UHQbZ8RuMDIFw">开启后，在「银狐扫描」中扫描出可疑 / 报毒文件时，扩展将本地提取的可疑特征摘要（文件名、大小、魔数、导入表、命中特征等，不含文件正文）发送给云端 AI 作辅助研判，并在结果卡片追加「云端 AI 辅助分析」一行。纯本地判定不受影响，失败静默（依赖 Max 模式）。</div>
             </div>
-            <label class="switch"><input type="checkbox" id="aiScanFileAnalyse"><span class="slider"></span></label>
+            <label class="switch" data-page-node-id="iBd0w3mHUPenufJWTghPmD"><input type="checkbox" id="aiScanFileAnalyse" data-page-node-id="8PjPKbcOmcap0DPI0v1Qas"><span class="slider" data-page-node-id="8fPEsKr1lmCzn86DwuWeNI"></span></label>
           </div>
           <!-- AI 语音播报（免费 TTS，默认关闭） -->
-          <div class="row">
-            <div class="rl">
-              <div class="rt">AI 语音播报</div>
-              <div class="rd">开启后，AI 回复会用微软 Edge 神经语音朗读出来（晓晓女声 / 云希男声，免费、自然、不上传内容）。默认关闭。</div>
+          <div class="row" data-page-node-id="wh0F9MsOrjTF7IcwEA6Qtk">
+            <div class="rl" data-page-node-id="xqP2hXRTkRrSNvR2tbwLox">
+              <div class="rt" data-page-node-id="nyUhvrLP1LV95TCKLL8tIc">AI 语音播报</div>
+              <div class="rd" data-page-node-id="csfu9fXiSgLOmGIxA63zL6">开启后，AI 回复会用微软 Edge 神经语音朗读出来（晓晓女声 / 云希男声，免费、自然、不上传内容）。默认关闭。</div>
             </div>
-            <label class="switch"><input type="checkbox" id="aiTtsEnabled"><span class="slider"></span></label>
+            <label class="switch" data-page-node-id="yGchxU3bjR5ZaWAjbXyVm3"><input type="checkbox" id="aiTtsEnabled" data-page-node-id="1n6JH4xzqlZLJaxa2qGERd"><span class="slider" data-page-node-id="2D51kRO7DThFyollGSuPS1"></span></label>
           </div>
-          <div class="row sub-row collapsed" id="ttsSub">
-            <div class="rl">
-              <div class="rt">播报音色</div>
-              <div class="rd">选择朗读音色（女生 · 晓晓 / 男生 · 云希），点「试听」可预览当前音色。</div>
+          <div class="row sub-row collapsed" id="ttsSub" data-page-node-id="O8lym84HMf9VMQDJA1SNgH">
+            <div class="rl" data-page-node-id="y9GSKTV450aVTlqZyqyTZG">
+              <div class="rt" data-page-node-id="wQUBbBUUsSX6fjKJi4RJxF">播报音色</div>
+              <div class="rd" data-page-node-id="mGoKafhAZFpwwEVm3ih2tj">选择朗读音色（女生 · 晓晓 / 男生 · 云希），点「试听」可预览当前音色。</div>
             </div>
-            <div class="tts-ctrl">
-              <select id="ttsVoice" class="sf-input"></select>
-              <button type="button" class="btn btn-ghost" id="ttsPreview">试听</button>
+            <div class="tts-ctrl" data-page-node-id="EnAT8bBTkZvXIqOBZDgqLn">
+              <select id="ttsVoice" class="sf-input" data-page-node-id="qk6t3pJDck9OhhYwdAwFby"></select>
+              <button type="button" class="btn btn-ghost" id="ttsPreview" data-page-node-id="a6MBo4Y8qFwXjKucgSvXff">试听</button>
             </div>
           </div>
           <!-- 模型管理入口卡片（下钻到子页面） -->
-          <div class="sub-entry" data-sub="ai-model-manage" data-sub-title="AI 模型管理" data-sub-desc="选择模型提供商、指定模型、配置场景路由规则">
-            <div class="se-ic"><svg class="prov-ic" id="entryProvIc"><use href="#prov-zhipu"/></svg></div>
-            <div class="se-mid">
-              <div class="se-t">AI 模型管理</div>
-              <div class="se-d" id="entryModelSummary">默认模型：智谱 GLM · glm-4.7-flash（内置免费）</div>
+          <div class="sub-entry" data-sub="ai-model-manage" data-sub-title="AI 模型管理" data-sub-desc="选择模型提供商、指定模型、配置场景路由规则" data-page-node-id="DllwKXMjexEZgiH08HIxKZ">
+            <div class="se-ic" data-page-node-id="xpj0PqG72sNDy8tywmWh61"><svg class="prov-ic" id="entryProvIc" data-page-node-id="xN5zUzDQXI3x4hKVhxr5UI"><use href="#prov-zhipu" data-page-node-id="jYtPzYZJujYv77rT6Ves0N"/></svg></div>
+            <div class="se-mid" data-page-node-id="vwabox61k0GUUZoO4g6Aga">
+              <div class="se-t" data-page-node-id="X1slqKe5GbkDkcQKzrp7NO">AI 模型管理</div>
+              <div class="se-d" id="entryModelSummary" data-page-node-id="lJbsshCbsgHP0glRxL2nC5">默认模型：智谱 GLM · glm-4.7-flash（内置免费）</div>
             </div>
-            <div class="se-go">管理 ›</div>
+            <div class="se-go" data-page-node-id="xmA58vDSzzAfmkyI5cNbqT">管理 ›</div>
           </div>
-          <div class="sub-entry" data-sub="ai-learn-sub" data-sub-title="本地自学习" data-sub-desc="AI 自动从对话中学习你的口语习惯和常见问题，全部保存在本地，不上传云端">
-            <div class="se-ic"><svg class="prov-ic learn-ic" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z" fill="currentColor"/></svg></div>
-            <div class="se-mid">
-              <div class="se-t">本地自学习</div>
-              <div class="se-d" id="entryLearnSummary">已学规则 0 条 · 口语词 0 个</div>
+          <div class="sub-entry" data-sub="ai-learn-sub" data-sub-title="本地自学习" data-sub-desc="AI 自动从对话中学习你的口语习惯和常见问题，全部保存在本地，不上传云端" data-page-node-id="6Jz2y2cpXKF2CAv5H7oK9k">
+            <div class="se-ic" data-page-node-id="iOQd3EvHn4m91nwXMBV269"><svg class="prov-ic learn-ic" viewBox="0 0 24 24" data-page-node-id="5Peoneo6xcvkfixyEP5HCw"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z" fill="currentColor" data-page-node-id="I2LMnUGLmA0dDwBidt2wVK"/></svg></div>
+            <div class="se-mid" data-page-node-id="ljMDKEAvOhZD5ZWcGsksgF">
+              <div class="se-t" data-page-node-id="q3JYrfaV9vDdERbetWwDYJ">本地自学习</div>
+              <div class="se-d" id="entryLearnSummary" data-page-node-id="jQFB27sXtrEV5044sJwXtX">已学规则 0 条 · 口语词 0 个</div>
             </div>
-            <div class="se-go">查看 ›</div>
+            <div class="se-go" data-page-node-id="lXRQ7nIInQuezwaQeB8MsE">查看 ›</div>
           </div>
         </div>
-        <div class="tip">提示：本地规则引擎默认开启、零延迟离线可用；「允许云端增强」默认关闭，仅在本地规则未命中时走云端兜底。模型配置即时生效，无需点「保存设置」。</div>
+        <div class="tip" data-page-node-id="Ff3tHuFDnKBWqE7TJOwfRJ">提示：本地规则引擎默认开启、零延迟离线可用；「允许云端增强」默认关闭，仅在本地规则未命中时走云端兜底。模型配置即时生效，无需点「保存设置」。</div>
       </section>
 
       <!-- AI 模型管理（子页面，下钻） -->
-      <section class="sec subpage" id="ai-model-manage">
-        <div class="card">
-          <p class="sec-desc">选择模型提供商、指定模型名称，并为不同对话场景配置路由规则。设置即时生效（自动保存）。</p>
-          <div class="sub-block">
-            <div class="rl">
-              <div class="rt">云端模型</div>
-              <div class="rd">选择模型提供商、指定模型名称。默认使用内置免费模型，无需密钥；也可填入自己的 Key 使用其他模型。<span class="mp-gate">（仅当「允许云端增强」开启时生效）</span></div>
+      <section class="sec subpage" id="ai-model-manage" data-page-node-id="ermZkqYTlZRW9YCLbyzvII">
+        <div class="card" data-page-node-id="VHCHE2JeqQgyZDXtMZGlvi">
+          <p class="sec-desc" data-page-node-id="UqFxi0J7qvbySsSBPQUvnr">选择模型提供商、指定模型名称，并为不同对话场景配置路由规则。设置即时生效（自动保存）。</p>
+          <div class="sub-block" data-page-node-id="cLh2orBqIplqqNuJ1G8p63">
+            <div class="rl" data-page-node-id="tvFhUZnbYkH0TViQWlONGY">
+              <div class="rt" data-page-node-id="Lbq7pFYkIvL4FseV5BWN5P">云端模型</div>
+              <div class="rd" data-page-node-id="0Qq0OpGVF2MME3dVwAYZQw">选择模型提供商、指定模型名称。默认使用内置免费模型，无需密钥；也可填入自己的 Key 使用其他模型。<span class="mp-gate" data-page-node-id="zjfBr6uXXarAKSy4orFVtb">（仅当「允许云端增强」开启时生效）</span></div>
             </div>
-            <div class="model-picker">
-              <div class="mp-line">
+            <div class="model-picker" data-page-node-id="ee0moG6Fd1PQPAjw8jbzPS">
+              <div class="mp-line" data-page-node-id="hxShfglYBUZKOmzH3DdM9F">
                 <!-- 自定义提供商下拉（带图标） -->
-                <div class="ai-prov-picker" id="aiProviderPicker">
-                  <button type="button" class="prov-trigger sf-select" id="aiProviderTrigger" aria-haspopup="listbox">
-                    <svg class="prov-ic" id="provTriggerIc"><use href="#prov-zhipu"/></svg>
-                    <span class="prov-label" id="provTriggerLabel">智谱 GLM（默认免费）</span>
-                    <svg class="prov-caret" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="ai-prov-picker" id="aiProviderPicker" data-page-node-id="29Htu3u6gDc66L15LMsp9q">
+                  <button type="button" class="prov-trigger sf-select" id="aiProviderTrigger" aria-haspopup="listbox" data-page-node-id="PqaiGVbmx8HDkJ9ARjSpMP">
+                    <svg class="prov-ic" id="provTriggerIc" data-page-node-id="COSsSTDXQmj3UOFjPyUuLU"><use href="#prov-zhipu" data-page-node-id="N0x7OoSjbOsjCzsf3IL4IP"/></svg>
+                    <span class="prov-label" id="provTriggerLabel" data-page-node-id="DVRUMBjyzOsgad9Psc18tG">智谱 GLM（默认免费）</span>
+                    <svg class="prov-caret" viewBox="0 0 12 12" data-page-node-id="mKeYCt6xfYpAUu1ulUtLIt"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="GbvyVhlmiOfzdFFCdERAuM"/></svg>
                   </button>
-                  <div class="prov-pop" id="aiProviderPop" hidden role="listbox"></div>
+                  <div class="prov-pop" id="aiProviderPop" hidden role="listbox" data-page-node-id="ltra48kAEMlIdiFPwd44JT"></div>
                 </div>
-                <input id="aiModel" class="sf-input" placeholder="模型名称，如 glm-4.7-flash" autocomplete="off" spellcheck="false">
-                <button type="button" class="btn btn-ghost mp-reset" id="aiModelReset" title="恢复默认免费模型">重置默认</button>
+                <input id="aiModel" class="sf-input" placeholder="模型名称，如 glm-4.7-flash" autocomplete="off" spellcheck="false" data-page-node-id="2W5CPLUaXbJGmADVoU3Bv9">
+                <button type="button" class="btn btn-ghost mp-reset" id="aiModelReset" title="恢复默认免费模型" data-page-node-id="9nYf9CSfBC9Uo0HDlOyaRC">重置默认</button>
               </div>
-              <div class="mp-line">
-                <input id="aiApiKey" type="password" class="sf-input" placeholder="API Key（智谱默认内置免费，留空即用内置）" autocomplete="off">
-                <button type="button" class="btn btn-ghost" id="aiKeyToggle">显示</button>
+              <div class="mp-line" data-page-node-id="0eNU4wdg0cs62FXpKhjx6Q">
+                <input id="aiApiKey" type="password" class="sf-input" placeholder="API Key（智谱默认内置免费，留空即用内置）" autocomplete="off" data-page-node-id="FyzlEWvyFHC320fCqkfSBB">
+                <button type="button" class="btn btn-ghost" id="aiKeyToggle" data-page-node-id="a1Z5ZcSqDESa350e1ny2dC">显示</button>
               </div>
-              <div class="mp-line" id="aiBaseUrlWrap" hidden>
-                <input id="aiBaseUrl" class="sf-input" placeholder="自定义 API 基址，如 https://your-gateway.com/v1" autocomplete="off" spellcheck="false">
+              <div class="mp-line" id="aiBaseUrlWrap" hidden data-page-node-id="V35MawQywYFlJoZwJN9icW">
+                <input id="aiBaseUrl" class="sf-input" placeholder="自定义 API 基址，如 https://your-gateway.com/v1" autocomplete="off" spellcheck="false" data-page-node-id="fuBmeJzhG9mWcSG8FGWWp9">
               </div>
-              <div class="mp-hint" id="aiModelHint"></div>
+              <div class="mp-hint" id="aiModelHint" data-page-node-id="lWpbT1HUQPru5RhHOamJOY"></div>
             </div>
           </div>
-          <div class="sub-block">
-            <div class="rl">
-              <div class="rt">场景路由规则</div>
-              <div class="rd">为不同对话场景指定使用的模型；未设置的场景走上方默认模型。每行前面的图标表示对应提供商。</div>
+          <div class="sub-block" data-page-node-id="2iEfnHdfKgtH0JXu9bjBIG">
+            <div class="rl" data-page-node-id="LTkpClX1kuQsCDgqBeyo3I">
+              <div class="rt" data-page-node-id="gGnOhK0EU14ynb9nKFmh4N">场景路由规则</div>
+              <div class="rd" data-page-node-id="WgbgUlKpg6yR1UkBCCdKEk">为不同对话场景指定使用的模型；未设置的场景走上方默认模型。每行前面的图标表示对应提供商。</div>
             </div>
-            <div class="ai-rules" id="aiRules"></div>
-            <button type="button" class="btn btn-ghost ai-rule-add" id="aiRuleAdd">+ 新增场景规则</button>
+            <div class="ai-rules" id="aiRules" data-page-node-id="ipIs7GyAxmzr8CZNPSE5Oj"></div>
+            <button type="button" class="btn btn-ghost ai-rule-add" id="aiRuleAdd" data-page-node-id="bLmJQAcyuAssZfTRoh3w9c">+ 新增场景规则</button>
           </div>
         </div>
       </section>
 
       <!-- AI 本地自学习（子页面，下钻） -->
-      <section class="sec subpage" id="ai-learn-sub">
-        <div class="card">
-          <p class="sec-desc">AI 在本地自动总结你的对话习惯：高频问题会生成新规则，常用说法会补充为口语词，误判的规则会自动降权。所有数据只保存在本机，不上传任何云端。</p>
-          <div class="row">
-            <div class="rl">
-              <div class="rt">启用本地自学习</div>
-              <div class="rd">关闭后不再记录新对话，也不会从已积累的数据中学习，但历史数据仍保留。</div>
+      <section class="sec subpage" id="ai-learn-sub" data-page-node-id="vlkwwbB12fqH0u1Tub9jJm">
+        <div class="card" data-page-node-id="QlcTBSqiPPhi1yEjoB9VT9">
+          <p class="sec-desc" data-page-node-id="VcPiZVdpGjkhfz2LbhCm0F">AI 在本地自动总结你的对话习惯：高频问题会生成新规则，常用说法会补充为口语词，误判的规则会自动降权。所有数据只保存在本机，不上传任何云端。</p>
+          <div class="row" data-page-node-id="9M1FFN3xuf0BylojZZmbtt">
+            <div class="rl" data-page-node-id="H5J2ZOXARj9YyvCoRH0H3O">
+              <div class="rt" data-page-node-id="sI4VDLVo3t21CGULW4P7Q6">启用本地自学习</div>
+              <div class="rd" data-page-node-id="TydzAltDsYuBCRgfBvnGfv">关闭后不再记录新对话，也不会从已积累的数据中学习，但历史数据仍保留。</div>
             </div>
-            <label class="switch"><input type="checkbox" id="learnEnabled"><span class="slider"></span></label>
+            <label class="switch" data-page-node-id="ShHE5n0jpoVZ00gqucArj8"><input type="checkbox" id="learnEnabled" data-page-node-id="uxGi3EgbUmu5RwlFyVk4dq"><span class="slider" data-page-node-id="ClXJskkHOZzQX5Fcg73ZLW"></span></label>
           </div>
-          <div class="learn-stats" id="learnStats">
-            <div class="ls-item"><div class="ls-n" id="learnRuleCount">0</div><div class="ls-l">已学规则</div></div>
-            <div class="ls-item"><div class="ls-n" id="learnWordCount">0</div><div class="ls-l">口语词</div></div>
-            <div class="ls-item"><div class="ls-n" id="learnLogCount">0</div><div class="ls-l">学习样本</div></div>
+          <div class="learn-stats" id="learnStats" data-page-node-id="4PUox9fc97Rcc9wbUgR3s6">
+            <div class="ls-item" data-page-node-id="RvQ2RO3OvB5qLOISaiO6x2"><div class="ls-n" id="learnRuleCount" data-page-node-id="T603W8qAaOkMSOSpJeCnN0">0</div><div class="ls-l" data-page-node-id="jusu6JjGjk0NNaYtf49K46">已学规则</div></div>
+            <div class="ls-item" data-page-node-id="mqVGpKAP89LXjauQjW8vZl"><div class="ls-n" id="learnWordCount" data-page-node-id="frFiKhKiNc7bvmFuR4Fe7c">0</div><div class="ls-l" data-page-node-id="QaSpE0c3XBlmFpbZbAJY4k">口语词</div></div>
+            <div class="ls-item" data-page-node-id="jtJwHIARFFYNESZAJWyx15"><div class="ls-n" id="learnLogCount" data-page-node-id="87SUxWhW0ITDLkasSzhZcJ">0</div><div class="ls-l" data-page-node-id="cewTXBsdBiY61lB7uFlNhb">学习样本</div></div>
           </div>
-          <div class="learn-recent" id="learnRecent">
-            <div class="lr-title">最近学习</div>
-            <div class="lr-empty">暂无记录，多与 AI 助手对话即可自动生成。</div>
+          <div class="learn-recent" id="learnRecent" data-page-node-id="BZ9HbKpMPpgDS37zWPPeRg">
+            <div class="lr-title" data-page-node-id="T47c51MZn1weRnWJJWDfbx">最近学习</div>
+            <div class="lr-empty" data-page-node-id="f4eqNNavpaigF2eAnaB4Vu">暂无记录，多与 AI 助手对话即可自动生成。</div>
           </div>
-          <button type="button" class="btn btn-danger learn-clear" id="learnClear">清空本地自学习数据</button>
+          <button type="button" class="btn btn-danger learn-clear" id="learnClear" data-page-node-id="klzp95oVqWgSJ8WKxPrujt">清空本地自学习数据</button>
         </div>
       </section>
 
       <!-- 子页面：外观主题（下钻，与规则白名单同款进入/返回逻辑） -->
-      <section class="sec subpage" id="personal-theme">
-        <div class="card">
-          <p class="sec-desc">选择一套配色风格，点击立即生效并自动保存。每套主题都支持深色 / 浅色（深浅色开关在「个性化」页）。</p>
-          <div class="theme-grid" id="themeGrid">
-            <button type="button" class="theme-opt active" data-palette="classic">
-              <span class="theme-swatch sw-classic"></span>
-              <span class="theme-name">经典</span>
+      <section class="sec subpage" id="personal-theme" data-page-node-id="jwu6aRGEkNA5mlMOwKkGDI">
+        <div class="card" data-page-node-id="YgRvSDfz0YtiM40w6LgjIM">
+          <p class="sec-desc" data-page-node-id="fCzxdCRCl1T0fMvslqerfo">选择一套配色风格，点击立即生效并自动保存。每套主题都支持深色 / 浅色（深浅色开关在「个性化」页）。</p>
+          <div class="theme-grid" id="themeGrid" data-page-node-id="iNAqZiQHKvCRqZxoilA990">
+            <button type="button" class="theme-opt active" data-palette="classic" data-page-node-id="HTofEI56ts76Tt9zqIKQj3">
+              <span class="theme-swatch sw-classic" data-page-node-id="j2vvXmHkQT2n87FMvOz4bg"></span>
+              <span class="theme-name" data-page-node-id="O1l6KvYB8UZloQKro4J7qF">经典</span>
             </button>
-            <button type="button" class="theme-opt" data-palette="gold">
-              <span class="theme-swatch sw-gold"></span>
-              <span class="theme-name">暖金国风</span>
+            <button type="button" class="theme-opt" data-palette="gold" data-page-node-id="eiCdemdXVHp5QD34zGffNq">
+              <span class="theme-swatch sw-gold" data-page-node-id="ktmjv6nCk6GHFkTgkNnCZR"></span>
+              <span class="theme-name" data-page-node-id="MAGtg6PxCaeBSTNoyM9GRn">暖金国风</span>
             </button>
-            <button type="button" class="theme-opt" data-palette="neon">
-              <span class="theme-swatch sw-neon"></span>
-              <span class="theme-name">赛博霓虹</span>
+            <button type="button" class="theme-opt" data-palette="neon" data-page-node-id="YlKnuLEMgvi1kfjK6ihvTY">
+              <span class="theme-swatch sw-neon" data-page-node-id="9g1J6jUsCz9ztbeAbYx7N9"></span>
+              <span class="theme-name" data-page-node-id="zXSFIwCgJlfUAHPsdg8CY9">赛博霓虹</span>
             </button>
-            <button type="button" class="theme-opt" data-palette="mist">
-              <span class="theme-swatch sw-mist"></span>
-              <span class="theme-name">极简雾灰</span>
+            <button type="button" class="theme-opt" data-palette="mist" data-page-node-id="AE5O6avJTrIyOoljIm2HqR">
+              <span class="theme-swatch sw-mist" data-page-node-id="gXTPEiSml63igTdTcOaIDz"></span>
+              <span class="theme-name" data-page-node-id="DWfy3fHdYk5KfgdDcjd7rE">极简雾灰</span>
             </button>
-            <button type="button" class="theme-opt" data-palette="space">
-              <span class="theme-swatch sw-space"></span>
-              <span class="theme-name">暗夜深空</span>
+            <button type="button" class="theme-opt" data-palette="space" data-page-node-id="fQCYfWq6lBSzi6gZkShGIa">
+              <span class="theme-swatch sw-space" data-page-node-id="NXssAYgKgHfEx0BWGRPk0O"></span>
+              <span class="theme-name" data-page-node-id="AQO9hF2R27UVkvlGt00zP8">暗夜深空</span>
             </button>
-            <button type="button" class="theme-opt" data-palette="pixel">
-              <span class="theme-swatch sw-pixel"></span>
-              <span class="theme-name">Pixel</span>
+            <button type="button" class="theme-opt" data-palette="pixel" data-page-node-id="zA2ckgtH6tVjjUBjT45FHd">
+              <span class="theme-swatch sw-pixel" data-page-node-id="QUuJwcGtv1hGZB8yU9sZAP"></span>
+              <span class="theme-name" data-page-node-id="fpezd7rIXHQsFqeihPNCz0">Pixel</span>
             </button>
+            <button type="button" class="theme-opt theme-import" id="themeImportCard" data-page-node-id="XaVP7804X9K6f488WnlzJz">
+              <span class="theme-swatch sw-import" data-page-node-id="ufR7uoTtHFnHDyeOhBMYnZ">＋</span>
+              <span class="theme-name" data-page-node-id="DtKqTjkMH1H0Hx9yf4gjWg">导入自定义主题</span>
+            </button>
+            <input type="file" id="themeImportFile" accept=".json,application/json" hidden data-page-node-id="gZrUv9hwbwUF3fLkK90JK8" />
+          </div>
+          <div class="theme-editor-link-wrap" data-page-node-id="cYd8kLq2">
+            <a class="theme-editor-link" href="https://silverfoxguard.dpdns.org/theme-editor.html" target="_blank" rel="noopener">打开在线主题编辑器，创建并导出你的自定义主题 →</a>
           </div>
         </div>
       </section>
+      <div class="theme-ctx-menu" id="themeCtx" style="display:none;">
+        <div class="theme-ctx-item" data-act="delete">删除此主题</div>
+      </div>
 
       <!-- 关于 -->
-      <section class="sec" id="about">
-        <div class="card">
-          <div class="about-row"><span class="ak">扩展名称</span><span class="av">银狐防护 · SilverFox Guard</span></div>
-          <div class="about-row"><span class="ak">版本</span><span class="av" id="verAbout">v1.3.9</span></div>
-          <div class="about-row"><span class="ak">检测方式</span><span class="av">网页代码特征分析（本地，不上传）</span></div>
-          <div class="about-row"><span class="ak">更新日志</span><span class="av"><a href="#" id="aboutChangelog" rel="noreferrer">查看各版本变更记录 ›</a></span></div>
-          <div class="about-row"><span class="ak">隐私政策</span><span class="av"><a href="https://yinbo345.github.io/silverfox-guard/PRIVACY.md" target="_blank" rel="noreferrer">yinbo345.github.io/silverfox-guard/PRIVACY.md</a></span></div>
-          <div class="about-row"><span class="ak">项目仓库</span><span class="av"><a href="https://github.com/yinbo345/silverfox-guard" target="_blank" rel="noreferrer">github.com/yinbo345/silverfox-guard</a></span></div>
+      <section class="sec" id="about" data-page-node-id="lAKnGBer07g9bqqwhjesxJ">
+        <div class="card" data-page-node-id="uzEanhnPcX4DGQWvnfzfH3">
+          <div class="about-row" data-page-node-id="U0zHRj4LTnMVwLi7ei0EXy"><span class="ak" data-page-node-id="0kky9oFxafxFZRYE4OfiAD">扩展名称</span><span class="av" data-page-node-id="2yWPjVfCdGaU8sGvqHnei0">银狐防护 · SilverFox Guard</span></div>
+          <div class="about-row" data-page-node-id="QkzAZvzqJGj0eGl6AoVXqU"><span class="ak" data-page-node-id="UeB2xusyUyvtBfiXJCLmhu">版本</span><span class="av" id="verAbout" data-page-node-id="2kA1YSeEgJK0FWVhFo3UDU">v1.3.9</span></div>
+          <div class="about-row" data-page-node-id="9HGMok13gGhP0wCkkVpriw"><span class="ak" data-page-node-id="dXbjpE5gb8z7dKIWeQTqNf">检测方式</span><span class="av" data-page-node-id="trqIo2mOgS5UKsIxbiHvVD">网页代码特征分析（本地，不上传）</span></div>
+          <div class="about-row" data-page-node-id="9ouullvUNCaYmXnuD1o0lt"><span class="ak" data-page-node-id="GlTxCCsZgaVHzZ2jHF9skB">更新日志</span><span class="av" data-page-node-id="oBvvNHI6OnYXrA5wqZxDuj"><a href="#" id="aboutChangelog" rel="noreferrer" data-page-node-id="6RlBS8QA7SH5CvO7gp28dR">查看各版本变更记录 ›</a></span></div>
+          <div class="about-row" data-page-node-id="fk21QpHx5xnayIpYBJ9Pik"><span class="ak" data-page-node-id="JbbL5e2HWqX5LYCJ8QWO1G">隐私政策</span><span class="av" data-page-node-id="ewLZB8QUme2ckphjySGFDn"><a href="https://yinbo345.github.io/silverfox-guard/PRIVACY.md" target="_blank" rel="noreferrer" data-page-node-id="2JDU7smH0eGm2Bl4mg9DuW">yinbo345.github.io/silverfox-guard/PRIVACY.md</a></span></div>
+          <div class="about-row" data-page-node-id="ZlA8G7QHjra4Ijrc81pZPq"><span class="ak" data-page-node-id="tM4qhnfyTX2IAV1dUYCjEp">项目仓库</span><span class="av" data-page-node-id="MlOWp3serjw4b3xhPnYT6c"><a href="https://github.com/yinbo345/silverfox-guard" target="_blank" rel="noreferrer" data-page-node-id="9PdYDUpYdaZAR3gH1hmKTg">github.com/yinbo345/silverfox-guard</a></span></div>
+          <div class="about-row" data-page-node-id="SF_UC_ROW"><span class="ak">更新检查</span><span class="av"><button class="btn-mini" id="manualCheckUpdate" type="button" data-page-node-id="SF_UC_BTN">检查更新</button><span class="upd-checking" id="updChecking" hidden data-page-node-id="SF_UC_SPIN">检查中…</span></span></div>
+          <div class="about-row" data-page-node-id="SF_CLOUD_ROW"><span class="ak">云端官网库</span><span class="av"><span id="cloudLibInfo">加载中…</span><button class="btn-mini" id="cloudLibRefresh" type="button">检查更新</button><span class="upd-checking" id="cloudLibChecking" hidden>检查中…</span></span></div>
         </div>
 
         <!-- 支持作者 / 鸣谢 -->
-        <div class="card sponsor-card">
-          <div class="sponsor-head">
-            <span class="sponsor-title">支持作者</span>
+        <div class="card sponsor-card" data-page-node-id="UkWpTQikUvGRu5Z5iC8KJ8">
+          <div class="sponsor-head" data-page-node-id="OKGWwLMYz23fU3Pw4HJcbJ">
+            <span class="sponsor-title" data-page-node-id="HoC4iY6izPWz3zT1npuUuF">支持作者</span>
           </div>
-          <p class="sponsor-desc">银狐防护是一个免费、开源的浏览器扩展。如果你的上网安全因它而多了一分保障，欢迎到爱发电请作者喝杯柠檬水，让检测规则持续更新、误报持续修复。</p>
-          <a class="sponsor-btn" href="https://afdian.com/a/silverfox" target="_blank" rel="noopener">前往爱发电赞助</a>
-          <div class="sponsor-list" id="sponsorList" hidden>
-            <div class="sponsor-list-title">鸣谢 · 以下赞助者让银狐防护走得更远</div>
-            <ul class="sponsor-names" id="sponsorNames"></ul>
+          <p class="sponsor-desc" data-page-node-id="kDvpiT4TAadQBqtxalKLeM">银狐防护是一个免费、开源的浏览器扩展。如果你的上网安全因它而多了一分保障，欢迎到爱发电请作者喝杯柠檬水，让检测规则持续更新、误报持续修复。</p>
+          <a class="sponsor-btn" href="https://afdian.com/a/silverfox" target="_blank" rel="noopener" data-page-node-id="7OzFuEBo4n2pwFuaZbT2A0">前往爱发电赞助</a>
+          <div class="sponsor-list" id="sponsorList" hidden data-page-node-id="V2KRjoKMxbzXtGFvsnB3aI">
+            <div class="sponsor-list-title" data-page-node-id="ivGRpUHIsykcMDJg3eipSM">鸣谢 · 以下赞助者让银狐防护走得更远</div>
+            <ul class="sponsor-names" id="sponsorNames" data-page-node-id="mCGF3imj0BC7pMJPEO7mwj"></ul>
           </div>
         </div>
 
-        <div class="tip">银狐（又称"游蛇"）木马常通过仿冒知名软件官网、网盘分发带毒安装包、钓鱼诱导话术传播。本扩展基于网页代码特征分析进行预警，仅供参考，无法替代专业杀毒软件。</div>
+        <div class="tip" data-page-node-id="hxsKA8MWRfO3z7ZC5c7DGS">银狐（又称"游蛇"）木马常通过仿冒知名软件官网、网盘分发带毒安装包、钓鱼诱导话术传播。本扩展基于网页代码特征分析进行预警，仅供参考，无法替代专业杀毒软件。</div>
       </section>
 
       <!-- 更新日志（放映式大版本介绍；不在左侧分类导航，由关于页 / 更新成功弹窗进入） -->
-      <section class="sec" id="changelog">
-        <div class="cl-show" id="clShow" aria-roledescription="幻灯片">
-          <div class="cl-aura" aria-hidden="true">
-            <span class="cl-blob b1"></span><span class="cl-blob b2"></span><span class="cl-blob b3"></span>
+      <section class="sec" id="changelog" data-page-node-id="6lWPnqjLS6kimC6rl7j7tp">
+        <div class="cl-show" id="clShow" aria-roledescription="幻灯片" data-page-node-id="wlVfvLEXoTMNXgYCBXfQKM">
+          <div class="cl-aura" aria-hidden="true" data-page-node-id="wBFMjLxFZe0pcCnKNVfF7v">
+            <span class="cl-blob b1" data-page-node-id="HS2KJtHMZflYw26ZfPNZeV"></span><span class="cl-blob b2" data-page-node-id="uNOIo7XTD2kBcvSVytCxoq"></span><span class="cl-blob b3" data-page-node-id="mGIAdLo1m7Jsd13G2CB6yu"></span>
           </div>
 
           <!-- 幻灯片轨道 -->
-          <div class="cl-track" id="clTrack">
+          <div class="cl-track" id="clTrack" data-page-node-id="F0c3th6ilCOUwBMeACJFEE">
 
             <!-- 0 · 封面 -->
-            <article class="cl-slide cl-cover" data-kicker="SILVERFOX GUARD · 持续进化">
-              <div class="cl-cover-mark" id="clStarWrap" aria-hidden="true">
-                <svg viewBox="0 0 120 120" width="150" height="150" class="gemini-mark" id="clGemini">
-                  <defs>
-                    <linearGradient id="gmA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4285F4"/><stop offset="1" stop-color="#A142F4"/></linearGradient>
-                    <linearGradient id="gmB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EA4335"/><stop offset="1" stop-color="#FBBC04"/></linearGradient>
-                    <linearGradient id="gmC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34A853"/><stop offset="1" stop-color="#4285F4"/></linearGradient>
-                    <radialGradient id="gmGlow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+            <article class="cl-slide cl-cover" data-kicker="SILVERFOX GUARD · 持续进化" data-page-node-id="nx3OAysKGIwiRYk7wu3NCP">
+              <div class="cl-cover-mark" id="clStarWrap" aria-hidden="true" data-page-node-id="YIjECIWYgn0Au3lmX5s2WM">
+                <svg viewBox="0 0 120 120" width="150" height="150" class="gemini-mark" id="clGemini" data-page-node-id="nqXVAD7g6WkGe6c9UNk2lL">
+                  <defs data-page-node-id="2OX5IiSYgMRVTnM1GMlu4d">
+                    <linearGradient id="gmA" x1="0" y1="0" x2="1" y2="1" data-page-node-id="qE0mCBUtwqNZBkWkPFL7h5"><stop offset="0" stop-color="#4285F4" data-page-node-id="87URdWjMKbKVO6lZRofRNy"/><stop offset="1" stop-color="#A142F4" data-page-node-id="knUeYrUEWwtQQqwiPGXR8S"/></linearGradient>
+                    <linearGradient id="gmB" x1="0" y1="0" x2="1" y2="1" data-page-node-id="oS8rX6gvbswlx7l8yu5Adt"><stop offset="0" stop-color="#EA4335" data-page-node-id="72xr6vB6imgYrkpLJVhakS"/><stop offset="1" stop-color="#FBBC04" data-page-node-id="aClY8dnY1eZxFAz0rjwCGF"/></linearGradient>
+                    <linearGradient id="gmC" x1="0" y1="0" x2="1" y2="1" data-page-node-id="4XkE1ZCGfVeteCVQ5iIrHX"><stop offset="0" stop-color="#34A853" data-page-node-id="wE5S8XLyPpY8zuJXRFa7Qg"/><stop offset="1" stop-color="#4285F4" data-page-node-id="Qg3W7GXIh1ySKsty4SfkcR"/></linearGradient>
+                    <radialGradient id="gmGlow" cx="50%" cy="50%" r="50%" data-page-node-id="j5Elci1GUtr6hZxXluk6OD"><stop offset="0" stop-color="#fff" stop-opacity=".9" data-page-node-id="FoWF37HWnjS6GRw9QLD6qH"/><stop offset="1" stop-color="#fff" stop-opacity="0" data-page-node-id="dKxF3IjrKHUi7enHLA3gDw"/></radialGradient>
                   </defs>
-                  <circle cx="60" cy="60" r="54" fill="url(#gmGlow)" opacity=".35"/>
-                  <g class="gemini-spin">
-                    <path d="M60 14 C78 30 90 46 86 66 C82 86 66 92 60 106 C54 92 38 86 34 66 C30 46 42 30 60 14 Z" fill="none" stroke="url(#gmA)" stroke-width="5.5" stroke-linejoin="round"/>
-                    <path d="M106 60 C90 78 74 90 54 86 C34 82 28 66 14 60 C28 54 34 38 54 34 C74 30 90 42 106 60 Z" fill="none" stroke="url(#gmB)" stroke-width="5.5" stroke-linejoin="round" opacity=".95"/>
-                    <path d="M60 106 C42 90 30 74 34 54 C38 34 54 28 60 14 C66 28 82 34 86 54 C90 74 78 90 60 106 Z" fill="none" stroke="url(#gmC)" stroke-width="4" stroke-linejoin="round" opacity=".8"/>
+                  <circle cx="60" cy="60" r="54" fill="url(#gmGlow)" opacity=".35" data-page-node-id="UDC5SfCp3iAIwOd4MWrW6A"/>
+                  <g class="gemini-spin" data-page-node-id="idr6FPooLK1KUAxDTN5I3x">
+                    <path d="M60 14 C78 30 90 46 86 66 C82 86 66 92 60 106 C54 92 38 86 34 66 C30 46 42 30 60 14 Z" fill="none" stroke="url(#gmA)" stroke-width="5.5" stroke-linejoin="round" data-page-node-id="7dAfbJrwZCdOPWZBarQCsn"/>
+                    <path d="M106 60 C90 78 74 90 54 86 C34 82 28 66 14 60 C28 54 34 38 54 34 C74 30 90 42 106 60 Z" fill="none" stroke="url(#gmB)" stroke-width="5.5" stroke-linejoin="round" opacity=".95" data-page-node-id="nVJI28tCOoiyyoR03yryc2"/>
+                    <path d="M60 106 C42 90 30 74 34 54 C38 34 54 28 60 14 C66 28 82 34 86 54 C90 74 78 90 60 106 Z" fill="none" stroke="url(#gmC)" stroke-width="4" stroke-linejoin="round" opacity=".8" data-page-node-id="bPOCD2E3yAHng6vTZaGDir"/>
                   </g>
-                  <circle cx="60" cy="60" r="7" fill="#fff"/>
+                  <circle cx="60" cy="60" r="7" fill="#fff" data-page-node-id="yk2xHvOLFPtR3etN1NQE05"/>
                 </svg>
               </div>
-              <h1 class="cl-title" id="clCoverTitle">首次使用，更顺手了<span class="cl-title-sub">开机引导 · 一步到位专属设置</span></h1>
-              <div class="cl-ver-big">v1.5.0</div>
-              <p class="cl-lead">新增「初始化设置向导」：首次安装像手机开机一样分步引导，挑灵敏度、主题、字体、字号、材质，并选 AI 性格档与报毒识别偏好，每步可单独跳过、右上角一键跳过，所有选择实时预览。AI 悬浮球改为默认开启，开箱即用。</p>
-              <div class="cl-scroll-hint" aria-hidden="true"><span></span>翻页键 / ← → 切换 · 自动播放</div>
+              <h1 class="cl-title" id="clCoverTitle" data-page-node-id="8C2MI2qsJXCqkis6QRqwGN">你的防护 · 你的风格<span class="cl-title-sub" data-page-node-id="prx1Q7yxtXEWdc8TMjJIdu">自定义主题编辑器上线 · 云端 AI 真正能改设置</span></h1>
+              <div class="cl-ver-big" id="clVerBig" data-page-node-id="95wLgYC9o0zLSAsTchXnZ8">v1.5.8</div>
+              <p class="cl-lead" data-page-node-id="UNHmkPgbhkKGci0XcCllo3">新增官网主题编辑器：在线调色、换材质、选浮空侧边栏、调控件风格，导出配置导入扩展即可拥有多套自定义主题。云端 AI 工具调用修复——命令式意图（如「换成深色、关掉警告」）第一回合即执行，不再只说不做。GitHub 反馈的误报域名批量加白、恶意站点批量加黑。</p>
+              <div class="cl-scroll-hint" aria-hidden="true" data-page-node-id="V9x9H487QXDCXQKeGx3k3y"><span data-page-node-id="QFDxPGp1qtxGo5i830KsrI"></span>翻页键 / ← → 切换 · 自动播放</div>
             </article>
 
             <!-- 1 · AI 助手悬浮球 -->
-            <article class="cl-slide cl-feature" data-kicker="AI 助手">
-              <div class="cl-stage">
-                <div class="cl-fab-demo" aria-hidden="true">
-                  <div class="cl-fab-core"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 3a4 4 0 0 1 4 4v1a4 4 0 0 1-8 0V7a4 4 0 0 1 4-4Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 20a7 7 0 0 1 14 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
-                  <div class="cl-fab-bubble">
-                    <p>打开银狐急救</p>
-                    <p class="cl-bubble-a">已在本地直达，秒开设置页 ›</p>
+            <article class="cl-slide cl-feature" data-kicker="AI 助手" data-page-node-id="IZaf26QhmY302rPJeMIdPS">
+              <div class="cl-stage" data-page-node-id="n5ahri9xZeY6ZgaV2jnVll">
+                <div class="cl-fab-demo" aria-hidden="true" data-page-node-id="LoZjC2Mc86z3zvnBd9uiIE">
+                  <div class="cl-fab-core" data-page-node-id="iQ7iSXFiFwoVPWhhA1b9a7"><svg viewBox="0 0 24 24" width="26" height="26" data-page-node-id="zzchjK0okgf1BmvIXx8c8X"><path d="M12 3a4 4 0 0 1 4 4v1a4 4 0 0 1-8 0V7a4 4 0 0 1 4-4Z" fill="none" stroke="currentColor" stroke-width="1.8" data-page-node-id="r8iRuQVpQDq7UIW9UlZIUe"/><path d="M5 20a7 7 0 0 1 14 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-page-node-id="8uWtgpvDD99YyVtXty2XIS"/></svg></div>
+                  <div class="cl-fab-bubble" data-page-node-id="FqygJGXIQEP3AHfJblU0VG">
+                    <p data-page-node-id="1guf2LMBoMxOZX3DD5p4qM">打开银狐急救</p>
+                    <p class="cl-bubble-a" data-page-node-id="OQohJ2CcLwCYEicxx6j1yA">已在本地直达，秒开设置页 ›</p>
                   </div>
                 </div>
               </div>
-              <div class="cl-copy">
-                <h2>会聊天的防护助手</h2>
-                <ul class="cl-points">
-                  <li>右下角悬浮球，随问随答扩展用法</li>
-                  <li>本地规则引擎离线秒回，零延迟零流量</li>
-                  <li>打开页面、改设置本地直达，不再看云端脸色</li>
+              <div class="cl-copy" data-page-node-id="A7YtwbZohWWj8B83hBlBhf">
+                <h2 data-page-node-id="7yLSWui4KwuFDbUZEvaqeg">会聊天的防护助手</h2>
+                <ul class="cl-points" data-page-node-id="wo32k3erG0to0zaz4jLLtS">
+                  <li data-page-node-id="AQf2WOTkyoldfwBw1CQlSv">右下角悬浮球，随问随答扩展用法</li>
+                  <li data-page-node-id="KET27PF95Cspkvugg86vnc">本地规则引擎离线秒回，零延迟零流量</li>
+                  <li data-page-node-id="wXvEbzgJKVMoumvtnIzyPG">打开页面、改设置本地直达，不再看云端脸色</li>
                 </ul>
               </div>
             </article>
 
             <!-- 2 · 多模型 + 图标 -->
-            <article class="cl-slide cl-feature" data-kicker="多模型自由">
-              <div class="cl-stage">
-                <div class="cl-prov-row" aria-hidden="true">
-                  <span class="cl-chip"><svg class="prov-ic"><use href="#prov-zhipu"/></svg>智谱 GLM</span>
-                  <span class="cl-chip"><svg class="prov-ic"><use href="#prov-deepseek"/></svg>DeepSeek</span>
-                  <span class="cl-chip"><svg class="prov-ic"><use href="#prov-openai"/></svg>OpenAI</span>
-                  <span class="cl-chip"><svg class="prov-ic"><use href="#prov-kimi"/></svg>Kimi</span>
-                  <span class="cl-chip"><svg class="prov-ic"><use href="#prov-custom"/></svg>自定义</span>
+            <article class="cl-slide cl-feature" data-kicker="多模型自由" data-page-node-id="b2yVdp7GAtbqPHNBnPDJyt">
+              <div class="cl-stage" data-page-node-id="lHvPZLsznpCaA3mYm4b2Zt">
+                <div class="cl-prov-row" aria-hidden="true" data-page-node-id="35ZJSkdImLUr7Y2eIeQ8FY">
+                  <span class="cl-chip" data-page-node-id="xusF819QMr1OOclFaTfPlW"><svg class="prov-ic" data-page-node-id="Whj21K8qYien7jJ4IC75mn"><use href="#prov-zhipu" data-page-node-id="blrssTn4H61t9Cy1DT7PPR"/></svg>智谱 GLM</span>
+                  <span class="cl-chip" data-page-node-id="zwiH0iU1EJjkXTNsG9Evfj"><svg class="prov-ic" data-page-node-id="JkxxJ67hn7LcaNNZEDNDka"><use href="#prov-deepseek" data-page-node-id="cvunt4itfcTizEALxhhK6g"/></svg>DeepSeek</span>
+                  <span class="cl-chip" data-page-node-id="NSihbYe4HcaJzITVv1eGFY"><svg class="prov-ic" data-page-node-id="uZNQ3UjIpMk7JNHHQtfWVc"><use href="#prov-openai" data-page-node-id="ne9DxGAHAzHvAy9kHPFJMw"/></svg>OpenAI</span>
+                  <span class="cl-chip" data-page-node-id="At6L1nDqfZTMy41qLqEhPF"><svg class="prov-ic" data-page-node-id="UiYLPVIKtempK5emGmkjh5"><use href="#prov-kimi" data-page-node-id="4X0FazeuC419HBWToIOi3C"/></svg>Kimi</span>
+                  <span class="cl-chip" data-page-node-id="xTB6b9v3m0X0yZe23p1Aoi"><svg class="prov-ic" data-page-node-id="YlpdqjoJVQp4lRxy2GWiso"><use href="#prov-custom" data-page-node-id="nb3Cf7pj3ITCckDlajpTCV"/></svg>自定义</span>
                 </div>
               </div>
-              <div class="cl-copy">
-                <h2>想用哪家就用哪家</h2>
-                <ul class="cl-points">
-                  <li>下拉自带各家品牌图标，一眼分清</li>
-                  <li>手动指定任意模型名，一键重置回内置免费</li>
-                  <li>自带 Key 即可切换，默认内置 GLM 免配置</li>
+              <div class="cl-copy" data-page-node-id="X7bHNF9g2PAYYwKLlDX1eI">
+                <h2 data-page-node-id="53z4bH8B87EeuzTChahVP0">想用哪家就用哪家</h2>
+                <ul class="cl-points" data-page-node-id="kxHGvuNpPLPmXJPim3eEUl">
+                  <li data-page-node-id="fPRYYZYPUpCgN2QBHoEEJI">下拉自带各家品牌图标，一眼分清</li>
+                  <li data-page-node-id="GLqNv36aesgrbShDzoenus">手动指定任意模型名，一键重置回内置免费</li>
+                  <li data-page-node-id="vEuMTOeMcebIEu9DvEkT1X">自带 Key 即可切换，默认内置 GLM 免配置</li>
                 </ul>
               </div>
             </article>
 
             <!-- 3 · 场景路由 -->
-            <article class="cl-slide cl-feature" data-kicker="场景路由">
-              <div class="cl-stage">
-                <div class="cl-route" aria-hidden="true">
-                  <div class="cl-route-node">设置类问题</div>
-                  <div class="cl-route-arrow">→</div>
-                  <div class="cl-route-node cl-route-accent">DeepSeek</div>
-                  <div class="cl-route-node">闲聊</div>
-                  <div class="cl-route-arrow">→</div>
-                  <div class="cl-route-node cl-route-accent">内置 GLM</div>
+            <article class="cl-slide cl-feature" data-kicker="场景路由" data-page-node-id="7xQ7FjHGOxgp3VBzmjQR4u">
+              <div class="cl-stage" data-page-node-id="BvwWVYo15d7i1jZ6sXlYh0">
+                <div class="cl-route" aria-hidden="true" data-page-node-id="bXoLCOAMHgc6Ko6tZ8peZ6">
+                  <div class="cl-route-node" data-page-node-id="FHYkChAwwuOk0RBg5xWlVx">设置类问题</div>
+                  <div class="cl-route-arrow" data-page-node-id="qoBKao9SvvFAIxvJWkWfm0">→</div>
+                  <div class="cl-route-node cl-route-accent" data-page-node-id="kjDUaFCFQtFFAQAiqbOA4E">DeepSeek</div>
+                  <div class="cl-route-node" data-page-node-id="pokGDFIC0un1w8nq8OyAMe">闲聊</div>
+                  <div class="cl-route-arrow" data-page-node-id="XXhy1rh4gV5bJkdyO39mPY">→</div>
+                  <div class="cl-route-node cl-route-accent" data-page-node-id="pfVnuZCoy1thJlXxEnEQgA">内置 GLM</div>
                 </div>
               </div>
-              <div class="cl-copy">
-                <h2>不同场景，不同模型</h2>
-                <ul class="cl-points">
-                  <li>规则自定义「何种场景用何种模型」</li>
-                  <li>未命中规则的问题走默认模型兜底</li>
-                  <li>配置即时生效，无需保存</li>
+              <div class="cl-copy" data-page-node-id="77kXxyVmLLynigNL9i5LRd">
+                <h2 data-page-node-id="MGoN5bQVdygoTK2501fglg">不同场景，不同模型</h2>
+                <ul class="cl-points" data-page-node-id="iSqqleKHurfzZhvt8AjBe4">
+                  <li data-page-node-id="PGelc0f8vrGsXx9Xm3pJbF">规则自定义「何种场景用何种模型」</li>
+                  <li data-page-node-id="V8enJyPbakrzl4f6F0VILA">未命中规则的问题走默认模型兜底</li>
+                  <li data-page-node-id="B63EfSYIDP6QV4MBmFTE6b">配置即时生效，无需保存</li>
                 </ul>
               </div>
             </article>
 
             <!-- 4 · 版本时间轴（一页讲清历代，不再逐版堆砌） -->
-            <article class="cl-slide cl-timeline" data-kicker="一路走来">
-              <h2 class="cl-recap-h">银狐防护 · 版本演进</h2>
-              <div class="cl-tl">
-                <div class="cl-tl-item"><span class="cl-tl-ver">v1.4.4</span><span class="cl-tl-txt">后台自动 AI 网页分析 · 悬浮球语音播报</span></div>
-                <div class="cl-tl-item"><span class="cl-tl-ver">v1.4.5</span><span class="cl-tl-txt">AI 融合更彻底 · 扫描借云端 AI · 报毒浮层修复</span></div>
-                <div class="cl-tl-item"><span class="cl-tl-ver">v1.4.6</span><span class="cl-tl-txt">让 AI 更聪明 · Max 工具调用 · 模糊意图秒操作</span></div>
-                <div class="cl-tl-item"><span class="cl-tl-ver">v1.4.7</span><span class="cl-tl-txt">更稳的 AI 防护 · 指令路由重构 · 云端开页可靠化</span></div>
-                <div class="cl-tl-item"><span class="cl-tl-ver">v1.4.8</span><span class="cl-tl-txt">AI 核验官网 · 仿冒判定更准 · 两项 AI 能力转正</span></div>
-                <div class="cl-tl-item"><span class="cl-tl-ver">v1.4.9</span><span class="cl-tl-txt">品牌提取算法升级 · 更多网站认得出官网 · 解析器容错重写</span></div>
-                <div class="cl-tl-item cl-tl-cur"><span class="cl-tl-ver">v1.5.0</span><span class="cl-tl-txt">首次初始化向导 · AI 性格档与报毒识别偏好 · 悬浮球默认开启</span></div>
+            <article class="cl-slide cl-timeline" data-kicker="一路走来" data-page-node-id="HKY6HnmomPVbUpSyK5GuTE">
+              <h2 class="cl-recap-h" data-page-node-id="elq3bv1ee9dWrABaEPwAeH">银狐防护 · 版本演进</h2>
+              <div class="cl-tl" data-page-node-id="uIB1xHlCvo2yveSPQ3SwcO">
+                <div class="cl-tl-item" data-page-node-id="9SFj5h4vXKnZ4fnBnSQIlt"><span class="cl-tl-ver" data-page-node-id="s54OhvEus9m5zNtpTm4ajM">v1.4.4</span><span class="cl-tl-txt" data-page-node-id="bWtYk3feDyZZsSovMLPUmf">后台自动 AI 网页分析 · 悬浮球语音播报</span></div>
+                <div class="cl-tl-item" data-page-node-id="PzxFHWZqHTc9I1KpZRsFyo"><span class="cl-tl-ver" data-page-node-id="1bkSQBL8993uj4HxAvWeqA">v1.4.5</span><span class="cl-tl-txt" data-page-node-id="o2wqS7txxoEEGL8832uLFv">AI 融合更彻底 · 扫描借云端 AI · 报毒浮层修复</span></div>
+                <div class="cl-tl-item" data-page-node-id="iCYRCuZtEjWLac7vFqqzAc"><span class="cl-tl-ver" data-page-node-id="mIYVNZbTbgmPWNGTIVuwqi">v1.4.6</span><span class="cl-tl-txt" data-page-node-id="RkmZqCdvYhGKe458fgewRb">让 AI 更聪明 · Max 工具调用 · 模糊意图秒操作</span></div>
+                <div class="cl-tl-item" data-page-node-id="H0X9B6omhQPvVqf0zEwGKN"><span class="cl-tl-ver" data-page-node-id="Wpev3h9SJIJ6UzPhDmX0Bo">v1.4.7</span><span class="cl-tl-txt" data-page-node-id="4esFNaQxLMXQuucpVZlz7i">更稳的 AI 防护 · 指令路由重构 · 云端开页可靠化</span></div>
+                <div class="cl-tl-item" data-page-node-id="TGAyXJq6Cri4wUxauJ4qlT"><span class="cl-tl-ver" data-page-node-id="9C52eXpdBRewWs3CyU7pCT">v1.4.8</span><span class="cl-tl-txt" data-page-node-id="qvhVh8Cn5zAXAx93qBFeb6">AI 核验官网 · 仿冒判定更准 · 两项 AI 能力转正</span></div>
+                <div class="cl-tl-item" data-page-node-id="33RgIKg7C1Q2bjyzGAGpS7"><span class="cl-tl-ver" data-page-node-id="LL40n2GZQSX93hvn7AGNMe">v1.4.9</span><span class="cl-tl-txt" data-page-node-id="g8KOqQ9Mk7BRwEbzv4Zcll">品牌提取算法升级 · 更多网站认得出官网 · 解析器容错重写</span></div>
+                <div class="cl-tl-item" data-page-node-id="GIthIuQtPW9pYbRowgJjwL"><span class="cl-tl-ver" data-page-node-id="BwQSM7ukWonlceePjWblGQ">v1.5.0</span><span class="cl-tl-txt" data-page-node-id="5iyIvMeSUCHzmxRfGdZ1DW">首次初始化向导 · AI 性格档与报毒识别偏好 · 悬浮球默认开启</span></div>
+                <div class="cl-tl-item" data-page-node-id="JTebvJqdKuFjirDBB0XWlE"><span class="cl-tl-ver" data-page-node-id="ufMfFmdW8eMjKslagxWg9M">v1.5.1</span><span class="cl-tl-txt" data-page-node-id="eDNjoYBFTT7i40sg3inNl7">银狐急救新增火绒专杀 · AI 下载指令 · 文案修正</span></div>
+                <div class="cl-tl-item" data-page-node-id="Ft5kHi0jlTVZLJAz7ZyNkc"><span class="cl-tl-ver" data-page-node-id="kaF2X44ujsoqJG7Vj8SOk6">v1.5.2</span><span class="cl-tl-txt" data-page-node-id="sGmVkdvv6L77zjsDTAGMX7">修复后台核验 CSP 拦截 · 域名年龄 / ICP 备案核验恢复</span></div>
+                <div class="cl-tl-item" data-page-node-id="D7avfmW10NSRusVQEzBmfi"><span class="cl-tl-ver" data-page-node-id="sz2hFDMauQM4Zc2eu3Sw4Y">v1.5.3</span><span class="cl-tl-txt" data-page-node-id="219iLd4wtJyahtWVXOAJVV">木马化 VPN 样本进扫描库 · 原生下载按文件名强拦 · 品牌串误报收敛</span></div>
+                <div class="cl-tl-item" data-page-node-id="1XE0p3Op32NqetBgtHHNEJ"><span class="cl-tl-ver" data-page-node-id="GGfpbKY2c3DFsyEQvf5365">v1.5.4</span><span class="cl-tl-txt" data-page-node-id="1ZeuaRj1UALiXhLZr5zlsJ">扫描算法重构降误报 · 官网白名单扩容至千余条 · 大页面扫描更快</span></div>
+                <div class="cl-tl-item" data-page-node-id="i0RnBY5bvuIEgngkjDGqaa"><span class="cl-tl-ver" data-page-node-id="59BSmxpar6mGQuF2cTl6D0">v1.5.5</span><span class="cl-tl-txt" data-page-node-id="Dp8C38xydTmiSJid3mzuyP">压缩包解压扫描修复（自解压包可识别木马投递物）· 一键加入白名单 · 更新提示改为算法升级要点</span></div>
+                <div class="cl-tl-item" data-page-node-id="pcNB27E4dDXANXyuBedpyA"><span class="cl-tl-ver" data-page-node-id="ymZXz2mCjGHOxskilx09JW">v1.5.6</span><span class="cl-tl-txt" data-page-node-id="hGLx9Ielrp0GHcefG1MHMO">误报再收敛：移除对所有安装包生效的内容级伪装品牌串规则，仅保留文件名级窄匹配；银狐家族特征与已知投递物检测不受影响</span></div>
+                <div class="cl-tl-item" data-page-node-id="tlv157"><span class="cl-tl-ver" data-page-node-id="tlv157v">v1.5.7</span><span class="cl-tl-txt" data-page-node-id="tlv157t">云端官网库外置：实时拉取官方域名、用完即清；蓝奏云 / 有道 AI 误报修复</span></div>
+                <div class="cl-tl-item cl-tl-cur" data-page-node-id="tlv158"><span class="cl-tl-ver" data-page-node-id="tlv158v">v1.5.8</span><span class="cl-tl-txt" data-page-node-id="tlv158t">自定义主题编辑器（官网在线调色导出、扩展内导入多套主题、右键管理）+ 云端 AI 工具调用修复：命令式意图即时执行</span></div>
               </div>
-              <p class="cl-recap-foot">从「后台守护」到「会聊天、能操作、靠得住」——本地规则始终离线生效，云端只作兜底，安全边界牢牢握在本地。</p>
+              <p class="cl-recap-foot" data-page-node-id="CvIx6LNCanaQwcDlet5lXf">从「后台守护」到「会聊天、能操作、靠得住」——本地规则始终离线生效，云端只作兜底，安全边界牢牢握在本地。</p>
             </article>
 
           </div>
 
           <!-- 翻页箭头 -->
-          <button class="cl-nav cl-prev" id="clPrev" aria-label="上一页">‹</button>
-          <button class="cl-nav cl-next" id="clNext" aria-label="下一页">›</button>
+          <button class="cl-nav cl-prev" id="clPrev" aria-label="上一页" data-page-node-id="rHC0ehSmdVtU6lfnCFjcTb">‹</button>
+          <button class="cl-nav cl-next" id="clNext" aria-label="下一页" data-page-node-id="rhM6DX7jccF6HmkhE5v1BY">›</button>
         </div>
 
         <!-- 进度点 + 倒计时环（卡片外底部） -->
-        <div class="cl-foot">
-          <div class="cl-dots" id="clDots" role="tablist" aria-label="幻灯片导航"></div>
-          <div class="cl-count" id="clCount" aria-hidden="true"><span class="cl-count-ring"></span><b id="clIdx">1</b>/5</div>
+        <div class="cl-foot" data-page-node-id="OyVxe80QzNaoc6aipWCuQb">
+          <div class="cl-dots" id="clDots" role="tablist" aria-label="幻灯片导航" data-page-node-id="fsZ6hdT5Yp6dcJ63u5iDLm"></div>
+          <div class="cl-count" id="clCount" aria-hidden="true" data-page-node-id="iVduKBQGDwWBy5m76zSFU5"><span class="cl-count-ring" data-page-node-id="fshRi0ytJLayqorhIWyGD6"></span><b id="clIdx" data-page-node-id="SBJoAu2bxBSoG970lGcpqX">1</b>/5</div>
         </div>
       </section>
 
       <!-- 底部操作栏 -->
-      <footer class="action-bar">
-        <span class="auto-note">修改后点击「保存设置」生效</span>
-        <div class="btn-row">
-          <button class="btn btn-ghost" id="resetBtn">重置统计</button>
-          <button class="btn btn-primary" id="saveBtn">保存设置</button>
+      <footer class="action-bar" data-page-node-id="3zmaG2ikVFJq0vjTjEF1h1">
+        <span class="auto-note" data-page-node-id="G6TjqqEH8wpUqzzI8TFdQj">修改后点击「保存设置」生效</span>
+        <div class="btn-row" data-page-node-id="wbX07qR6FgQUxG7BbT5cj8">
+          <button class="btn btn-ghost" id="resetBtn" data-page-node-id="ELEkLd4breTve7uC22ZKbk">重置统计</button>
+          <button class="btn btn-primary" id="saveBtn" data-page-node-id="SLr9F5dZ3BaPQpfJbCJ7Cx">保存设置</button>
         </div>
       </footer>
     </main>
   </div>
 
-  <div class="toast-save" id="toast">已保存 ✓</div>
+  <div class="toast-save" id="toast" data-page-node-id="XxfKVwuGkljCTlgzCZpHRs">已保存 ✓</div>
 
   <!-- 扩展自动更新提示（独立悬浮窗，不归任何主题；仅版本升级时弹出，首次安装不弹） -->
-  <div class="upd-toast" id="updToast" role="status" aria-live="polite" hidden>
-    <div class="upd-ico" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none">
-        <path d="M12 3 5 6v6c0 4.6 3 7.7 7 9 4-1.3 7-4.4 7-9V6l-7-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-        <path d="M15.5 9.5 11 14l-2.5-2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M18.5 14.5a2.4 2.4 0 0 1 0 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        <path d="M20 16.6v2.9h-2.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <div class="upd-toast" id="updToast" role="status" aria-live="polite" hidden data-page-node-id="31fJaGcEvGicnaJ6pz8sEb">
+    <div class="upd-ico" aria-hidden="true" data-page-node-id="tPozaO5ADpQfG7MRwgZhZU">
+      <svg viewBox="0 0 24 24" fill="none" data-page-node-id="qs0FmiV67kgxTvjZv0JxYV">
+        <path d="M12 3 5 6v6c0 4.6 3 7.7 7 9 4-1.3 7-4.4 7-9V6l-7-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" data-page-node-id="TQtR8DughitSCA7tQiviQk"/>
+        <path d="M15.5 9.5 11 14l-2.5-2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="mudOnObhBpQRySV5z6MD7T"/>
+        <path d="M18.5 14.5a2.4 2.4 0 0 1 0 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-page-node-id="amRFZguWghHKc28006H8Ni"/>
+        <path d="M20 16.6v2.9h-2.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="xdn56ZStguKaXke0nCk3Bo"/>
       </svg>
     </div>
-    <div class="upd-body">
-      <div class="upd-title">银狐防护已更新到版本 <b id="updVer">v1.4.8</b></div>
-      <div class="upd-sub">AI 会核验官网了：后台 AI 分析网页正式转正，云端 AI 先推断页面所属品牌的官方域名，后台再比对当前域名是否匹配官方，不匹配即判定仿冒并提示；AI 分析网页与扫描文件两项能力摘掉「实验性」标签，作为 Max 模式的标准能力提供。</div>
-      <a class="upd-link" id="updLink" href="#" rel="noreferrer">查看本次更新内容 ›</a>
+    <div class="upd-body" data-page-node-id="025JnrPFGD0TmpbcieoqVq">
+      <div class="upd-title" data-page-node-id="7VzSXHnVK7GsCVfGzGcThj">银狐防护已更新到版本 <b id="updVer" data-page-node-id="jsdyobBmHl2UespaDsDqrE">v1.5.3</b></div>
+      <ul class="upd-points" id="updPoints" data-page-node-id="ZHJQFpUhzxbQLp7plCHqgz"></ul>
+      <a class="upd-link" id="updLink" href="#" rel="noreferrer" data-page-node-id="vYaRM3Xvg99SGszE1yq3P6">查看本次更新内容 ›</a>
     </div>
-    <button class="upd-close" id="updClose" type="button" aria-label="关闭提示">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <button class="upd-close" id="updClose" type="button" aria-label="关闭提示" data-page-node-id="cEcnM7wTuKA7HDD50XWh4d">
+      <svg viewBox="0 0 24 24" fill="none" data-page-node-id="TKsUfBsuYx04EMvhSdQJK4"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" data-page-node-id="zl4oA4vyciklCdSrzYj1dn"/></svg>
+    </button>
+  </div>
+
+  <!-- 自动更新检查提示：发现新版本时从底部弹出（复用更新成功弹窗视觉） -->
+  <div class="upd-toast upd-check-toast" id="updateCheckToast" role="status" aria-live="polite" hidden data-page-node-id="SF_UC_TOAST">
+    <div class="upd-ico" aria-hidden="true" data-page-node-id="SF_UC_ICO">
+      <svg viewBox="0 0 24 24" fill="none" data-page-node-id="SF_UC_SVG"><path d="M12 3 5 6v6c0 4.6 3 7.7 7 9 4-1.3 7-4.4 7-9V6l-7-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" data-page-node-id="SF_UC_P1"/><path d="M11 9v6m4-6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" data-page-node-id="SF_UC_P2"/></svg>
+    </div>
+    <div class="upd-body" data-page-node-id="SF_UC_BODY">
+      <div class="upd-title" id="uctTitle" data-page-node-id="SF_UC_TITLE">发现新版本 <b id="uctVer" data-page-node-id="SF_UC_VER">vX.Y.Z</b></div>
+      <div class="upd-notes" id="uctNotes" data-page-node-id="SF_UC_NOTES"></div>
+      <div class="uc-actions" data-page-node-id="SF_UC_ACTS">
+        <a class="uc-btn uc-primary" id="uctDownload" href="#" target="_blank" rel="noopener" data-page-node-id="SF_UC_DL">前往官网下载</a>
+        <a class="uc-btn" id="uctRelease" href="#" target="_blank" rel="noopener" data-page-node-id="SF_UC_REL">查看发布说明</a>
+        <button class="uc-btn uc-ghost" id="uctLater" type="button" data-page-node-id="SF_UC_LATER">稍后提醒</button>
+      </div>
+    </div>
+    <button class="upd-close" id="uctClose" type="button" aria-label="关闭提示" data-page-node-id="SF_UC_X">
+      <svg viewBox="0 0 24 24" fill="none" data-page-node-id="SF_UC_XSVG"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" data-page-node-id="SF_UC_XP"/></svg>
     </button>
   </div>
 
   <!-- 减小/减弱动画效果：开启确认弹窗 -->
-  <div class="modal-overlay" id="rmModal">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rmTitle">
-      <div class="modal-ico">
-        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#7db4ff" stroke-width="1.6"/><path d="M12 8v5M12 16h.01" stroke="#7db4ff" stroke-width="2" stroke-linecap="round"/></svg>
+  <div class="modal-overlay" id="rmModal" data-page-node-id="ozqE0DfPaly2KXLGegzEVa">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rmTitle" data-page-node-id="AA6ygSWqo2xJOYHjCA7084">
+      <div class="modal-ico" data-page-node-id="j4dlC9UDOqWpoUhngsUlEG">
+        <svg viewBox="0 0 24 24" fill="none" data-page-node-id="wWgS2Wxd75sikbU8LDbdTI"><circle cx="12" cy="12" r="9" stroke="#7db4ff" stroke-width="1.6" data-page-node-id="hI7L0QtGzJDWgsQaGmvpqR"/><path d="M12 8v5M12 16h.01" stroke="#7db4ff" stroke-width="2" stroke-linecap="round" data-page-node-id="VwSOvju9UhyTOtTP944JGz"/></svg>
       </div>
-      <h3 id="rmTitle">减弱动画效果</h3>
-      <p>开启后，将关闭所有界面动画（过渡、弹跳、悬停光晕等）。</p>
-      <div class="modal-actions">
-        <button class="btn btn-ghost" id="rmCancel">取消</button>
-        <button class="btn btn-primary" id="rmConfirm">确认</button>
+      <h3 id="rmTitle" data-page-node-id="BQ0ofQoIa35SEd28LccnpR">减弱动画效果</h3>
+      <p data-page-node-id="7BGgDUIskE1yZwDx5LqTOz">开启后，将关闭所有界面动画（过渡、弹跳、悬停光晕等）。</p>
+      <div class="modal-actions" data-page-node-id="ukvXweCSAiM8i7LHym114U">
+        <button class="btn btn-ghost" id="rmCancel" data-page-node-id="15HyoagFD4kqNjhRD63UkU">取消</button>
+        <button class="btn btn-primary" id="rmConfirm" data-page-node-id="Sc2rmImjtgbjGkMQ01MrVl">确认</button>
       </div>
     </div>
   </div>
 
   <!-- Max 模式开启确认弹窗（提示可能增加 token 消耗） -->
-  <div class="modal-overlay" id="maxModal">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="maxTitle">
-      <div class="modal-ico">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 5 6v6c0 4.6 3 7.7 7 9 4-1.3 7-4.4 7-9V6l-7-3Z" stroke="#7db4ff" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 9v4M12 16h.01" stroke="#7db4ff" stroke-width="2" stroke-linecap="round"/></svg>
+  <div class="modal-overlay" id="maxModal" data-page-node-id="ykwxY55BcFQO8V6E0hKVMc">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="maxTitle" data-page-node-id="cPInsLGttzPIqfws0bHS5w">
+      <div class="modal-ico" data-page-node-id="cGwLEkHMSps1c38reXUWov">
+        <svg viewBox="0 0 24 24" fill="none" data-page-node-id="BAMKfEHQodjAIbBAXhh1P8"><path d="M12 3 5 6v6c0 4.6 3 7.7 7 9 4-1.3 7-4.4 7-9V6l-7-3Z" stroke="#7db4ff" stroke-width="1.6" stroke-linejoin="round" data-page-node-id="0ncifL4cUerCYXOWKUcEan"/><path d="M12 9v4M12 16h.01" stroke="#7db4ff" stroke-width="2" stroke-linecap="round" data-page-node-id="QkbHlKfl0PHGwE0ZAF44yM"/></svg>
       </div>
-      <h3 id="maxTitle">开启 Max 模式？</h3>
-      <p>开启后系统将优先调用云端模型辅助，回复更聪明、更自由，但<b>可能增加你的 token 消耗与调用额度</b>。同时「本地规则引擎」与「允许云端增强」会自动关闭，仅保留云端 AI 辅助；云端处理不了时再回退本地。</p>
-      <div class="modal-actions">
-        <button class="btn btn-ghost" id="maxCancel">取消</button>
-        <button class="btn btn-primary" id="maxConfirm">确认开启</button>
+      <h3 id="maxTitle" data-page-node-id="2vJiYyWBa9F5hBbQOgw0rL">开启 Max 模式？</h3>
+      <p data-page-node-id="1nAnEQqYFVFVMfz3LrMTLj">开启后系统将优先调用云端模型辅助，回复更聪明、更自由，但<b data-page-node-id="63d3JHPFHLYvvXCEAdlcQS">可能增加你的 token 消耗与调用额度</b>。同时「本地规则引擎」与「允许云端增强」会自动关闭，仅保留云端 AI 辅助；云端处理不了时再回退本地。</p>
+      <div class="modal-actions" data-page-node-id="v6RXKC9yokPji2ihtfwR1N">
+        <button class="btn btn-ghost" id="maxCancel" data-page-node-id="ivuWU9G4FlwDbF2eqID2BK">取消</button>
+        <button class="btn btn-primary" id="maxConfirm" data-page-node-id="545JxuXClx6A5NKWFp5hpr">确认开启</button>
       </div>
     </div>
   </div>
 
   <!-- Pixel 主题解锁弹窗（彩蛋：连点左上角标志 3 下触发；不归任何主题） -->
-  <div class="egg-overlay" id="eggOverlay" role="dialog" aria-modal="true" aria-labelledby="eggTitle">
-    <div class="egg-modal">
-      <h3 class="egg-title" id="eggTitle">输入口令</h3>
-      <p class="egg-sub">验证通过后可解锁一项隐藏外观。</p>
+  <div class="egg-overlay" id="eggOverlay" role="dialog" aria-modal="true" aria-labelledby="eggTitle" data-page-node-id="YnVbER6YHkBFeNBEirQ5mO">
+    <div class="egg-modal" data-page-node-id="FRZALokMp2oxzfX5FU7j68">
+      <h3 class="egg-title" id="eggTitle" data-page-node-id="UKF9cJUwMU8B8SvlTTk1L8">输入口令</h3>
+      <p class="egg-sub" data-page-node-id="nYrbfgeoymlTNJSjlMbUuf">验证通过后可解锁一项隐藏外观。</p>
       <input class="egg-input" id="eggInput" type="text" autocomplete="off" spellcheck="false"
-             placeholder="在此输入口令…" aria-label="解锁口令">
-      <div class="egg-ok" id="eggOk">已解锁 ✓</div>
-      <div class="egg-hint">提示：Google 自家的「类原生安卓」系统，其英文代号是？</div>
-      <div class="egg-actions">
-        <button class="egg-cancel" id="eggCancel" type="button">取消</button>
-        <button class="egg-confirm" id="eggConfirm" type="button">确认</button>
+             placeholder="在此输入口令…" aria-label="解锁口令" data-page-node-id="MCgj9UJ3EtypyFRW7pttUh">
+      <div class="egg-ok" id="eggOk" data-page-node-id="D8yPpKezlX2EewRfoEAdJx">已解锁 ✓</div>
+      <div class="egg-hint" data-page-node-id="K6S7jHDVOxTsQHHRhjFYoE">提示：Google 自家的「类原生安卓」系统，其英文代号是？</div>
+      <div class="egg-actions" data-page-node-id="YjBlCzh1NhNLSWLvpjED87">
+        <button class="egg-cancel" id="eggCancel" type="button" data-page-node-id="LhI3CVYjggt6QKCrAacgqQ">取消</button>
+        <button class="egg-confirm" id="eggConfirm" type="button" data-page-node-id="QFVchKkW97Q03eRdR1oLdn">确认</button>
       </div>
     </div>
   </div>
 
   <!-- AI 助手悬浮球 + 对话窗（不归入侧边栏分类，浮于设置页右下角） -->
-  <button type="button" id="aiFab" class="ai-fab" aria-label="打开 AI 助手" hidden>
-    <svg class="ai-shield" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <defs>
-        <linearGradient id="sfShieldG" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#ffffff"/>
-          <stop offset="1" stop-color="#cfe2ff"/>
+  <button type="button" id="aiFab" class="ai-fab" aria-label="打开 AI 助手" hidden data-page-node-id="rzeAO67ysLF5TfW56Yz332">
+    <svg class="ai-shield" viewBox="0 0 24 24" fill="none" aria-hidden="true" data-page-node-id="pAPixh9tAFo7446ZAH2CXx">
+      <defs data-page-node-id="lHCLsii77Cc4F9glB2HCzU">
+        <linearGradient id="sfShieldG" x1="0" y1="0" x2="1" y2="1" data-page-node-id="fnUUB3sjYqQgLrXIYtH4ZS">
+          <stop offset="0" stop-color="#ffffff" data-page-node-id="ymyNoQ4TsrQBJP84WQ6gAP"/>
+          <stop offset="1" stop-color="#cfe2ff" data-page-node-id="pr9GtXlbqMvmo4q6cPGgXp"/>
         </linearGradient>
       </defs>
       <!-- 盾牌主体 -->
-      <path d="M12 2.4 4.2 5.1v6.3c0 4.8 3.1 8.3 7.8 9.4 4.7-1.1 7.8-4.6 7.8-9.4V5.1L12 2.4Z" fill="url(#sfShieldG)"/>
-      <path d="M12 2.4 4.2 5.1v6.3c0 4.8 3.1 8.3 7.8 9.4 4.7-1.1 7.8-4.6 7.8-9.4V5.1L12 2.4Z" fill="none" stroke="rgba(40,70,160,.35)" stroke-width=".5"/>
+      <path d="M12 2.4 4.2 5.1v6.3c0 4.8 3.1 8.3 7.8 9.4 4.7-1.1 7.8-4.6 7.8-9.4V5.1L12 2.4Z" fill="url(#sfShieldG)" data-page-node-id="CB4vPqA6Npo0DoJL7EP8ot"/>
+      <path d="M12 2.4 4.2 5.1v6.3c0 4.8 3.1 8.3 7.8 9.4 4.7-1.1 7.8-4.6 7.8-9.4V5.1L12 2.4Z" fill="none" stroke="rgba(40,70,160,.35)" stroke-width=".5" data-page-node-id="MHhnbcsg8UuaKADpdXkZqn"/>
       <!-- 打勾 -->
-      <path d="M8.1 12.1l2.6 2.6 4.9-5.1" stroke="#2a4cff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M8.1 12.1l2.6 2.6 4.9-5.1" stroke="#2a4cff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" fill="none" data-page-node-id="ugPFu0IIVs1vmzcO457K46"/>
     </svg>
-    <span class="ai-badge">AI</span>
+    <span class="ai-badge" data-page-node-id="uF2s0zUZZ4ghZptTNa1SFq">AI</span>
   </button>
-  <div class="ai-panel" id="aiPanel" role="dialog" aria-label="AI 助手" hidden>
-    <div class="ai-head">
-      <div class="ai-title"><span class="ai-dot"></span><span class="ai-name">银狐小助</span><span class="ai-ver">SILVERFOX·AI</span></div>
-      <button type="button" id="aiClose" class="ai-x" aria-label="收起">—</button>
+  <div class="ai-panel" id="aiPanel" role="dialog" aria-label="AI 助手" hidden data-page-node-id="MyXmPIJef4MTWOOoaOa4kV">
+    <div class="ai-head" data-page-node-id="Wjj5eVQegWcap7EGlFmARW">
+      <div class="ai-title" data-page-node-id="G4ApFJQU9Cd0R3IdBES4At"><span class="ai-dot" data-page-node-id="uvwNwTWxXaSVFWsmR5dQs3"></span><span class="ai-name" data-page-node-id="UwvNXimYc9XIJxPGV53nH7">银狐小助</span><span class="ai-ver" data-page-node-id="mQFh7x6qc96jwUVboFUIRA">SILVERFOX·AI</span></div>
+      <button type="button" id="aiClose" class="ai-x" aria-label="收起" data-page-node-id="GRJ1Mnpz7kAQmCDCF5uCzB">—</button>
     </div>
-    <div class="ai-log" id="aiLog"></div>
-    <div class="ai-input-row">
-      <button type="button" id="aiMic" class="ai-mic" aria-label="语音输入" title="语音输入（Web Speech API）">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <div class="ai-log" id="aiLog" data-page-node-id="ROfFRysZwwxhEigWOtVeBb"></div>
+    <div class="ai-input-row" data-page-node-id="j9SCxY49iUnsoiX8bAhDPf">
+      <button type="button" id="aiMic" class="ai-mic" aria-label="语音输入" title="语音输入（Web Speech API）" data-page-node-id="ljYzBKX3EIWQIuLV4S5PZl">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" data-page-node-id="iirJd7le3yL5uHD1TxHG88"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor" data-page-node-id="UJr60vl67iIsGgxjwBswlg"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-page-node-id="yXVEMSL6MsRQ6auq8AvXmt"/></svg>
       </button>
       <textarea id="aiInput" rows="1" placeholder="问问扩展怎么用…（Enter 发送，Shift+Enter 换行）"></textarea>
-      <button type="button" id="aiSend" class="ai-send">发送</button>
+      <button type="button" id="aiSend" class="ai-send" data-page-node-id="mhS4EKs8c3qtvR2jAtfc2H">发送</button>
     </div>
-    <div class="ai-foot">本地规则优先 · 仅答扩展用法，不分析当前网页</div>
+    <div class="ai-foot" data-page-node-id="KHbAPrwUfJ753kmEMaS4uV">本地规则优先 · 仅答扩展用法，不分析当前网页</div>
   </div>
 
   <script src="../rules/iocs.js"></script>

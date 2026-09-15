@@ -73,6 +73,9 @@ async function init() {
   const pill = $('globalPill');
   pill.textContent = settings.enabledGlobal ? '防护中' : '已关闭';
   pill.className = 'pill' + (settings.enabledGlobal ? '' : ' off');
+  // 守护态：驱动 logo 呼吸辉光（见 popup.css .app.guarding .logo）
+  const appEl = document.querySelector('.app');
+  if (appEl) appEl.classList.toggle('guarding', !!settings.enabledGlobal);
 
   // 统计
   chrome.storage.local.get({ stats: { warnings: 0, blocks: 0, recent: [] } }, (r) => {
@@ -103,6 +106,8 @@ async function init() {
         setPageStatus(resp);
       });
     } catch (e) { setPageStatus({ analyzed: false }); }
+    setupReport(tab);
+    setupAllowlist(tab);
   });
 
   $('openSettings').addEventListener('click', () => chrome.runtime.openOptionsPage());
@@ -111,23 +116,30 @@ async function init() {
 function setPageStatus(r) {
   const el = $('pageStatus');
   const scoreEl = $('pageScore');
+  let text, cls, score = '—';
   if (!r || !r.analyzed) {
-    el.textContent = '未能获取';
-    el.className = 'value';
-    scoreEl.textContent = '—';
-    return;
-  }
-  if (r.allowlisted) { el.textContent = '已加入白名单'; el.className = 'value safe'; scoreEl.textContent = '—'; return; }
-  if (r.disabled) { el.textContent = '防护已关闭'; el.className = 'value'; scoreEl.textContent = '—'; return; }
-  if (r.detected) {
-    el.textContent = '⚠ 风险网站';
-    el.className = 'value risk';
-    scoreEl.textContent = (r.score || 0) + ' / ' + (r.threshold || '?');
+    text = '未能获取'; cls = '';
+  } else if (r.allowlisted) {
+    text = '已加入白名单'; cls = ' safe';
+  } else if (r.disabled) {
+    text = '防护已关闭'; cls = '';
+  } else if (r.detected) {
+    text = '⚠ 风险网站'; cls = ' risk';
+    score = (r.score || 0) + ' / ' + (r.threshold || '?');
   } else {
-    el.textContent = '✓ 未检出风险';
-    el.className = 'value safe';
-    scoreEl.textContent = (r.score || 0) + ' / ' + (r.threshold || '?');
+    text = '✓ 未检出风险'; cls = ' safe';
+    score = (r.score || 0) + ' / ' + (r.threshold || '?');
   }
+  // 仅当文本真正变化时才更新并触发高亮 pop（避免初始渲染 / 同值轮询重复闪动）
+  if (el.textContent !== text || el.className !== ('value' + cls)) {
+    el.textContent = text;
+    el.className = 'value' + cls;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+    }
+  }
+  scoreEl.textContent = score;
 }
 
 function escapeHtml(s) {
@@ -137,3 +149,107 @@ function escapeHtml(s) {
 }
 
 init();
+
+// ============ 一键加入白名单 ============
+function setupAllowlist(tab) {
+  const btn = $('addAllow');
+  const status = $('allowStatus');
+  if (!btn) return;
+  let domain = '';
+  try {
+    const u = new URL((tab && tab.url) || '');
+    domain = u.hostname.replace(/^www\./i, '');
+  } catch (e) { domain = ''; }
+  if (!domain) {
+    btn.disabled = true;
+    if (status) { status.textContent = '当前页面不是网页，无法获取域名'; status.className = 'allow-status warn'; }
+    return;
+  }
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    const s = await getSettings();
+    const list = Array.isArray(s.allowlist) ? s.allowlist.slice() : [];
+    if (list.indexOf(domain) !== -1) {
+      if (status) status.textContent = domain + ' 已在白名单';
+      return;
+    }
+    list.push(domain);
+    try { await setSettings({ allowlist: list }); } catch (e) { btn.disabled = false; return; }
+    if (status) status.textContent = '已加入白名单 ✓ ' + domain;
+  });
+}
+
+// ============ 一键上报 ============
+function setupReport(tab) {
+  const openBtn = $('openReport');
+  const menu = $('reportMenu');
+  const statusEl = $('reportStatus');
+  const cancelBtn = $('reportCancel');
+  if (!openBtn || !menu) return;
+
+  let domain = '';
+  try {
+    const u = new URL((tab && tab.url) || '');
+    domain = u.hostname.replace(/^www\./i, '');
+  } catch (e) { domain = ''; }
+
+  openBtn.addEventListener('click', function () {
+    if (!domain) { alert('当前页面不是网页，无法获取域名进行上报'); return; }
+    menu.hidden = !menu.hidden;
+    statusEl.textContent = '当前域名：' + domain;
+  });
+
+  if (cancelBtn) cancelBtn.addEventListener('click', function () { menu.hidden = true; });
+
+  const items = menu.querySelectorAll('.report-item');
+  items.forEach(function (btn) {
+    btn.addEventListener('click', async function () {
+      const type = btn.getAttribute('data-type');
+      btn.disabled = true; if (cancelBtn) cancelBtn.disabled = true;
+      statusEl.textContent = '上报中…';
+      try {
+        const resp = await sendReport(type, domain);
+        if (resp && resp.success) {
+          statusEl.textContent = '已上报，感谢反馈 ✓';
+          setTimeout(function () { menu.hidden = true; }, 1500);
+        } else if (resp && resp.fallback) {
+          // Worker 未配置 → 打开 GitHub 预填 issue 页（直达 Issues）
+          openPrefillIssue(type, domain);
+          statusEl.textContent = '已打开 GitHub 上报页';
+          menu.hidden = true;
+        } else {
+          // Worker 已部署但调用失败 → 显示错误，不自动跳转
+          const err = (resp && resp.error) || '未知错误';
+          statusEl.textContent = '上报失败：' + err + '（可点按钮重试）';
+        }
+      } catch (e) {
+        statusEl.textContent = '上报失败：' + (e && e.message ? e.message : '未知错误') + '（可点按钮重试）';
+      } finally {
+        btn.disabled = false; if (cancelBtn) cancelBtn.disabled = false;
+      }
+    });
+  });
+}
+
+function sendReport(type, domain) {
+  return new Promise(function (resolve) {
+    chrome.runtime.sendMessage(
+      { type: 'sf-submitReport', payload: { reportType: type, domain: domain, note: '' } },
+      function (r) {
+        if (chrome.runtime.lastError) return resolve({ success: false, error: chrome.runtime.lastError.message });
+        resolve(r || { success: false });
+      }
+    );
+  });
+}
+
+function openPrefillIssue(type, domain) {
+  const label = type === 'false_positive' ? 'false-positive' : 'confirmed-phish';
+  const title = (type === 'false_positive' ? '[误报反馈] ' : '[恶意站点举报] ') + domain;
+  const body = '## 上报信息\n\n| 字段 | 值 |\n|------|----|\n'
+    + '| 类型 | ' + (type === 'false_positive' ? '误报反馈（正常站点被拦截）' : '恶意 / 钓鱼站点举报') + ' |\n'
+    + '| 域名 | `' + domain + '` |\n';
+  const url = 'https://github.com/yinbo345/silverfox-guard/issues/new?title='
+    + encodeURIComponent(title) + '&body=' + encodeURIComponent(body) + '&labels=' + encodeURIComponent(label);
+  chrome.tabs.create({ url: url });
+}

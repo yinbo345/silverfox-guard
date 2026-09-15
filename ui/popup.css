@@ -1,5 +1,19 @@
 /* popup.css — 银狐防护弹出面板（Liquid Glass 深色毛玻璃） */
+@font-face {
+  font-family: "SmileySans";
+  src: url("../fonts/SmileySans-Oblique.woff2") format("woff2");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
 * { box-sizing: border-box; }
+:root {
+  --sf-scale: 1;
+  /* ===== 统一动效 token（与 welcome / oobe / options 的非线性缓动语言一致） ===== */
+  --sf-ease-out: cubic-bezier(.2, .8, .2, 1);     /* 出场：顺滑减速 */
+  --sf-spring: cubic-bezier(.34, 1.56, .64, 1);   /* 回弹：轻微过冲 */
+  --sf-rise-dist: 13px;                           /* 入场上浮距离 */
+}
 html, body { margin: 0; padding: 0; }
 body {
   width: 340px; min-height: 360px;
@@ -13,10 +27,10 @@ body {
 .head { display: flex; align-items: center; justify-content: space-between; }
 .brand { display: flex; align-items: center; gap: 10px; }
 .logo { width: 34px; height: 34px; }
-.name { font-size: 15px; font-weight: 800; letter-spacing: .5px; }
-.sub { font-size: 10.5px; opacity: .55; letter-spacing: 1px; }
+.name { font-size: calc(15px * var(--sf-scale)); font-weight: 800; letter-spacing: .5px; }
+.sub { font-size: calc(10.5px * var(--sf-scale)); opacity: .55; letter-spacing: 1px; }
 .pill {
-  font-size: 11.5px; font-weight: 700; padding: 5px 11px; border-radius: 999px;
+  font-size: calc(11.5px * var(--sf-scale)); font-weight: 700; padding: 5px 11px; border-radius: 999px;
   background: linear-gradient(135deg, #3ddc84, #2bb673); color: #06231a;
   box-shadow: 0 4px 14px rgba(61,220,132,.35);
 }
@@ -30,28 +44,314 @@ body {
   backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
 }
 .page-status .row { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; }
-.page-status .label { font-size: 12.5px; opacity: .7; }
-.page-status .value { font-size: 13px; font-weight: 700; }
+.page-status .label { font-size: calc(12.5px * var(--sf-scale)); opacity: .7; }
+.page-status .value { font-size: calc(13px * var(--sf-scale)); font-weight: 700; }
 .value.safe { color: #6ee7b7; }
 .value.risk { color: #ff9a9a; }
 
 .stats { display: flex; gap: 12px; }
 .stat { flex: 1; text-align: center; }
-.stat .num { font-size: 26px; font-weight: 800; background: linear-gradient(135deg,#9db8ff,#c8a6ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-.stat .cap { font-size: 11px; opacity: .65; margin-top: 2px; }
+.stat .num { font-size: calc(26px * var(--sf-scale)); font-weight: 800; background: linear-gradient(135deg,#9db8ff,#c8a6ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.stat .cap { font-size: calc(11px * var(--sf-scale)); opacity: .65; margin-top: 2px; }
 
-.recent .sec-title { font-size: 12px; opacity: .7; margin-bottom: 8px; font-weight: 700; }
+.recent .sec-title { font-size: calc(12px * var(--sf-scale)); opacity: .7; margin-bottom: 8px; font-weight: 700; }
 .recent-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
-.recent-list li { font-size: 11.5px; display: flex; justify-content: space-between; gap: 8px; padding: 7px 10px; border-radius: 10px; background: rgba(255,255,255,.05); }
+.recent-list li { font-size: calc(11.5px * var(--sf-scale)); display: flex; justify-content: space-between; gap: 8px; padding: 7px 10px; border-radius: 10px; background: rgba(255,255,255,.05); }
 .recent-list .h { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .recent-list .s { opacity: .6; flex: 0 0 auto; }
-.recent-empty { font-size: 11.5px; opacity: .5; padding: 4px 2px; }
+.recent-empty { font-size: calc(11.5px * var(--sf-scale)); opacity: .5; padding: 4px 2px; }
 
 .settings-btn {
   width: 100%; cursor: pointer; border: none; border-radius: 14px; padding: 12px;
-  font-size: 13.5px; font-weight: 700; color: #fff; font-family: inherit;
+  font-size: calc(13.5px * var(--sf-scale)); font-weight: 700; color: #fff; font-family: inherit;
   background: linear-gradient(135deg, rgba(125,180,255,.9), rgba(160,140,255,.9));
   box-shadow: 0 10px 26px rgba(125,160,255,.32); transition: transform .15s ease, filter .15s ease;
 }
 .settings-btn:hover { transform: translateY(-2px); filter: brightness(1.06); }
 .settings-btn:active { transform: translateY(0); }
+
+/* ===== 字体切换（得意黑）：仅 html.font-smiley 时生效 ===== */
+html.font-smiley, html.font-smiley body, html.font-smiley button, html.font-smiley .name,
+html.font-smiley .stat .num {
+  font-family: "SmileySans", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+}
+/* 得意黑视觉偏小，整体放大 2~3px（body 原默认16px，曾误写14.5px 反而更小） */
+html.font-smiley body { font-size: calc(16.5px * var(--sf-scale)); }
+html.font-smiley .name { font-size: calc(17px * var(--sf-scale)); }
+html.font-smiley .sub { font-size: calc(11.5px * var(--sf-scale)); }
+html.font-smiley .page-status .label { font-size: calc(13.5px * var(--sf-scale)); }
+html.font-smiley .page-status .value { font-size: calc(14px * var(--sf-scale)); }
+html.font-smiley .stat .num { font-size: calc(28px * var(--sf-scale)); }
+html.font-smiley .stat .cap { font-size: calc(12px * var(--sf-scale)); }
+html.font-smiley .recent .sec-title { font-size: calc(13px * var(--sf-scale)); }
+html.font-smiley .recent-list li { font-size: calc(12.5px * var(--sf-scale)); }
+html.font-smiley .recent-empty { font-size: calc(12.5px * var(--sf-scale)); }
+html.font-smiley .settings-btn { font-size: calc(14.5px * var(--sf-scale)); }
+
+/* ===== 浅色主题：仅 html.theme-light 时生效（不改动上方深色样式） ===== */
+html.theme-light body {
+  color: #1b2333;
+  background: radial-gradient(700px 360px at 80% -10%, rgba(80,140,255,.14), transparent 55%),
+              radial-gradient(600px 360px at 0% 110%, rgba(255,120,120,.10), transparent 55%),
+              linear-gradient(160deg, #f3f6fc, #e9eef7);
+}
+html.theme-light .pill { color: #04241a; }
+html.theme-light .card { background: linear-gradient(160deg, rgba(255,255,255,.92), rgba(255,255,255,.7)); border: 1px solid rgba(20,34,64,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 10px 26px rgba(40,60,110,.12); }
+html.theme-light .page-status .label { color: rgba(27,35,51,.82); }
+html.theme-light .value.safe { color: #16a36e; }
+html.theme-light .value.risk { color: #e5484d; }
+html.theme-light .stat .num { background: linear-gradient(135deg,#3a7bf0,#7a5cff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+html.theme-light .stat .cap { color: rgba(27,35,51,.75); }
+html.theme-light .recent-list li { background: rgba(255,255,255,.7); }
+html.theme-light .recent-empty { color: rgba(27,35,51,.7); }
+
+/* ===== 外观主题：4 套配色（gold / neon / mist / space，含深浅双变体）。
+   经典主题（无额外类）保持上方深色样式不动。 ===== */
+
+/* 1) 暖金国风 GOLD */
+html.theme-gold body {
+  color: #f6ecd9;
+  background:
+    radial-gradient(700px 360px at 80% -10%, rgba(217,164,65,.18), transparent 55%),
+    radial-gradient(600px 360px at 0% 110%, rgba(200,90,60,.14), transparent 55%),
+    linear-gradient(160deg, #14100a, #1d160d);
+}
+html.theme-gold .card { background: linear-gradient(160deg, rgba(255,240,210,.08), rgba(255,240,210,.03)); border: 1px solid rgba(217,164,65,.16); box-shadow: inset 0 1px 0 rgba(255,240,210,.08), 0 10px 26px rgba(0,0,0,.3); }
+html.theme-gold .stat .num { background: linear-gradient(135deg,#e8c87a,#d9a441); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+html.theme-gold .settings-btn { color:#2a1f12; background: linear-gradient(135deg,#e8c87a,#c9883a); box-shadow: 0 10px 26px rgba(217,164,65,.32); }
+html.theme-gold .recent-list li { background: rgba(255,240,210,.06); }
+html.theme-light.theme-gold body {
+  color: #3a2e1f;
+  background:
+    radial-gradient(700px 360px at 80% -10%, rgba(217,164,65,.12), transparent 55%),
+    radial-gradient(600px 360px at 0% 110%, rgba(200,90,60,.08), transparent 55%),
+    linear-gradient(160deg, #fbf6ec, #f6efe0);
+}
+html.theme-light.theme-gold .card { background: linear-gradient(160deg, rgba(255,253,248,.92), rgba(255,250,240,.7)); border: 1px solid rgba(58,46,31,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 10px 26px rgba(80,60,20,.14); }
+html.theme-light.theme-gold .stat .num { background: linear-gradient(135deg,#d9a441,#c9883a); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+html.theme-light.theme-gold .settings-btn { color:#2a1f12; background: linear-gradient(135deg,#d9a441,#c9883a); box-shadow: 0 10px 26px rgba(217,164,65,.3); }
+html.theme-light.theme-gold .recent-list li { background: rgba(255,255,255,.7); }
+
+/* 2) 赛博霓虹 NEON */
+html.theme-neon body {
+  color: #dff6ff;
+  background:
+    radial-gradient(700px 360px at 80% -10%, rgba(0,229,255,.16), transparent 55%),
+    radial-gradient(600px 360px at 0% 110%, rgba(255,45,149,.13), transparent 55%),
+    linear-gradient(160deg, #070b16, #0c1024);
+}
+html.theme-neon .card { background: linear-gradient(160deg, rgba(0,229,255,.07), rgba(255,45,149,.03)); border: 1px solid rgba(0,229,255,.16); box-shadow: inset 0 1px 0 rgba(0,229,255,.08), 0 10px 26px rgba(0,0,0,.34); }
+html.theme-neon .stat .num { background: linear-gradient(135deg,#00e5ff,#ff2d95); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+html.theme-neon .settings-btn { color:#04222b; background: linear-gradient(135deg,#00e5ff,#ff2d95); box-shadow: 0 10px 26px rgba(0,229,255,.4); }
+html.theme-neon .recent-list li { background: rgba(0,229,255,.05); }
+html.theme-light.theme-neon body {
+  color: #0b2a35;
+  background:
+    radial-gradient(700px 360px at 80% -10%, rgba(0,229,255,.12), transparent 55%),
+    radial-gradient(600px 360px at 0% 110%, rgba(255,45,149,.1), transparent 55%),
+    linear-gradient(160deg, #eaf3f8, #e3eef6);
+}
+html.theme-light.theme-neon .card { background: linear-gradient(160deg, rgba(255,255,255,.92), rgba(238,247,250,.7)); border: 1px solid rgba(11,42,53,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 10px 26px rgba(20,60,80,.14); }
+html.theme-light.theme-neon .stat .num { background: linear-gradient(135deg,#00e5ff,#ff2d95); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+html.theme-light.theme-neon .settings-btn { color:#04222b; background: linear-gradient(135deg,#00e5ff,#ff2d95); box-shadow: 0 10px 26px rgba(0,229,255,.3); }
+html.theme-light.theme-neon .recent-list li { background: rgba(255,255,255,.7); }
+
+/* 3) 极简雾灰 MIST */
+html.theme-mist body {
+  color: #e6e8ed;
+  background:
+    radial-gradient(700px 360px at 80% -10%, rgba(138,147,166,.12), transparent 55%),
+    radial-gradient(600px 360px at 0% 110%, rgba(110,120,140,.1), transparent 55%),
+    linear-gradient(160deg, #141519, #1a1c22);
+}
+html.theme-mist .card { background: linear-gradient(160deg, rgba(255,255,255,.07), rgba(255,255,255,.03)); border: 1px solid rgba(138,147,166,.14); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 10px 26px rgba(0,0,0,.3); }
+html.theme-mist .stat .num { background: linear-gradient(135deg,#b6bdca,#8a93a6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+html.theme-mist .settings-btn { color:#1c1f25; background: linear-gradient(135deg,#b6bdca,#8a93a6); box-shadow: 0 10px 26px rgba(138,147,166,.3); }
+html.theme-mist .recent-list li { background: rgba(255,255,255,.05); }
+html.theme-light.theme-mist body {
+  color: #2b2e35;
+  background:
+    radial-gradient(700px 360px at 80% -10%, rgba(138,147,166,.1), transparent 55%),
+    radial-gradient(600px 360px at 0% 110%, rgba(110,120,140,.08), transparent 55%),
+    linear-gradient(160deg, #f3f4f6, #eef0f2);
+}
+html.theme-light.theme-mist .card { background: linear-gradient(160deg, rgba(255,255,255,.92), rgba(246,248,250,.7)); border: 1px solid rgba(43,46,53,.1); box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 10px 26px rgba(60,66,80,.12); }
+html.theme-light.theme-mist .stat .num { background: linear-gradient(135deg,#aab2c2,#8a93a6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+html.theme-light.theme-mist .settings-btn { color:#1c1f25; background: linear-gradient(135deg,#aab2c2,#8a93a6); box-shadow: 0 10px 26px rgba(138,147,166,.28); }
+html.theme-light.theme-mist .recent-list li { background: rgba(255,255,255,.7); }
+
+/* 4) 暗夜深空 SPACE */
+html.theme-space body {
+  color: #ece9ff;
+  background:
+    radial-gradient(700px 360px at 80% -10%, rgba(139,123,255,.18), transparent 55%),
+    radial-gradient(600px 360px at 0% 110%, rgba(91,140,255,.13), transparent 55%),
+    linear-gradient(160deg, #0c0820, #140e2b);
+}
+html.theme-space .card { background: linear-gradient(160deg, rgba(139,123,255,.08), rgba(91,140,255,.03)); border: 1px solid rgba(139,123,255,.16); box-shadow: inset 0 1px 0 rgba(139,123,255,.08), 0 10px 26px rgba(0,0,0,.34); }
+html.theme-space .stat .num { background: linear-gradient(135deg,#a594ff,#5b8cff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+html.theme-space .settings-btn { color:#1b1638; background: linear-gradient(135deg,#a594ff,#5b8cff); box-shadow: 0 10px 26px rgba(139,123,255,.4); }
+html.theme-space .recent-list li { background: rgba(139,123,255,.06); }
+html.theme-light.theme-space body {
+  color: #2a2348;
+  background:
+    radial-gradient(700px 360px at 80% -10%, rgba(139,123,255,.12), transparent 55%),
+    radial-gradient(600px 360px at 0% 110%, rgba(91,140,255,.1), transparent 55%),
+    linear-gradient(160deg, #edeaf8, #e7e3f5);
+}
+html.theme-light.theme-space .card { background: linear-gradient(160deg, rgba(255,255,255,.92), rgba(247,244,254,.7)); border: 1px solid rgba(42,35,72,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 10px 26px rgba(42,35,72,.14); }
+html.theme-light.theme-space .stat .num { background: linear-gradient(135deg,#a594ff,#5b8cff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+html.theme-light.theme-space .settings-btn { color:#1b1638; background: linear-gradient(135deg,#a594ff,#5b8cff); box-shadow: 0 10px 26px rgba(139,123,255,.4); }
+html.theme-light.theme-space .recent-list li { background: rgba(255,255,255,.7); }
+
+/* ===== 像素主题 PIXEL（扁平实色，蓝紫，与设置页一致） ===== */
+html.theme-pixel body {
+  color: #eef0ff;
+  background: #0b0d1a;
+}
+html.theme-pixel .card { background: #15182b; border: 1px solid rgba(124,124,255,.28); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; border-radius: 10px; }
+html.theme-pixel .pill { color: #0b0d1a; background: #8c8cff; box-shadow: none; }
+html.theme-pixel .pill.off { background: #ff6b6b; color: #2a0c0c; }
+html.theme-pixel .stat .num { background: linear-gradient(135deg,#8c8cff,#b3a0ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+html.theme-pixel .settings-btn { color: #0b0d1a; background: #8c8cff; box-shadow: none; border-radius: 10px; }
+html.theme-pixel .recent-list li { background: #15182b; }
+html.theme-pixel .recent-empty { opacity: .6; }
+html.theme-light.theme-pixel body { color: #1b1d3a; background: #e8e8f5; }
+html.theme-light.theme-pixel .card { background: #f3f3fb; border: 1px solid rgba(80,80,200,.22); }
+html.theme-light.theme-pixel .stat .num { background: linear-gradient(135deg,#5a5aff,#8c8cff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+html.theme-light.theme-pixel .settings-btn { color: #fff; background: #5a5aff; }
+
+/* ===== 琉声液态玻璃材质（仅在非 Pixel 主题下生效；磨砂玻璃为默认已在本文件上方） ===== */
+html:not(.theme-pixel).material-liquid body {
+  color: #eaf2ff;
+  background:
+    radial-gradient(120% 90% at 15% -10%, rgba(58,110,200,.30) 0%, transparent 55%),
+    radial-gradient(100% 80% at 95% 110%, rgba(120,80,200,.18) 0%, transparent 60%),
+    linear-gradient(160deg, #0a0f1a 0%, #0e1626 50%, #060912 100%);
+  background-attachment: fixed;
+}
+html:not(.theme-pixel).material-liquid .card {
+  background: linear-gradient(145deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,.04) 45%, rgba(255,255,255,.08) 100%);
+  border: 1px solid rgba(255,255,255,.22);
+  box-shadow: 0 18px 50px rgba(0,8,24,.42), inset 0 1px 0 rgba(255,255,255,.5), inset 0 -1px 0 rgba(255,255,255,.14), inset 0 0 0 1px rgba(255,255,255,.04);
+  -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%);
+}
+html:not(.theme-pixel).material-liquid .pill { color: #06101f; background: linear-gradient(135deg, #9ec5ff, #7ab8ff); box-shadow: 0 8px 22px rgba(122,184,255,.42); }
+html:not(.theme-pixel).material-liquid .stat .num { background: linear-gradient(135deg,#9ec5ff,#7ab8ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+html:not(.theme-pixel).material-liquid .settings-btn { color: #06101f; background: linear-gradient(135deg,#9ec5ff,#7ab8ff); box-shadow: 0 10px 26px rgba(122,160,255,.32); }
+html:not(.theme-pixel).material-liquid .recent-list li { background: rgba(255,255,255,.07); }
+html.theme-light.material-liquid body {
+  color: #162038;
+  background:
+    radial-gradient(120% 90% at 15% -10%, rgba(122,184,255,.35) 0%, transparent 55%),
+    radial-gradient(100% 80% at 95% 110%, rgba(180,150,255,.22) 0%, transparent 60%),
+    linear-gradient(160deg, #eef3fb 0%, #e2eaf6 50%, #f6f9fd 100%);
+  background-attachment: fixed;
+}
+html.theme-light.material-liquid .card { background: linear-gradient(145deg, rgba(255,255,255,.78) 0%, rgba(255,255,255,.5) 50%, rgba(255,255,255,.65) 100%); border: 1px solid rgba(255,255,255,.85); box-shadow: 0 18px 44px rgba(40,60,110,.16), inset 0 1px 0 rgba(255,255,255,.9); -webkit-backdrop-filter: blur(18px) saturate(170%); backdrop-filter: blur(18px) saturate(170%); }
+
+/* ===== 自定义背景（仅在非 Pixel 主题下生效） ===== */
+html:not(.theme-pixel) body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image: var(--sf-bg-image, none);
+  background-size: cover; background-position: center;
+  opacity: .26; filter: blur(2px) brightness(.7);
+}
+html:not(.theme-pixel).theme-light body::before { opacity: .5; filter: blur(2px) brightness(1); }
+
+/* ===== 一键上报（popup 底部按钮 + 类型菜单） ===== */
+.report-btn {
+  width: 100%; cursor: pointer; border: 1px solid rgba(255,255,255,.18); border-radius: 14px; padding: 10px;
+  font-size: calc(12.5px * var(--sf-scale)); font-weight: 700; color: #cfe0ff; font-family: inherit;
+  background: rgba(255,255,255,.06); transition: transform .15s ease, filter .15s ease;
+}
+.report-btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
+.report-menu {
+  display: flex; flex-direction: column; gap: 8px; margin-top: -4px; padding: 12px;
+  border-radius: 14px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14);
+}
+.report-menu-title { font-size: calc(11px * var(--sf-scale)); opacity: .6; font-weight: 700; }
+.report-item {
+  cursor: pointer; border: none; border-radius: 10px; padding: 10px;
+  font-size: calc(12.5px * var(--sf-scale)); font-weight: 700; color: #fff; font-family: inherit;
+  background: linear-gradient(135deg, rgba(125,180,255,.85), rgba(160,140,255,.85));
+  transition: filter .15s ease;
+}
+.report-item:hover { filter: brightness(1.06); }
+.report-item:disabled { opacity: .6; cursor: default; }
+.report-status { font-size: calc(11px * var(--sf-scale)); opacity: .75; min-height: 14px; }
+.allow-btn {
+  width: 100%; margin-top: 8px; padding: 11px 14px; border: none; border-radius: 13px;
+  font-size: calc(14px * var(--sf-scale)); font-weight: 800; letter-spacing: .2px; cursor: pointer;
+  color: #06351f; background: linear-gradient(135deg, #7be0a6, #2ec27e);
+  box-shadow: 0 10px 26px rgba(46,194,126,.30); transition: transform .15s, filter .15s;
+}
+.allow-btn:hover { transform: translateY(-1px); filter: brightness(1.06); }
+.allow-btn:active { transform: translateY(0) scale(.99); }
+.allow-btn:disabled { opacity: .55; cursor: default; transform: none; filter: none; }
+.allow-status { margin-top: 6px; min-height: 16px; font-size: calc(11.5px * var(--sf-scale)); font-weight: 600; color: #1f9d5b; text-align: center; }
+.allow-status.warn { color: #c08a2b; }
+.report-cancel {
+  cursor: pointer; border: none; border-radius: 10px; padding: 8px;
+  font-size: calc(11.5px * var(--sf-scale)); color: #ffb4b4; background: rgba(255,255,255,.05); font-family: inherit;
+}
+
+/* ============================================================
+   统一动效系统（与 welcome / oobe / options 同源的非线性语言）
+   popup 此前完全没有入场与状态过渡，这里一次性补齐：
+   ① 错落入场 ② 卡片悬浮微交互 ③ 按钮按下回弹
+   ④ 状态变更高亮 pop ⑤ 守护态 logo 呼吸辉光 ⑥ 减弱动效适配
+   ============================================================ */
+
+/* ① 错落入场：popup 每次打开即触发（无需 JS），按 --d 顺序上浮淡入 */
+.sf-rise {
+  opacity: 0;
+  transform: translateY(var(--sf-rise-dist));
+  animation: sfRise .52s var(--sf-ease-out) forwards;
+  animation-delay: calc(var(--d, 0) * .055s + .04s);
+}
+@keyframes sfRise { to { opacity: 1; transform: translateY(0); } }
+
+/* ② 卡片悬浮微交互：轻微抬升 + 描边辉光（与背景玻璃质感呼应） */
+.card {
+  transition: transform .22s var(--sf-spring), border-color .22s ease, box-shadow .22s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(125, 180, 255, .30);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 16px 34px rgba(0,0,0,.34), 0 0 22px rgba(125,180,255,.14);
+}
+
+/* ③ 按钮按下回弹（在原有 hover 基础上补 active 反馈） */
+.settings-btn, .report-btn, .allow-btn {
+  transition: transform .16s var(--sf-spring), filter .16s ease, background .2s ease, box-shadow .16s ease;
+}
+.settings-btn:active, .report-btn:active, .allow-btn:active { transform: translateY(0) scale(.97); }
+
+/* ④ 状态变更高亮：风险/安全切换时数值柔和弹出（由 popup.js 在文本变化时加 .flash 触发） */
+.value.flash {
+  display: inline-block;
+  animation: sfValuePop .5s var(--sf-spring);
+}
+@keyframes sfValuePop {
+  0%   { transform: scale(.55); opacity: 0; }
+  60%  { transform: scale(1.10); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ⑤ 守护态 logo 生命感：开启防护时盾牌呼吸辉光 + 打开瞬间弹性入场 */
+.logo { transform-origin: center; animation: sfLogoIn .6s var(--sf-ease-out) both; }
+@keyframes sfLogoIn { from { transform: scale(.6) rotate(-8deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+.app.guarding .logo {
+  animation: sfLogoIn .6s var(--sf-ease-out) both, sfLogoPulse 3.4s ease-in-out 1s infinite;
+}
+@keyframes sfLogoPulse {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(125,180,255,0)); }
+  50%      { filter: drop-shadow(0 0 7px rgba(125,180,255,.55)); }
+}
+
+/* ⑥ 减弱动效：尊重系统/用户偏好，关闭入场与循环辉光，保留必要可读性 */
+@media (prefers-reduced-motion: reduce) {
+  .sf-rise, .logo, .app.guarding .logo, .value.flash { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .card:hover { transform: none; }
+}

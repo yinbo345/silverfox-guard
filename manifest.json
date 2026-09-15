@@ -1,13 +1,13 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "default_locale": "zh_CN",
   "description": "__MSG_extensionDescription__",
-  "permissions": ["storage", "downloads", "activeTab", "webNavigation", "notifications"],
+  "permissions": ["storage", "downloads", "activeTab", "webNavigation", "notifications", "unlimitedStorage", "nativeMessaging"],
   "host_permissions": ["<all_urls>", "https://open.bigmodel.cn/*", "https://api.moonshot.cn/*", "https://api.deepseek.com/*", "https://api.openai.com/*"],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://speech.platform.bing.com wss://speech.platform.bing.com https://open.bigmodel.cn https://api.moonshot.cn https://api.deepseek.com https://api.openai.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://speech.platform.bing.com wss://speech.platform.bing.com https://open.bigmodel.cn https://api.moonshot.cn https://api.deepseek.com https://api.openai.com https://api.github.com https://rdap.org https://*.verisign.com https://*.verisign-grs.com https://rdap.publicinterestregistry.net https://*.afilias.net https://*.afilias.org https://*.identitydigital.services https://*.donuts.email https://*.donuts.services https://*.centralnic.com https://*.nominet.uk https://rdap.gtlds.nominet.uk https://rdap.ngtlds.nominet.uk https://rdap.nic.google https://rdap.cnnic.cn https://rdap.nic.cn https://rdap.eu https://rdap.denic.de https://rdap.tcinet.ru https://rdap.jprs.jp https://rdap.auda.org.au https://rdap.ca https://rdap.nic.fr https://rdap.pir.nl https://rdap.registry.in https://rdap.nic.biz https://rdap.nic.co https://rdap.nic.io https://rdap.nic.me https://rdap.nic.tv https://rdap.nic.us https://rdap.nic.xyz https://rdap.nic.top https://rdap.nic.club https://rdap.nic.online https://rdap.nic.site https://rdap.nic.vip https://rdap.nic.shop https://rdap.nic.icu https://rdap.nic.link https://rdap.nic.pw https://rdap.nic.cc https://rdap.nic.wang https://rdap.nic.ren https://rdap.nic.live https://rdap.markmonitor.com https://rdap.godaddy.com https://uapis.cn https://cn.apihz.cn https://site-directory-cache.pages.dev https://silverfoxguard.dpdns.org https://silverfoxguard-website.pages.dev; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'"
   },
   "background": {
     "service_worker": "background.js"

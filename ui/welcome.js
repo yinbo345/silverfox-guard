@@ -15,6 +15,32 @@ function closeSelf() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // 外观偏好跟随设置页（主题 / 深浅色 / 材质 / 字体 / 字号 / 自定义背景，与设置页一致）
+  try {
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.sync) {
+      chrome.storage.sync.get({
+        fontMode: 'system', theme: 'dark', themePalette: 'classic',
+        material: 'frosted', fontScale: 1, bgImage: ''
+      }, (s) => {
+        const root = document.documentElement;
+        if (s.fontMode === 'smiley') root.classList.add('font-smiley');
+        if (s.theme === 'light') root.classList.add('theme-light');
+        const pal = s.themePalette || 'classic';
+        if (pal === 'gold') root.classList.add('theme-gold');
+        else if (pal === 'neon') root.classList.add('theme-neon');
+        else if (pal === 'mist') root.classList.add('theme-mist');
+        else if (pal === 'space') root.classList.add('theme-space');
+        else if (pal === 'pixel') root.classList.add('theme-pixel');
+        if (s.material === 'liquid' && pal !== 'pixel') root.classList.add('material-liquid');
+        if (typeof s.fontScale === 'number') {
+          let sc = s.fontScale; if (s.fontMode === 'smiley') sc *= 1.10;
+          root.style.setProperty('--sf-scale', sc.toFixed(3));
+        }
+        if (s.bgImage && pal !== 'pixel') root.style.setProperty('--sf-bg-image', 'url(' + s.bgImage + ')');
+      });
+    }
+  } catch (e) {}
+
   const settingsBtn = document.getElementById('settingsBtn');
   const startBtn = document.getElementById('startBtn');
   if (settingsBtn) settingsBtn.addEventListener('click', () => {

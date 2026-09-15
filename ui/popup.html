@@ -8,7 +8,7 @@
 </head>
 <body>
   <div class="app">
-    <header class="head">
+    <header class="head sf-rise" style="--d:0">
       <div class="brand">
         <svg class="logo" viewBox="0 0 24 24" fill="none">
           <path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z" fill="rgba(120,180,255,.18)" stroke="#7db4ff" stroke-width="1.4"/>
@@ -23,7 +23,7 @@
       <span class="pill" id="globalPill">防护中</span>
     </header>
 
-    <section class="card page-status">
+    <section class="card page-status sf-rise" style="--d:1">
       <div class="row">
         <span class="label">当前页面</span>
         <span class="value" id="pageStatus">检测中…</span>
@@ -34,7 +34,7 @@
       </div>
     </section>
 
-    <section class="card stats">
+    <section class="card stats sf-rise" style="--d:2">
       <div class="stat">
         <div class="num" id="statWarn">0</div>
         <div class="cap">拦截风险网站</div>
@@ -45,12 +45,24 @@
       </div>
     </section>
 
-    <section class="card recent" id="recentWrap">
+    <section class="card recent sf-rise" id="recentWrap" style="--d:3">
       <div class="sec-title">近期拦截记录</div>
       <ul class="recent-list" id="recentList"></ul>
     </section>
 
-    <button class="settings-btn" id="openSettings">打开设置控制面板</button>
+    <button class="settings-btn sf-rise" id="openSettings" style="--d:4">打开设置控制面板</button>
+
+    <button class="report-btn sf-rise" id="openReport" style="--d:5">一键上报网站</button>
+    <div class="report-menu" id="reportMenu" hidden>
+      <div class="report-menu-title">选择上报类型</div>
+      <button class="report-item" data-type="confirmed_phish">恶意 / 钓鱼站点举报</button>
+      <button class="report-item" data-type="false_positive">误报反馈（正常站被拦）</button>
+      <div class="report-status" id="reportStatus"></div>
+      <button class="report-cancel" id="reportCancel">取消</button>
+    </div>
+
+    <button class="allow-btn sf-rise" id="addAllow" style="--d:6">加入白名单 · 不再拦截此站</button>
+    <div class="allow-status" id="allowStatus"></div>
   </div>
   <script src="popup.js"></script>
 </body>

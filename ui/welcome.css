@@ -1,4 +1,11 @@
 /* welcome.css — 银狐防护「加载成功」欢迎页（深蓝 Liquid Glass + 暖金成功光效） */
+@font-face {
+  font-family: "SmileySans";
+  src: url("../fonts/SmileySans-Oblique.woff2") format("woff2");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
@@ -78,6 +85,17 @@ body {
 .steps li b { flex: 0 0 auto; min-width: 64px; color: #9db8ff; font-weight: 800; }
 .steps li span { opacity: .74; }
 
+/* 银狐防护小贴士 */
+.tips { display: flex; flex-direction: column; gap: 11px; }
+.tip { display: flex; gap: 13px; align-items: flex-start; padding: 13px 15px; border-radius: 14px; background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.09); transition: transform .2s, border-color .2s; }
+.tip:hover { transform: translateY(-2px); border-color: rgba(125,180,255,.4); }
+.tip .ti { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; font-size: 18px; background: linear-gradient(135deg, rgba(125,180,255,.18), rgba(200,166,255,.14)); border: 1px solid rgba(125,180,255,.25); }
+.tip .tx { font-size: 12.5px; line-height: 1.62; opacity: .82; }
+.tip .tx b { color: #ffd479; font-weight: 800; }
+.tip .tx code { font-size: 11px; padding: 1px 6px; border-radius: 6px; background: rgba(125,180,255,.16); color: #cfe0ff; }
+.tips-note { margin: 14px 2px 0; font-size: 11.5px; line-height: 1.7; opacity: .55; }
+.tips-note b { color: #9db8ff; }
+
 /* 按钮 */
 .actions { display: flex; gap: 12px; justify-content: center; margin-top: 4px; }
 .btn { cursor: pointer; border: none; border-radius: 12px; padding: 12px 26px; font-size: 14px; font-weight: 800; font-family: inherit; transition: transform .15s, filter .15s; }
@@ -96,3 +114,74 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .aurora .blob, .shield, .pill, .rise { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
+
+/* ===== 字体切换（得意黑）：仅 html.font-smiley 时生效 ===== */
+html.font-smiley, html.font-smiley body, html.font-smiley button, html.font-smiley .hero h1,
+html.font-smiley .card h3, html.font-smiley .panel > h2, html.font-smiley .btn {
+  font-family: "SmileySans", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+}
+/* 字体切换时整体放大，与设置页/弹窗一致 */
+html.font-smiley body { font-size: calc(16.5px * var(--sf-scale, 1)); }
+html.font-smiley .hero h1 { font-size: calc(28px * var(--sf-scale, 1)); }
+html.font-smiley .card h3 { font-size: calc(15.5px * var(--sf-scale, 1)); }
+html.font-smiley .panel > h2 { font-size: calc(16px * var(--sf-scale, 1)); }
+html.font-smiley .btn { font-size: calc(15px * var(--sf-scale, 1)); }
+
+/* ===== 浅色主题：仅 html.theme-light 时生效 ===== */
+html.theme-light body {
+  color: #1b2333;
+  background:
+    radial-gradient(900px 520px at 88% -8%, rgba(80,140,255,.14), transparent 55%),
+    radial-gradient(820px 520px at 0% 108%, rgba(255,120,120,.10), transparent 55%),
+    linear-gradient(160deg, #f3f6fc, #e9eef7 60%, #f6f9fd);
+}
+html.theme-light .panel { background: linear-gradient(160deg, rgba(255,255,255,.92), rgba(255,255,255,.7)); border: 1px solid rgba(20,34,64,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 18px 50px rgba(40,60,110,.12); }
+html.theme-light .card { background: rgba(255,255,255,.7); border: 1px solid rgba(20,34,64,.12); }
+html.theme-light .tip { background: rgba(255,255,255,.7); border: 1px solid rgba(20,34,64,.10); }
+html.theme-light .steps li b { color: #3a78d0; }
+html.theme-light .foot b, html.theme-light .tip .tx b { color: #3a78d0; }
+html.theme-light .btn-primary { background: linear-gradient(135deg,#3a78d0,#7a5cff); }
+
+/* ===== 像素主题 PIXEL（扁平实色蓝紫，与设置页一致；欢迎页不强制深/浅，跟随 theme-light） ===== */
+html.theme-pixel body { color: #eef0ff; background: #0b0d1a; }
+html.theme-pixel .aurora { display: none; }
+html.theme-pixel .panel { background: #15182b; border: 1px solid rgba(124,124,255,.28); box-shadow: none; border-radius: 10px; }
+html.theme-pixel .card { background: #15182b; border: 1px solid rgba(124,124,255,.22); }
+html.theme-pixel .shield { background: #15182b; border: 1px solid rgba(124,124,255,.3); box-shadow: 0 0 0 1px rgba(124,124,255,.25); }
+html.theme-pixel .pill { color: #0b0d1a; background: #8c8cff; box-shadow: none; }
+html.theme-pixel .btn-primary { color: #0b0d1a; background: #8c8cff; }
+html.theme-pixel .tip { background: #15182b; border: 1px solid rgba(124,124,255,.2); }
+html.theme-light.theme-pixel body { color: #1b1d3a; background: #e8e8f5; }
+html.theme-light.theme-pixel .panel, html.theme-light.theme-pixel .card, html.theme-light.theme-pixel .tip { background: #f3f3fb; border-color: rgba(80,80,200,.22); }
+html.theme-light.theme-pixel .btn-primary { background: #5a5aff; color: #fff; }
+
+/* ===== 琉声液态玻璃材质（仅在非 Pixel 主题下生效；磨砂玻璃为默认已在本文件上方） ===== */
+html:not(.theme-pixel).material-liquid body {
+  color: #eaf2ff;
+  background:
+    radial-gradient(900px 520px at 88% -8%, rgba(122,184,255,.26), transparent 55%),
+    radial-gradient(820px 520px at 0% 108%, rgba(180,150,255,.18), transparent 55%),
+    linear-gradient(160deg, #0a0f1a 0%, #0e1626 55%, #060912 100%);
+  background-attachment: fixed;
+}
+html:not(.theme-pixel).material-liquid .panel,
+html:not(.theme-pixel).material-liquid .card,
+html:not(.theme-pixel).material-liquid .tip {
+  background: linear-gradient(145deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,.04) 45%, rgba(255,255,255,.08) 100%);
+  border: 1px solid rgba(255,255,255,.22);
+  box-shadow: 0 18px 50px rgba(0,8,24,.42), inset 0 1px 0 rgba(255,255,255,.5), inset 0 -1px 0 rgba(255,255,255,.14), inset 0 0 0 1px rgba(255,255,255,.04);
+  -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%);
+}
+html:not(.theme-pixel).material-liquid .shield { background: linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.03)); border: 1px solid rgba(255,255,255,.22); box-shadow: 0 0 0 1px rgba(122,184,255,.25), 0 18px 50px rgba(0,0,0,.4); }
+html:not(.theme-pixel).material-liquid .btn-primary { color: #06101f; background: linear-gradient(135deg,#9ec5ff,#7ab8ff); box-shadow: 0 8px 22px rgba(122,184,255,.42); }
+html.theme-light.material-liquid body { color: #162038; background: linear-gradient(160deg, #eef3fb 0%, #e2eaf6 50%, #f6f9fd 100%); background-attachment: fixed; }
+html.theme-light.material-liquid .panel, html.theme-light.material-liquid .card, html.theme-light.material-liquid .tip { background: linear-gradient(145deg, rgba(255,255,255,.78) 0%, rgba(255,255,255,.5) 50%, rgba(255,255,255,.65) 100%); border: 1px solid rgba(255,255,255,.85); box-shadow: 0 18px 44px rgba(40,60,110,.16), inset 0 1px 0 rgba(255,255,255,.9); }
+
+/* ===== 自定义背景（仅在非 Pixel 主题下生效） ===== */
+html:not(.theme-pixel) body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image: var(--sf-bg-image, none);
+  background-size: cover; background-position: center;
+  opacity: .24; filter: blur(2px) brightness(.7);
+}
+html:not(.theme-pixel).theme-light body::before { opacity: .5; filter: blur(2px) brightness(1); }

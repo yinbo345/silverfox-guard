@@ -1,0 +1,8 @@
+{
+  "extensionName": {
+    "message": "银狐防护 · SilverFox Guard"
+  },
+  "extensionDescription": {
+    "message": "基于网页代码分析的银狐(游蛇)木马网站识别与下载拦截防护扩展。命中风险特征即弹出警告并禁用全部下载/跳转链接，支持用户自行选择是否继续访问。"
+  }
+}

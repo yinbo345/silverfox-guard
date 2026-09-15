@@ -1,0 +1,136 @@
+/* 银狐防护 · 全局 AI 悬浮球（网页模式，content script 注入）
+ * 自包含样式：不依赖 options.css 或主题变量，深色玻璃风，任意网站上可读。
+ */
+#sfAiRoot { all: initial; }
+
+#sfAiRoot .ai-fab,
+#sfAiRoot .ai-panel,
+#sfAiRoot .ai-fab * { box-sizing: border-box; }
+
+/* ── 悬浮球 ── */
+#sfAiRoot .ai-fab {
+  position: fixed; right: 22px; bottom: 22px; z-index: 2147483646;
+  width: 56px; height: 56px; border: 0; padding: 0; cursor: pointer;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #2a6bff 0%, #6a3bff 55%, #b14bff 100%);
+  box-shadow: 0 10px 26px rgba(40, 60, 160, .45), 0 0 0 1px rgba(255,255,255,.16) inset;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .25s cubic-bezier(.2,.9,.25,1.1), box-shadow .25s ease;
+}
+#sfAiRoot .ai-fab:hover { transform: translateY(-2px) scale(1.04); }
+#sfAiRoot .ai-fab .ai-shield { width: 30px; height: 30px; filter: drop-shadow(0 1px 2px rgba(0,0,0,.25)); }
+#sfAiRoot .ai-fab .ai-badge {
+  position: absolute; right: -4px; bottom: -4px; min-width: 20px; height: 20px; padding: 0 5px;
+  border-radius: 999px; background: #fff; color: #2a4cff; font: 700 11px/20px system-ui, sans-serif;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+}
+#sfAiRoot .ai-fab::before {
+  content: ""; position: absolute; inset: -6px; border-radius: 22px;
+  background: radial-gradient(circle, rgba(120,150,255,.55), transparent 70%);
+  opacity: 0; animation: aiPulse 2.6s ease-in-out infinite; pointer-events: none;
+}
+#sfAiRoot .ai-fab.is-morphing { animation: aiFabMorph .42s cubic-bezier(.2,.9,.25,1.15) forwards; }
+#sfAiRoot .ai-fab.is-morphing-back { animation: aiFabBack .42s cubic-bezier(.2,.9,.25,1.15) forwards; }
+
+@keyframes aiPulse { 0%,100% { opacity: 0; transform: scale(.9); } 50% { opacity: .55; transform: scale(1.08); } }
+@keyframes aiFabMorph { to { transform: scale(0); opacity: 0; } }
+@keyframes aiFabBack { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* ── 对话面板 ── */
+#sfAiRoot .ai-panel {
+  position: fixed; right: 22px; bottom: 22px; z-index: 2147483647;
+  width: min(380px, calc(100vw - 28px)); height: min(560px, calc(100vh - 44px));
+  display: flex; flex-direction: column; overflow: hidden;
+  border-radius: 18px;
+  background: linear-gradient(160deg, rgba(22,28,48,.96), rgba(30,24,56,.96));
+  color: #eaf0ff;
+  box-shadow: 0 18px 50px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.08) inset;
+  font: 14px/1.5 system-ui, -apple-system, "Microsoft YaHei", sans-serif;
+  transform-origin: bottom right;
+}
+#sfAiRoot .ai-panel.is-morphing { animation: aiPanelOpen .42s cubic-bezier(.2,.9,.25,1.15) forwards; }
+#sfAiRoot .ai-panel.is-closing { animation: aiPanelClose .38s cubic-bezier(.4,0,.6,1) forwards; }
+@keyframes aiPanelOpen {
+  from { transform: scale(.2); opacity: 0; border-radius: 50%; }
+  to { transform: scale(1); opacity: 1; border-radius: 18px; }
+}
+@keyframes aiPanelClose {
+  from { transform: scale(1); opacity: 1; border-radius: 18px; }
+  to { transform: scale(.2); opacity: 0; border-radius: 50%; }
+}
+
+#sfAiRoot .ai-head {
+  display: flex; align-items: center; gap: 8px; padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: linear-gradient(135deg, rgba(42,107,255,.22), rgba(177,75,255,.22));
+}
+#sfAiRoot .ai-title { display: flex; align-items: center; gap: 7px; flex: 1; font-weight: 700; }
+#sfAiRoot .ai-dot { width: 9px; height: 9px; border-radius: 50%; background: #4be38b; box-shadow: 0 0 8px #4be38b; }
+#sfAiRoot .ai-name { font-size: 14px; }
+#sfAiRoot .ai-ver { font-size: 10px; opacity: .55; letter-spacing: .5px; }
+#sfAiRoot .ai-x {
+  width: 26px; height: 26px; border: 0; border-radius: 8px; cursor: pointer;
+  background: rgba(255,255,255,.1); color: #eaf0ff; font-size: 16px; line-height: 1;
+}
+#sfAiRoot .ai-x:hover { background: rgba(255,255,255,.2); }
+
+#sfAiRoot .ai-log { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+#sfAiRoot .ai-msg { display: flex; }
+#sfAiRoot .ai-u { justify-content: flex-end; animation: aiMsgInR .36s cubic-bezier(.2,.85,.2,1.04) both; }
+#sfAiRoot .ai-a { justify-content: flex-start; animation: aiMsgInL .36s cubic-bezier(.2,.85,.2,1.04) both; }
+#sfAiRoot .ai-bubble {
+  max-width: 84%; padding: 9px 12px; border-radius: 14px; white-space: pre-wrap; word-break: break-word;
+}
+#sfAiRoot .ai-u .ai-bubble { background: linear-gradient(135deg,#2a6bff,#6a3bff); color: #fff; border-bottom-right-radius: 4px; }
+#sfAiRoot .ai-a .ai-bubble { background: rgba(255,255,255,.08); color: #eaf0ff; border-bottom-left-radius: 4px; }
+#sfAiRoot .ai-tag {
+  display: inline-block; margin-left: 8px; padding: 1px 7px; border-radius: 999px;
+  font-size: 10px; vertical-align: middle; background: rgba(120,150,255,.25); color: #cfe0ff;
+}
+#sfAiRoot .ai-typing::after { content: "…"; animation: aiDots 1.2s steps(4) infinite; }
+@keyframes aiDots { 0%{content:"";} 25%{content:".";} 50%{content:"..";} 75%{content:"...";} 100%{content:"";} }
+
+#sfAiRoot .ai-input-row { display: flex; align-items: flex-end; gap: 8px; padding: 10px 12px; border-top: 1px solid rgba(255,255,255,.08); }
+#sfAiRoot .ai-mic {
+  width: 36px; height: 36px; flex: none; border: 0; border-radius: 10px; cursor: pointer;
+  background: rgba(255,255,255,.1); color: #eaf0ff; display: flex; align-items: center; justify-content: center;
+}
+#sfAiRoot .ai-mic svg { width: 20px; height: 20px; }
+#sfAiRoot .ai-mic.is-recording { background: #ff4d6d; color: #fff; animation: aiMicPulse 1s ease-in-out infinite; }
+@keyframes aiMicPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,77,109,.6); } 50% { box-shadow: 0 0 0 8px rgba(255,77,109,0); } }
+#sfAiRoot .ai-input {
+  flex: 1; resize: none; max-height: 120px; padding: 9px 11px; border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06); color: #eaf0ff;
+  font: 14px/1.4 system-ui, "Microsoft YaHei", sans-serif; outline: none;
+}
+#sfAiRoot .ai-input::placeholder { color: rgba(234,240,255,.45); }
+#sfAiRoot .ai-send {
+  flex: none; height: 36px; padding: 0 14px; border: 0; border-radius: 10px; cursor: pointer; font-weight: 600;
+  background: linear-gradient(135deg,#2a6bff,#6a3bff); color: #fff;
+}
+#sfAiRoot .ai-send:disabled { opacity: .5; cursor: default; }
+#sfAiRoot .ai-foot { padding: 8px 14px; font-size: 11px; opacity: .5; text-align: center; }
+
+#sfAiRoot .ai-fab[hidden], #sfAiRoot .ai-panel[hidden] { display: none !important; }
+
+/* ── 文字/消息丝滑入场（修复"文字硬蹦出"）── */
+@keyframes aiMsgInR { from { opacity: 0; transform: translateX(16px) translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes aiMsgInL { from { opacity: 0; transform: translateX(-16px) translateY(6px); } to { opacity: 1; transform: none; } }
+/* 用户消息从右轻滑入、AI 消息从左轻滑入，均带非线性缓动与轻微上移淡入 */
+
+/* ── AI 回复逐字渐入（修复"一次性全部展示完"）── */
+#sfAiRoot .ai-char {
+  display: inline;
+  opacity: 0;
+  animation: aiCharIn .34s ease forwards;
+}
+#sfAiRoot .ai-char-space { opacity: 1; animation: none; }
+@keyframes aiCharIn { from { opacity: 0; } to { opacity: 1; } }
+/* 每个字符错峰淡入：先 invisible 再由 animationDelay 依次点亮，形成平滑"渐入"而非整段瞬显 */
+
+@media (prefers-reduced-motion: reduce) {
+  #sfAiRoot .ai-u, #sfAiRoot .ai-a, #sfAiRoot .ai-bubble, #sfAiRoot .ai-panel, #sfAiRoot .ai-fab, #sfAiRoot .ai-char {
+    animation: none !important;
+  }
+  #sfAiRoot .ai-char { opacity: 1 !important; }
+}
