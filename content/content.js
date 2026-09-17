@@ -971,6 +971,40 @@
     });
   }
 
+
+  // ===== 下载器扩展「绕过下载」拦截 → 询问放行 =====
+  // 迅雷/IDM 等下载器扩展发起的高危下载被后台拦下后，弹此窗询问用户是否放行。
+  // 「放行」复用 sf-allow-download 链路：加入会话放行名单并由后台重新触发下载。
+  function showExtDlConfirm(host, opts) {
+    opts = opts || {};
+    if (document.getElementById('sf-dl-ext')) return;
+    const overlay = document.createElement('div');
+    overlay.id = 'sf-dl-ext';
+    overlay.className = 'sf-overlay' + (currentFontMode === 'smiley' ? ' sf-font-smiley' : '');
+    const fname = opts.filename ? '<b>' + escapeHtml(String(opts.filename).slice(0, 120)) + '</b>' : '一个可执行/压缩文件';
+    overlay.innerHTML =
+      '<div class="sf-card">' + SHIELD_SVG +
+      '<h2 class="sf-title">已拦截可疑下载（下载器扩展）</h2>' +
+      '<p class="sf-sub">检测到已安装的下载器扩展（如迅雷 / IDM 等）试图绕过浏览器，直接抓取来自 <b>' + escapeHtml(String(host || '未知站点')) + '</b> 的 ' + fname + '。<br>此类"绕过浏览器"的下载不受浏览器安全机制约束，银狐防护已将其拦截。</p>' +
+      '<div class="sf-actions">' +
+      '<button class="sf-btn sf-btn-leave" id="sf-dl-ext-keep">保持拦截</button>' +
+      '<button class="sf-btn sf-btn-continue" id="sf-dl-ext-allow">我信任此文件，放行</button>' +
+      '</div>' +
+      '<p class="sf-foot">仅当您明确信任该文件来源时才放行；放行后本次下载将重新发起。</p>' +
+      '</div>';
+    (document.body || document.documentElement).appendChild(overlay);
+
+    overlay.querySelector('#sf-dl-ext-keep').addEventListener('click', () => closeEl(overlay));
+    overlay.querySelector('#sf-dl-ext-allow').addEventListener('click', () => {
+      closeEl(overlay);
+      try {
+        if (chrome.runtime && chrome.runtime.sendMessage)
+          chrome.runtime.sendMessage({ type: 'sf-allow-download', url: opts.url || '', hostname: host });
+      } catch (e) {}
+      showToast('已放行，正在重新下载该文件');
+    });
+  }
+
   // ===== 危险弹窗提醒（Windows 系统通知，chrome.notifications）=====
   // 不再使用声音提示：浏览器自动播放策略在扩展上下文无法稳定解锁，且用户实测声音未生效。
   // 改为调用后台创建原生系统通知（Windows 右下角 toast），更可靠、无需用户手势。
@@ -1337,6 +1371,7 @@
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg && msg.type === 'sf-getStatus') { sendResponse(lastResult); return true; }
     if (msg && msg.type === 'sf-download-blocked') { showDownloadBlocked(location.hostname, { url: msg.url || '' }); }
+    if (msg && msg.type === 'sf-dl-ext-blocked') { showExtDlConfirm(location.hostname, { url: msg.url || '', filename: msg.filename || '' }); }
     if (msg && msg.type === 'sf-download-allow-failed') { showToast('⚠️ 请手动在站内点击下载，已临时放行该链接'); }
   });
 

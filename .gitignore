@@ -6,3 +6,10 @@ Thumbs.db
 
 # Node (not used by the extension, kept out of the repo)
 node_modules/
+
+# CRX 签名私钥（绝不入库！保留在扩展目录之外的 D:/silverfox-guard.pem）
+*.pem
+
+# 发行构建脚本（本地用，不入库）
+build_crx.py
+verify_crx.py

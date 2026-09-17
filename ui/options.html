@@ -407,6 +407,13 @@
             </div>
             <button class="btn" id="envscanCheck" type="button" data-page-node-id="envscanCheckBtn">立即检查</button>
           </div>
+          <div class="row" style="margin-bottom:2px" data-page-node-id="envscanGpuRow">
+            <div class="rl">
+              <div class="rt">GPU 加速扫描</div>
+              <div class="rd">将深层扫描的「家族特征字节串匹配」交给显卡批量计算（默认关闭）；切换后对下一轮扫描生效。需较新显卡驱动，无可用 GPU 时自动回退 CPU。</div>
+            </div>
+            <label class="switch" data-page-node-id="envscanGpuSwitch"><input type="checkbox" id="envscanGpu"><span class="slider"></span></label>
+          </div>
           <div id="envscanStatus" class="envscan-status" data-page-node-id="envscanStatus">正在连接本地检测程序…</div>
           <div id="envscanFindings" class="envscan-findings" data-page-node-id="envscanFindings"></div>
           <div id="envscanHint" class="tip tip-warn" style="display:none" data-page-node-id="envscanHint">未能连接本地检测程序。请确认已用 SilverFoxEnvScan-Setup.exe 安装包完成安装（安装后服务自动后台常驻，无需手动运行、无托盘图标）；若已安装仍连不上，请检查安装时填写的 Chrome/Edge 扩展 ID 与当前扩展是否一致。</div>

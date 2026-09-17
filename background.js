@@ -532,7 +532,7 @@ async function queryIcp(domain) {
 // ===== 一键上报：后台 service worker 直连 GitHub Issues API 创建 Issue =====
 // 早期版本经 Cloudflare Worker 代理，但 *.workers.dev 在部分网络下不可达，导致上报
 // 静默失败。改为后台直连 api.github.com（用户网络可直连 GitHub），移除中间链路，最稳。
-// 公开仓库不内置 Token——内置凭证等同公开泄露，GitHub 推送保护亦会拦截提交。
+// Token 仅含本仓库 issues 写权限（细粒度），存于下方常量；缺失时回退预填 issue 页。
 const GITHUB_REPORT_TOKEN = '';   // 公开仓库占位：真实 Token 由维护者构建时注入（缺失时上报自动回退预填 Issue 页）
 const GITHUB_ISSUE_ENDPOINT = 'https://api.github.com/repos/yinbo345/silverfox-guard/issues';
 const REPORT_VALID_TYPES = ['false_positive', 'confirmed_phish'];
@@ -1032,10 +1032,12 @@ if (chrome.downloads && chrome.downloads.onCreated) {
     if (reissuedUrls.has(item.url)) { reissuedUrls.delete(item.url); return; }
     // 本次下载用户已明确「仍要下载」→ 直接放行（避免重复拦截）
     if (allowedDownloads.has(item.url)) return;
-    // 浏览器扩展自身（byExtensionId）发起的下载，一律跳过，避免误拦
-    if (item.byExtensionId) return;
-    const host = parseHost(item.url);
-    getSettings().then(function (settings) {
+  // ★ 由扩展发起（byExtensionId）的下载：仅「本扩展自身」（静默重下/保存）直接放行；
+  //   其它扩展（迅雷/IDM/下载器接管类）发起的下载落入后续风险判定——它们必须先经
+  //   downloads API 才能转交外部下载器，在这里掐断即可阻止其绕过浏览器的下载。
+  if (item.byExtensionId && item.byExtensionId === chrome.runtime.id) return;
+      const host = parseHost(item.url);
+      getSettings().then(function (settings) {
       if (!settings.enabledGlobal || !settings.autoBlockDownloads) return;
       // ★ 免费加成：Chrome 自带 Safe Browsing 已将该下载标记为恶意
       //   （content=文件已知恶意 / url=网址已知恶意 / host=来源主机已知分发恶意二进制）
@@ -1079,6 +1081,20 @@ if (chrome.downloads && chrome.downloads.onCreated) {
         cancelDownload(item.id, host, item.tabId >= 0 ? [item.tabId] : [], item.url, item.filename);
         return;
       }
+      // ★ 下载器/接管类扩展（byExtensionId 且非本扩展）发起的下载：
+      //   白名单 / 官方域名 / 可信下载源照常放行；其余高危文件（exe/zip/rar/网盘/脚本）
+      //   一律拦截并弹「询问放行」窗——这是对「迅雷/IDM 等绕过浏览器直接下载」的兜底拦截。
+      if (item.byExtensionId) {
+        if (hostMatch(host, settings.allowlist)) return;
+        if (srcHost && (SF.isOfficialDomain(srcHost) || hostMatch(srcHost, settings.allowlist))) return;
+        if (_dlBlProtected(host, settings)) return;   // TRUSTED_DOWNLOAD_HOSTS / 官方 / 用户白名单
+        if (isHighRiskFile(item.url)) {
+          cancelDownload(item.id, host || srcHost || '', item.tabId >= 0 ? [item.tabId] : [], item.url, item.filename, true);
+          return;
+        }
+        return;   // 非高危文件（视频/图片等）：交给下载器接管，不打扰
+      }
+
       // ★ 核心：只有当「发起下载的页面」被判定危险且未放行时才拦，否则一律放行
       loadState().then(function (state) {
         const src = sourceHostOf(item, state);
@@ -1182,7 +1198,7 @@ if (chrome.webNavigation && chrome.webNavigation.onCommitted) {
   });
 }
 
-function cancelDownload(id, host, tabIds, url, filename) {
+function cancelDownload(id, host, tabIds, url, filename, extBlock) {
   // ★ 自动入库（#16）：把本次被拦下载的「载荷域名」记进下载黑名单，供后续跨站复用识别。
   //   host 参数是「落地页/来源域名」，真正要记的是文件所在域名（parseHost(url)），
   //   落地页只作来源元数据留档 —— 银狐换落地页比换载荷 CDN 勤快得多。
@@ -1197,7 +1213,7 @@ function cancelDownload(id, host, tabIds, url, filename) {
     // 把提示发到「发起下载的危险页面」对应的所有标签页（解决 item.tabId 为 -1 收不到提示的问题）
     (tabIds || []).forEach(function (tid) {
       if (tid != null && tid >= 0 && chrome.tabs && chrome.tabs.sendMessage) {
-        try { chrome.tabs.sendMessage(tid, { type: 'sf-download-blocked', host: host, url: url, filename: filename }); } catch (e) {}
+        try { chrome.tabs.sendMessage(tid, { type: extBlock ? 'sf-dl-ext-blocked' : 'sf-download-blocked', host: host, url: url, filename: filename }); } catch (e) {}
       }
     });
   });

@@ -1731,9 +1731,9 @@ function updateMasterPill(on) {
 }
 
 // ===== 常规页 · 卡巴式防护状态总览（2026-09-13）=====
-// 只装扩展（未装主防程序 SilverFoxEnvScan）→「防护不完全」；
+// 只装扩展（未装主防程序 SilverFoxGuard）→「防护不完全」；
 // 扩展 + 主防程序都就绪 →「你已受到完全防护」。
-const KAV_NM_HOST = 'com.silverfox.envscan';
+const KAV_NM_HOST = 'com.silverfox.guard';
 let kavSysChecked = false;   // 是否已探测过主防程序（避免每次渲染重复探测）
 let kavSysInstalled = false; // 探测结果缓存
 const KAV_DOWNLOAD_URL = 'https://github.com/yinbo345/silverfox-guard/releases';
@@ -1781,7 +1781,7 @@ function refreshKavGeneral() {
   } else {
     hero.classList.add('partial');
     title.textContent = '防护不完全';
-    sub.textContent = '仅安装浏览器扩展，未检测到本机主防程序（SilverFoxEnvScan）。缺少常驻系统级扫描与一键清除能力，建议立即安装。';
+    sub.textContent = '仅安装浏览器扩展，未检测到本机主防程序（SilverFoxGuard）。缺少常驻系统级扫描与一键清除能力，建议立即安装。';
     if (installBtn) { installBtn.hidden = false; installBtn.onclick = () => window.open(KAV_DOWNLOAD_URL, '_blank'); }
   }
 
@@ -2516,7 +2516,7 @@ init();
 // 检测程序以 Windows 服务常驻后台（无托盘、无独立页面），经私有管道与扩展安全联动。
 // 不经过任何本地端口，银狐无法劫持；扩展仅读取结果，绝不上报任何用户数据。
 (function () {
-  const NM_HOST = 'com.silverfox.envscan';
+  const NM_HOST = 'com.silverfox.guard';
   // 单独下载地址：发布检测程序后请更新此常量（建议挂在银狐防护 GitHub Release 或官网）。
   const DOWNLOAD_URL = 'https://github.com/yinbo345/silverfox-guard/releases';
   const statusEl = document.getElementById('envscanStatus');
@@ -2669,8 +2669,8 @@ init();
     if (!statusEl) return;
     statusEl.className = 'envscan-status st-offline';
     statusEl.innerHTML = '<strong>已连接本地程序，但后台服务未运行</strong>' +
-      '<span class="es-meta">Windows 服务 SilverFoxEnvScanSvc 未启动。请：① 以管理员身份重装安装包；' +
-      '② 或在「服务」(services.msc) 中手动启动 SilverFoxEnvScanSvc。</span>';
+      '<span class="es-meta">Windows 服务 SilverFoxGuardSvc 未启动。请：① 以管理员身份重装安装包；' +
+      '② 或在「服务」(services.msc) 中手动启动 SilverFoxGuardSvc。</span>';
     setShield('offline');
     if (hintEl) hintEl.style.display = 'none';
   }
@@ -2686,8 +2686,14 @@ init();
     if (hintEl) hintEl.style.display = 'block';
   }
 
-  function sendCmd(type) {
-    if (port) { try { port.postMessage({ type: type }); } catch (e) { showConnectionError(); } }
+  function sendCmd(type, extra) {
+    if (port) {
+      try {
+        var m = { type: type };
+        if (extra) { for (var k in extra) { if (Object.prototype.hasOwnProperty.call(extra, k)) m[k] = extra[k]; } }
+        port.postMessage(m);
+      } catch (e) { showConnectionError(); }
+    }
   }
 
   function openPort() {
@@ -2698,12 +2704,24 @@ init();
     statusEl.className = 'envscan-status st-loading';
     statusEl.textContent = '正在连接本地检测程序…';
     port.onMessage.addListener(function (msg) {
+      if (msg && msg.cmd === 'gpuget') {
+        var gpuEl = document.getElementById('envscanGpu');
+        if (gpuEl) { gpuEl.checked = (msg.gpu === 1); gpuEl.disabled = false; }
+        return;
+      }
+      if (msg && msg.cmd === 'gpu') {
+        var gpuEl2 = document.getElementById('envscanGpu');
+        if (gpuEl2) gpuEl2.checked = (msg.gpu === 1);
+        return;
+      }
       if (msg && msg.type === 'clean_history') { renderHistory(msg.records || []); return; }
       render(msg);
       // 清除完成后（响应帧含 clean 报告）顺带刷新清除记录
       if (msg && msg.clean) sendCmd('history');
     });
     port.onDisconnect.addListener(function () {
+      var gpuOff = document.getElementById('envscanGpu');
+      if (gpuOff) { gpuOff.disabled = true; gpuOff.checked = false; }
       const err = chrome.runtime.lastError;
       port = null;
       if (timer) { clearInterval(timer); timer = null; }
@@ -2712,6 +2730,7 @@ init();
     });
     sendCmd('status');
     sendCmd('history');
+    sendCmd('gpuget');
     if (timer) clearInterval(timer);
     timer = setInterval(function () { sendCmd('status'); }, 30000);
   }
@@ -2732,6 +2751,13 @@ init();
 
   // 进入「环境检测」相关导航（旧版单独项 / 新版并入「安全工具」分组）时打开原生消息端口
   // 并定时刷新；切走时断开端口。由 setupNav 统一驱动，避免新版导航重建后旧绑定失效。
+  var gpuElInit = document.getElementById('envscanGpu');
+  if (gpuElInit) {
+    gpuElInit.disabled = true;   // 未连上服务前不可用（openPort 收到 gpuget 后启用）
+    gpuElInit.addEventListener('change', function () {
+      sendCmd('gpu', { on: gpuElInit.checked ? 1 : 0 });
+    });
+  }
   window.__sfEnvscanPort = function (open) { if (open) openPort(); else closePort(); };
   const curActive = document.querySelector('.nav-item.active');
   const curHas = curActive && (curActive.dataset.targets || curActive.dataset.target || '')
