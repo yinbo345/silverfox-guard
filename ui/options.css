@@ -2161,6 +2161,33 @@ html.theme-light .about-row .btn-mini { background: rgba(47,111,237,.1); color: 
 html.theme-light .about-row .btn-mini:hover { background: rgba(47,111,237,.18); }
 
 /* 环境检测（联动本地银狐环境检测程序） */
+/* GPU「特征地图」加载进度条：开关打开后展示地图载入显存的进度 */
+.envscan-gpuprog { margin-top: 10px; padding: 12px 14px; border-radius: 12px;
+  background: rgba(125,180,255,.08); border: 1px solid rgba(125,180,255,.22); }
+.envscan-gpuprog-head { display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px; font-size: 13px; font-weight: 700; color: #cfe0ff; }
+.envscan-gpuprog-pct { font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 800; color: #7db4ff; }
+.envscan-gpuprog-track { margin-top: 8px; height: 6px; border-radius: 999px; overflow: hidden;
+  background: rgba(125,140,170,.20); }
+.envscan-gpuprog-bar { height: 100%; width: 0%; border-radius: 999px;
+  background: linear-gradient(90deg, #7db4ff, #a08cff);
+  transition: width .24s cubic-bezier(.25,.46,.45,.94);
+  box-shadow: 0 0 8px rgba(125,180,255,.45); }
+.envscan-gpuprog-note { margin-top: 7px; font-size: 12px; color: #9aa0aa; line-height: 1.5; white-space: pre-line; }
+.envscan-gpuprog.is-done { background: rgba(57,217,138,.10); border-color: rgba(57,217,138,.3); }
+.envscan-gpuprog.is-done .envscan-gpuprog-head,
+.envscan-gpuprog.is-done .envscan-gpuprog-pct { color: #39d98a; }
+.envscan-gpuprog.is-done .envscan-gpuprog-bar { background: linear-gradient(90deg,#39d98a,#2fbf78);
+  box-shadow: 0 0 8px rgba(57,217,138,.4); }
+.envscan-gpuprog.is-error { background: rgba(255,92,92,.10); border-color: rgba(255,92,92,.35); }
+.envscan-gpuprog.is-error .envscan-gpuprog-head,
+.envscan-gpuprog.is-error .envscan-gpuprog-pct { color: #ff5c5c; }
+.envscan-gpuprog.is-error .envscan-gpuprog-bar { background: linear-gradient(90deg,#ff5c5c,#e04848); }
+html.theme-light .envscan-gpuprog-head { color: #2f6fed; }
+html.theme-light .envscan-gpuprog-pct { color: #3a7bf0; }
+html.theme-light .envscan-gpuprog.is-done .envscan-gpuprog-head,
+html.theme-light .envscan-gpuprog.is-done .envscan-gpuprog-pct { color: #18a35a; }
+
 .envscan-status { margin-top: 12px; padding: 14px 16px; border-radius: 12px; font-size: 17px; font-weight: 800; background: rgba(57,217,138,.12); border: 1px solid rgba(57,217,138,.35); color: #39d98a; line-height: 1.5; }
 .envscan-status .es-meta { display: block; margin-top: 4px; font-size: 12px; font-weight: 500; color: #9aa0aa; }
 .envscan-status.st-suspicious { background: rgba(245,166,35,.12); border-color: rgba(245,166,35,.4); color: #f5a623; }
@@ -2458,3 +2485,23 @@ html.theme-light .hst-mode.norm { background: rgba(47,111,237,.10); color: #2f6f
 html.theme-light .hst-mode.adv { background: rgba(27,152,98,.12); color: #1b9862; }
 html.theme-light .hst-chip, html.theme-light .hst-a { filter: saturate(1.2) brightness(1.05); }
 html.theme-light .hst-chip { color: #35539a; }
+
+/* ---------------------------------------------------------------------------
+   勒索防护 · 回滚 — 快照清单（复用 .hst-empty / .envscan-status 的配色体系）
+   --------------------------------------------------------------------------- */
+#rollbackList { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+#rollbackList .hst-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: 10px;
+}
+#rollbackList .hst-path {
+  flex: 1; min-width: 0; padding: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+#rollbackList .hst-meta {
+  flex: none; font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px; opacity: .6;
+}
+
+/* 注：勒索回滚的「撤销我的处理」入口不在本页 —— 它落在主防程序右下角的通知卡上
+   （用户看到"发生了什么事"的那个位置），本页只展示防护状态与快照占用。 */

@@ -533,7 +533,7 @@ async function queryIcp(domain) {
 // 早期版本经 Cloudflare Worker 代理，但 *.workers.dev 在部分网络下不可达，导致上报
 // 静默失败。改为后台直连 api.github.com（用户网络可直连 GitHub），移除中间链路，最稳。
 // Token 仅含本仓库 issues 写权限（细粒度），存于下方常量；缺失时回退预填 issue 页。
-const GITHUB_REPORT_TOKEN = '';   // 公开仓库占位：真实 Token 由维护者构建时注入（缺失时上报自动回退预填 Issue 页）
+const GITHUB_REPORT_TOKEN = '';
 const GITHUB_ISSUE_ENDPOINT = 'https://api.github.com/repos/yinbo345/silverfox-guard/issues';
 const REPORT_VALID_TYPES = ['false_positive', 'confirmed_phish'];
 const REPORT_LABELS = {

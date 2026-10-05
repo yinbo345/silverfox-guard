@@ -329,7 +329,42 @@
   async function enrichAsync(settings, chained, data) {
     if (!settings || !settings.enabledGlobal) return;
     let changed = false;
-    // 0) ICP 权威核验（三态结果注入 data.icpAuth：确有备案 / 确认无备案 / 查询失败）
+
+    // ★★★ 0) 云端官网库查询：**必须排在所有补强项的最前面**（2026-10-05 修）
+    //
+    //  实测症状：官方站下载页（www.ventoy.net/cn/download.html）
+    //    「刚进页面是可疑，滑动一下就弹拦截卡」，而该域名确实在云端库里。
+    //
+    //  真因是**时序**，不是名单缺失：
+    //    原顺序 = ICP核验 → 下载黑名单 → 域名年龄 → .txt 抓取(5s超时)
+    //            → BFS 资源下挖(5s超时) → **云端库（排最后）**
+    //    云端库前面可能积压 **10 秒**。于是：
+    //      ① 首屏同步快判 → 该页有 9 处下载入口 + 3 个网盘链接
+    //         ⇒ 特征分已经很重 ⇒ 显示"可疑"（此时官方豁免还没到）
+    //      ② 用户滑动 → DOM 变更触发重判 ⇒ 拿到 danger ⇒ **立刻弹拦截卡**
+    //      ③ 10 秒后云端库才返回 ⇒ 豁免生效，但 showWarning 里
+    //         `if (document.getElementById('sf-overlay')) return;`
+    //         已经弹过的卡**不会自动撤销** ⇒ 用户看到的就是"误报"。
+    //
+    //  修法（两条一起）：
+    //    ① 把云端库查询提到 enrichAsync 第一步（纯内存查，无网络等待）；
+    //    ② 命中后若此前已弹过 danger 卡，**主动撤销**（见 revokeWarning）。
+    if (lastResult && lastResult.analyzed && lastResult.level && lastResult.level !== 'safe') {
+      try {
+        const rc = await sendMsg({ type: 'sf-cloud-official', host: location.hostname });
+        if (rc && rc.official && rc.matched) {
+          if (SF.registerCloudOfficial) SF.registerCloudOfficial([rc.matched]);
+          data.cloudOfficial = true;
+          changed = true;
+          // ★ 兜底撤销：云端库迟到时，danger 卡可能已经弹出来了。
+          //   showWarning 是"只弹不收"的，命中官方后必须显式清掉，
+          //   否则用户已经看到"检测到银狐木马风险网站"这一行字了。
+          revokeWarningIfShown('云端官网库命中「' + rc.matched + '」，撤销此前的告警');
+        }
+      } catch (e) {}
+    }
+
+    // 1) ICP 权威核验（三态结果注入 data.icpAuth：确有备案 / 确认无备案 / 查询失败）
     //    查询失败时后台返回 {queried:false}，评分引擎会完全回退到页面文本扫描，绝不凭失败结果加分。
     if (needIcpVerify(settings, data)) {
       try {
@@ -403,18 +438,9 @@
       }
     } catch (e) { /* 解析器异常不影响主判定 */ }
 
-    // 4) 云端官网库补充（#384）：仅当本地判定非安全（可能误报）时才咨询后台，避免无谓拉取。
-    //    命中则将域名注册进本地 EXTRA_OFFICIAL_SET，使后续 isOfficialDomain 同步判为官方 → 根除误报。
-    if (lastResult.analyzed && lastResult.level && lastResult.level !== 'safe') {
-      try {
-        const rc = await sendMsg({ type: 'sf-cloud-official', host: location.hostname });
-        if (rc && rc.official && rc.matched) {
-          if (SF.registerCloudOfficial) SF.registerCloudOfficial([rc.matched]);
-          data.cloudOfficial = true;
-          changed = true;
-        }
-      } catch (e) {}
-    }
+    // 4) ~~云端官网库补充~~ —— 已移到 enrichAsync 最开头（见函数首部注释）。
+    //    原位置排在 .txt 抓取与 BFS 下挖之后，可能积压 10 秒，
+    //    导致"用户滑动一下就突然报毒"。此处不再重复查询。
 
     if (changed) analyzeAndAct(settings, chained, data);
   }
@@ -904,6 +930,51 @@
         chrome.runtime.sendMessage({ type: 'sf-release', hostname: location.hostname });
     } catch (e) {}
     showToast('⚠️ 已完全放行该站下载入口');
+  }
+
+  // ===== 云端官网库命中后：撤销此前的 danger 告警 =====
+  //
+  //  ★ 为什么需要它（2026-10-05）：
+  //   showWarning() 是"只弹不收"的 —— 第 750 行 `if (document.getElementById('sf-overlay')) return;`
+  //   一旦弹出就不会自动消失。而云端库查询是**异步**的（要发消息给后台），
+  //   在它返回之前，页面可能已经因滚动/懒加载触发重判并弹了 danger 卡。
+  //   ⇒ 一旦命中官方域名，那张写着「检测到银狐木马风险网站」的卡片必须撤掉，
+  //      否则用户已经读到了误报文案，体验上等于没修。
+  //
+  //  ★ 与 doRelease() 的区别（别复用它）：
+  //   doRelease 会设 `unblocked = true` —— 那是"用户主动永久放行"，
+  //   语义是"这个站我信了"。这里是"判定结果被推翻"，
+  //   必须让后续重判走正常逻辑，否则会把一次误报变成永久漏防。
+  function revokeWarningIfShown(reason) {
+    const ov = document.getElementById('sf-overlay');
+    const bn = document.getElementById('sf-banner');
+    const hint = document.getElementById('sf-hint');
+    // 没有任何告警 UI 出现过 → 无需撤销
+    if (!ov && !bn && !hint) return false;
+    try { if (ov) closeEl(ov); } catch (e) {}
+    try { if (bn) closeEl(bn); } catch (e) {}
+    try { if (hint) closeEl(hint); } catch (e) {}
+    // 复位拦截状态，让后续重判按新结论（safe）走
+    dangerActive = false;
+    navBlock = false;
+    fullLockdown = false;
+    dangerReported = false;
+    dangerAcknowledged = false;
+    // 恢复被灰化/禁用的下载入口
+    try {
+      document.querySelectorAll('[data-sf-blocked]').forEach((el) => {
+        el.style.pointerEvents = '';
+        el.style.opacity = '';
+        el.style.filter = '';
+        if (el.dataset.sfOriginalHref) {
+          try { el.setAttribute('href', el.dataset.sfOriginalHref); } catch (e) {}
+          delete el.dataset.sfOriginalHref;
+        }
+        delete el.dataset.sfBlocked;
+      });
+    } catch (e) {}
+    try { showToast('✅ ' + reason + '，已恢复该页'); } catch (e) {}
+    return true;
   }
 
   function leaveSite() {

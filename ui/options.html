@@ -69,7 +69,7 @@
           <svg viewBox="0 0 24 24" data-page-node-id="BMQoatyhvi5blwJxGdZWZb"><path d="M12 16V4m0 0L7 9m5-5l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="zsWh3uzF3zdUGpq6DjCiS7"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-page-node-id="Yvtkwv9IRLiFSkzfCZxyjc"/></svg>
           <span data-page-node-id="pTdlXHTWv00ygMP3dTf1bv">银狐扫描</span>
         </button>
-        <button class="nav-item" data-target="envscan" data-title="环境检测" data-desc="联动本地银狐环境检测程序" data-page-node-id="envscanNav">
+        <button class="nav-item" data-target="envscan" data-title="环境检测" data-desc="联动本地银狐防护主防程序" data-page-node-id="envscanNav">
           <svg viewBox="0 0 24 24" data-page-node-id="envscanNavIco"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 8v5M9.5 12.5 12 15l2.5-2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
           <span data-page-node-id="envscanNavTxt">环境检测</span>
         </button>
@@ -354,12 +354,12 @@
               <span class="rc-t">银狐样本扫描</span>
               <span class="rc-d">上传程序 / 安装包 / 脚本做静态检测</span>
             </button>
-            <button class="rule-card" data-sub="envscan" data-sub-title="环境检测" data-sub-desc="联动本地银狐环境检测程序" type="button">
+            <button class="rule-card" data-sub="envscan" data-sub-title="环境检测" data-sub-desc="联动本地银狐防护主防程序" type="button">
               <span class="rc-ico">
                 <svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V6l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.5 12l2.4 2.4 4.6-4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </span>
               <span class="rc-t">环境检测</span>
-              <span class="rc-d">联动本地银狐环境检测程序</span>
+              <span class="rc-d">联动本地银狐防护主防程序</span>
             </button>
           </div>
         </div>
@@ -381,7 +381,7 @@
         </div>
       </section>
 
-      <!-- 环境检测（联动本地银狐环境检测程序） -->
+      <!-- 环境检测（联动本地银狐防护主防程序） -->
       <section class="sec" id="envscan" data-page-node-id="envscanSec">
         <div class="card rescue-hero" data-page-node-id="envscanHero">
           <div class="rescue-ico shield-normal" id="envscanShield" data-page-node-id="envscanIco">
@@ -393,8 +393,8 @@
             </svg>
           </div>
           <div class="rescue-txt" data-page-node-id="envscanTxt">
-            <h2 data-page-node-id="envscanH2">银狐环境检测</h2>
-            <p data-page-node-id="envscanP">本功能由常驻 Windows 服务的「银狐环境检测程序」（单个 EXE，兼作系统服务与浏览器联动宿主）提供实时检测——安装后作为后台服务自动运行，无需手动打开、无托盘、无独立窗口。约每 3 分钟扫描本机进程 / 注册表 / 计划任务 / 网络连接 / 文件，盾牌图标绿=环境正常、红=疑似中银狐，结果仅在扩展内显示。</p>
+            <h2 data-page-node-id="envscanH2">银狐防护主防</h2>
+            <p data-page-node-id="envscanP">本功能由常驻 Windows 服务的「银狐防护主防程序（preview2）」提供实时防护——像正经杀软一样工作：监视进程行为、文件落地、自启动项与引导扇区四类事件源，命中威胁自动拦截并弹出可撤销的处理卡片；对勒索加密先行回滚再通知，并保护 MBR 引导扇区不被篡改。安装后主界面静默驻留托盘，后台自动巡检（快扫约 3 分钟一轮、全盘 6 小时一轮），盾牌图标绿=环境正常、红=疑似中银狐。</p>
           </div>
           <button class="btn btn-rescue" id="envscanDownload" data-page-node-id="envscanDl">下载安装包（EXE）</button>
         </div>
@@ -414,18 +414,40 @@
             </div>
             <label class="switch" data-page-node-id="envscanGpuSwitch"><input type="checkbox" id="envscanGpu"><span class="slider"></span></label>
           </div>
+          <div id="envscanGpuProg" class="envscan-gpuprog" hidden data-page-node-id="envscanGpuProg">
+            <div class="envscan-gpuprog-head">
+              <span id="envscanGpuStage">准备载入特征地图…</span>
+              <span class="envscan-gpuprog-pct" id="envscanGpuPct">0%</span>
+            </div>
+            <div class="envscan-gpuprog-track"><div class="envscan-gpuprog-bar" id="envscanGpuBar"></div></div>
+            <div class="envscan-gpuprog-note" id="envscanGpuNote"></div>
+          </div>
           <div id="envscanStatus" class="envscan-status" data-page-node-id="envscanStatus">正在连接本地检测程序…</div>
           <div id="envscanFindings" class="envscan-findings" data-page-node-id="envscanFindings"></div>
-          <div id="envscanHint" class="tip tip-warn" style="display:none" data-page-node-id="envscanHint">未能连接本地检测程序。请确认已用 SilverFoxEnvScan-Setup.exe 安装包完成安装（安装后服务自动后台常驻，无需手动运行、无托盘图标）；若已安装仍连不上，请检查安装时填写的 Chrome/Edge 扩展 ID 与当前扩展是否一致。</div>
+          <div id="envscanHint" class="tip tip-warn" style="display:none" data-page-node-id="envscanHint">未能连接主防程序。请确认已用银狐防护主防程序安装包（SilverFoxGuard-preview2-Setup）完成安装（安装后服务自动后台常驻，主界面静默驻留托盘）；若已安装仍连不上，请检查安装时填写的 Chrome/Edge 扩展 ID 与当前扩展是否一致。</div>
         </div>
         <div class="card" id="envscanHistoryCard" hidden>
           <div class="row">
             <div class="rl">
               <div class="rt">清除记录</div>
-              <div class="rd">环境检测程序的历史清除动作（保留最近 50 次），按处理结果分类展示。</div>
+              <div class="rd">主防程序的历史清除动作（保留最近 50 次），按处理结果分类展示。</div>
             </div>
           </div>
           <div id="envscanHistory" class="envscan-history"><div class="hst-empty">暂无清除记录</div></div>
+        </div>
+        <div class="card" id="rollbackCard" hidden data-page-node-id="rollbackCard">
+          <div class="row" data-page-node-id="rollbackRow">
+            <div class="rl" data-page-node-id="rollbackRl">
+              <div class="rt" data-page-node-id="rollbackRt">勒索防护 · 回滚</div>
+              <div class="rd" data-page-node-id="rollbackRd">在文件被加密改写之前先留存一份原始快照。判定为勒索后立即终止进程并自动还原，不等待确认。若判断有误，请到桌面右下角的通知卡上点「撤销我的处理」——那个入口只在你真的需要反悔时出现，且 10 分钟内有效。快照仅存于本机，不上传。</div>
+            </div>
+            <div style="display:flex;gap:8px;flex:0 0 auto" data-page-node-id="rollbackBtns">
+              <button class="btn ghost" id="rollbackDo" type="button" data-page-node-id="rollbackDoBtn">手动回滚</button>
+              <button class="btn ghost" id="rollbackClean" type="button" data-page-node-id="rollbackCleanBtn">清空快照</button>
+            </div>
+          </div>
+          <div id="rollbackStat" class="envscan-status" data-page-node-id="rollbackStat">正在读取勒索防护状态…</div>
+          <div id="rollbackList" class="envscan-history" hidden data-page-node-id="rollbackList"></div>
         </div>
       </section>
 

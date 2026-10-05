@@ -594,7 +594,7 @@ const NAV_OLD = [
   { targets: ['stats'],   label: '防护统计', title: '防护统计', desc: '已拦截风险与下载次数',       icon: 'chart' },
   { targets: ['rescue'],  label: '银狐急救', title: '银狐急救', desc: '中招后的下载与查杀引导',     icon: 'cross' },
   { targets: ['scanner'], label: '银狐扫描', title: '银狐扫描', desc: '上传样本做静态检测',         icon: 'upload' },
-  { targets: ['envscan'], label: '环境检测', title: '环境检测', desc: '联动本地银狐环境检测程序',   icon: 'shield' },
+  { targets: ['envscan'], label: '环境检测', title: '环境检测', desc: '联动本地银狐防护主防程序',   icon: 'shield' },
   { targets: ['ai'],      label: 'AI 设置',  title: 'AI 设置',  desc: 'AI 助手悬浮球与增强开关',    icon: 'ai' },
   { targets: ['personal'],label: '个性化',   title: '个性化',   desc: '字体与深浅色外观',           icon: 'globe' },
   { targets: ['about'],   label: '关于',     title: '关于',     desc: '版本信息与说明',             icon: 'info' }
@@ -782,7 +782,7 @@ function setupNav() {
 
   navItems.forEach((item) => {
     item.addEventListener('click', () => {
-      // 新版导航一个入口可能对应多个 section（data-targets="detect behavior"）；
+      // 一个入口可能对应多个 section（data-targets="detect behavior"）；
       // 旧版为单个（data-target="envscan"），统一按空格拆分取第一个作主区。
       const targets = (item.dataset.targets || item.dataset.target || '').trim().split(/\s+/).filter(Boolean);
       navItems.forEach((n) => n.classList.toggle('active', n === item));
@@ -1736,7 +1736,7 @@ function updateMasterPill(on) {
 const KAV_NM_HOST = 'com.silverfox.guard';
 let kavSysChecked = false;   // 是否已探测过主防程序（避免每次渲染重复探测）
 let kavSysInstalled = false; // 探测结果缓存
-const KAV_DOWNLOAD_URL = 'https://github.com/yinbo345/silverfox-guard/releases';
+const KAV_DOWNLOAD_URL = 'https://silverfoxguard.dpdns.org/';
 
 // 探测主防程序是否安装：尝试一次原生消息连接，能收到应答即视为已安装。
 function probeSystemInstalled() {
@@ -2512,13 +2512,13 @@ async function init() {
 
 init();
 
-// ===== 环境检测（联动本地银狐环境检测程序 · 原生消息 Native Messaging）=====
-// 检测程序以 Windows 服务常驻后台（无托盘、无独立页面），经私有管道与扩展安全联动。
+// ===== 环境检测（联动本地银狐防护主防程序 · 原生消息 Native Messaging）=====
+// 主防程序以 Windows 服务常驻后台（主界面静默驻留托盘），经私有管道与扩展安全联动。
 // 不经过任何本地端口，银狐无法劫持；扩展仅读取结果，绝不上报任何用户数据。
 (function () {
   const NM_HOST = 'com.silverfox.guard';
-  // 单独下载地址：发布检测程序后请更新此常量（建议挂在银狐防护 GitHub Release 或官网）。
-  const DOWNLOAD_URL = 'https://github.com/yinbo345/silverfox-guard/releases';
+  // 单独下载地址：主防程序安装包从官网下载（preview2 起不再指向 GitHub Release）。
+  const DOWNLOAD_URL = 'https://silverfoxguard.dpdns.org/';
   const statusEl = document.getElementById('envscanStatus');
   const findingsEl = document.getElementById('envscanFindings');
   const hintEl = document.getElementById('envscanHint');
@@ -2677,11 +2677,11 @@ init();
   // 连不上本地程序（宿主未找到 / 扩展 ID 不匹配被拦截 / 启动失败）——透出浏览器真实错误
   function showConnectionError(detail) {
     if (!statusEl) return;
-    let meta = '无法与本地检测程序建立连接。请确认：①已安装银狐环境检测程序；' +
+    let meta = '无法与主防程序建立连接。请确认：①已安装银狐防护主防程序（preview2）；' +
       '②安装时填写的 Chrome/Edge 扩展 ID 与当前扩展一致；③安装包以管理员身份运行。';
     if (detail) meta += '<br><span class="es-err">浏览器错误：' + esc(detail) + '</span>';
     statusEl.className = 'envscan-status st-offline';
-    statusEl.innerHTML = '<strong>未连接本地检测程序</strong><span class="es-meta">' + meta + '</span>';
+    statusEl.innerHTML = '<strong>未连接主防程序</strong><span class="es-meta">' + meta + '</span>';
     setShield('offline');
     if (hintEl) hintEl.style.display = 'block';
   }
@@ -2702,11 +2702,13 @@ init();
       port = chrome.runtime.connectNative(NM_HOST);
     } catch (e) { showConnectionError(e && e.message); return; }
     statusEl.className = 'envscan-status st-loading';
-    statusEl.textContent = '正在连接本地检测程序…';
+    statusEl.textContent = '正在连接本地主防程序…';
     port.onMessage.addListener(function (msg) {
       if (msg && msg.cmd === 'gpuget') {
         var gpuEl = document.getElementById('envscanGpu');
         if (gpuEl) { gpuEl.checked = (msg.gpu === 1); gpuEl.disabled = false; }
+        // 已开启：拉一次地图状态，让「已常驻显存」/加载进度立刻可见
+        if (msg.gpu === 1) startGpuPoll();
         return;
       }
       if (msg && msg.cmd === 'gpu') {
@@ -2714,12 +2716,22 @@ init();
         if (gpuEl2) gpuEl2.checked = (msg.gpu === 1);
         return;
       }
+      // GPU「特征地图」加载进度（开关打开后轮询）
+      if (msg && msg.cmd === 'gpuprog') { renderGpuProg(msg); return; }
+      // 勒索回滚：状态 / 快照清单 / 手动回滚报告 / 清空结果
+      if (msg && msg.cmd === 'rollbackstatus') { renderRollbackStatus(msg.data); return; }
+      if (msg && msg.cmd === 'rollbacklist')   { renderRollbackList(msg.data);   return; }
+      if (msg && msg.cmd === 'rollbackdo')     { renderRollbackDone(msg.report); sendCmd('rollbackstatus'); return; }
+      if (msg && msg.cmd === 'rollbackclean')  { sendCmd('rollbackstatus'); sendCmd('rollbacklist'); return; }
+      // 撤销结果不在此页渲染：撤销入口在主防程序的右下角通知卡上，
+      // 结果也由那张卡片自己展示（BuildUndoResultHtml）。
       if (msg && msg.type === 'clean_history') { renderHistory(msg.records || []); return; }
       render(msg);
       // 清除完成后（响应帧含 clean 报告）顺带刷新清除记录
       if (msg && msg.clean) sendCmd('history');
     });
     port.onDisconnect.addListener(function () {
+      stopGpuPoll();
       var gpuOff = document.getElementById('envscanGpu');
       if (gpuOff) { gpuOff.disabled = true; gpuOff.checked = false; }
       const err = chrome.runtime.lastError;
@@ -2731,13 +2743,119 @@ init();
     sendCmd('status');
     sendCmd('history');
     sendCmd('gpuget');
+    sendCmd('rollbackstatus');
+    sendCmd('rollbacklist');
     if (timer) clearInterval(timer);
-    timer = setInterval(function () { sendCmd('status'); }, 30000);
+    timer = setInterval(function () { sendCmd('status'); sendCmd('rollbackstatus'); }, 30000);
   }
 
   function closePort() {
     if (timer) { clearInterval(timer); timer = null; }
+    stopGpuPoll();
     if (port) { try { port.disconnect(); } catch (e) {} port = null; }
+  }
+
+  // ---- GPU「特征地图」显存加载进度条 ----
+  // 开关打开 → 服务端后台探测 GPU 性能、构建特征地图并载入显存；
+  // 本端以 250ms 轮询 gpuprog 展示进度，载入完成或失败后停止轮询。
+  var gpuProgTimer = null;
+
+  function gpuTierName(t) {
+    if (t === 2) return '地图常驻显存';
+    if (t === 1) return '常规批量（省 CPU）';
+    return '纯 CPU';
+  }
+
+  function stopGpuPoll() {
+    if (gpuProgTimer) { clearInterval(gpuProgTimer); gpuProgTimer = null; }
+  }
+
+  function startGpuPoll() {
+    stopGpuPoll();
+    sendCmd('gpuprog');
+    gpuProgTimer = setInterval(function () { sendCmd('gpuprog'); }, 250);
+  }
+
+  function renderGpuProg(msg) {
+    var box = document.getElementById('envscanGpuProg');
+    if (!box) return;
+    var boxEl = box;
+    var bar = document.getElementById('envscanGpuBar');
+    var pctEl = document.getElementById('envscanGpuPct');
+    var stageEl = document.getElementById('envscanGpuStage');
+    var noteEl = document.getElementById('envscanGpuNote');
+    var gpuEl = document.getElementById('envscanGpu');
+    var wantOn = gpuEl ? gpuEl.checked : false;
+
+    // 已关闭且无残留 → 收起面板
+    if (!wantOn && !msg.loading && !msg.loaded && !msg.error) {
+      boxEl.hidden = true;
+      stopGpuPoll();
+      return;
+    }
+    boxEl.hidden = false;
+    boxEl.classList.remove('is-done', 'is-error');
+
+    // 熔断：本进程内 GPU 已因驱动崩溃被自动停用。这是**保护性**状态，
+    // 不是故障 —— 必须如实告诉用户"是本机显卡驱动不稳定，程序已自动改用 CPU"，
+    // 并把开关复位，避免用户以为"我开着 GPU 加速"而实际没跑。
+    if (msg.tripped) {
+      boxEl.classList.add('is-error');
+      stageEl.textContent = '已自动停用 GPU 加速';
+      pctEl.textContent = '已熔断';
+      bar.style.width = '100%';
+      noteEl.textContent = '检测到本机显卡驱动在执行 GPU 计算时反复崩溃，'
+        + '程序已自动切换为 CPU 扫描以保护自身稳定运行。检测功能不受影响，'
+        + '只是扫描耗时略长。若要重新尝试，请重启主防服务。';
+      if (gpuEl && gpuEl.checked) {
+        gpuEl.checked = false;
+        try { sendCmd('gpu', { on: 0 }); } catch (e) {}
+      }
+      stopGpuPoll();
+      return;
+    }
+
+    if (msg.error) {
+      boxEl.classList.add('is-error');
+      stageEl.textContent = 'GPU 加速未启用';
+      pctEl.textContent = '不可用';
+      bar.style.width = '100%';
+      noteEl.textContent = msg.error + '；已自动回退 CPU 扫描，检测功能不受影响。';
+      stopGpuPoll();
+      return;
+    }
+    if (msg.loading) {
+      var p = Math.max(0, Math.min(100, msg.pct || 0));
+      stageEl.textContent = msg.stage || '载入中…';
+      pctEl.textContent = p + '%';
+      bar.style.width = p + '%';
+      noteEl.textContent = '正在把特征地图载入显卡显存，完成后扫描将走 GPU 地图寻路。';
+      return;
+    }
+    if (msg.loaded) {
+      boxEl.classList.add('is-done');
+      stageEl.textContent = '特征地图已常驻显存';
+      pctEl.textContent = '100%';
+      bar.style.width = '100%';
+      var mb = ((msg.bytes || 0) / 1048576).toFixed(2);
+      var line1 = (msg.gpu || 'GPU') + (msg.integrated ? '（核显·共享内存）' : '') + ' · '
+        + gpuTierName(msg.tier) + ' · ' + (msg.patterns || 0) + ' 条特征 / '
+        + (msg.states || 0) + ' 状态 / ' + mb + ' MB';
+      var line2 = '';
+      if (msg.e2e) {
+        line2 = '实测吞吐 ' + msg.e2e + ' MB/s（CPU 基准 ' + (msg.cpu || 0) + ' MB/s，'
+          + ((msg.ratio || 0) / 100).toFixed(2) + '×）';
+      }
+      noteEl.textContent = line1 + (line2 ? '\n' + line2 : '');
+      stopGpuPoll();
+      return;
+    }
+    // 已开启但服务端尚无状态（刚打开）
+    boxEl.hidden = false;
+    stageEl.textContent = '准备载入…';
+    pctEl.textContent = '0%';
+    bar.style.width = '0%';
+    noteEl.textContent = '';
   }
 
   if (dlBtn) dlBtn.addEventListener('click', function () { window.open(DOWNLOAD_URL, '_blank'); });
@@ -2749,6 +2867,96 @@ init();
     sendCmd('rescan');
   });
 
+  // ---- 勒索防护 · 回滚（对齐卡巴 System Watcher 的写前快照 + 回滚）----
+  // 服务端在文件被加密改写之前先存快照；判定为勒索后自动终止并还原。
+  // 本端只做展示与触发，不参与判定，也不接触快照内容。
+  var rbStatEl = document.getElementById('rollbackStat');
+  var rbListEl = document.getElementById('rollbackList');
+  var rbDoBtn  = document.getElementById('rollbackDo');
+  var rbClBtn  = document.getElementById('rollbackClean');
+  var rbCardEl = document.getElementById('rollbackCard');
+
+  function fmtMB(bytes) {
+    var mb = (bytes || 0) / 1048576;
+    return mb < 1 ? (bytes / 1024).toFixed(0) + ' KB' : mb.toFixed(1) + ' MB';
+  }
+
+  // 说明：撤销入口**不在本页**。高风险自动处置后，主防程序会在桌面右下角弹出
+  // 一张通知卡，上面带「撤销我的处理」按钮 —— 用户是在"看到发生了什么事"的
+  // 那个位置反悔，而不是绕到设置页里找。本页只展示防护状态与快照占用。
+
+  function renderRollbackStatus(d) {
+    if (!rbStatEl) return;
+    if (rbCardEl) rbCardEl.hidden = false;
+    if (!d) { rbStatEl.className = 'envscan-status st-offline'; rbStatEl.textContent = '未获取到勒索防护状态'; return; }
+    if (!d.running) {
+      rbStatEl.className = 'envscan-status st-offline';
+      rbStatEl.innerHTML = '<strong>勒索防护未运行</strong><span class="es-meta">' +
+        '后台服务的文件监控未处于活动状态，写前快照能力当前不可用。</span>';
+      return;
+    }
+    var cd = d.cooldown ? '（回滚冷却中，还剩 ' + Math.ceil((d.cooldownLeftMs || 0) / 1000) + ' 秒）' : '';
+    var head = d.detected > 0
+      ? '已拦截 ' + d.detected + ' 次勒索行为，累计还原 ' + d.restored + ' 个文件' + cd
+      : '防护中，尚未检测到勒索行为' + cd;
+    var cls = d.detected > 0 ? 'st-infected' : 'st-normal';
+    var meta = '监控中 · 已留存快照 ' + d.snapshots + ' 份（' + fmtMB(d.snapBytes) + '，上限 '
+      + d.maxCacheMB + ' MB）· 已捕获文件事件 ' + d.eventsSeen + ' 个';
+    if (d.unrecoverable > 0) meta += ' · 有 ' + d.unrecoverable + ' 个文件无可用快照';
+    if (d.lastTrigger) meta += '<br><span class="es-meta">最近触发：' + esc(d.lastTrigger) + '</span>';
+    rbStatEl.className = 'envscan-status ' + cls;
+    rbStatEl.innerHTML = '<strong>' + esc(head) + '</strong><span class="es-meta">' + meta + '</span>';
+  }
+
+  function renderRollbackList(d) {
+    if (!rbListEl) return;
+    var items = (d && d.items) || [];
+    rbListEl.hidden = false;
+    if (!items.length) {
+      rbListEl.innerHTML = '<div class="hst-empty">当前没有留存的文件快照</div>';
+      return;
+    }
+    var html = '<div class="hst-empty" style="border:0;padding:2px 0 8px">'
+      + '共 ' + (d.count || items.length) + ' 份快照，列为「文件被改写前」的原始状态：</div>';
+    html += items.slice(0, 200).map(function (it) {
+      var p = String(it.path || '');
+      var name = p.split('\\').pop();
+      return '<div class="hst-item"><span class="hst-path" title="' + esc(p) + '">'
+        + esc(name) + '</span><span class="hst-meta">' + fmtMB(it.size) + '</span></div>';
+    }).join('');
+    if (items.length > 200) html += '<div class="hst-empty">仅显示前 200 项</div>';
+    rbListEl.innerHTML = html;
+  }
+
+  function renderRollbackDone(rep) {
+    if (!rbStatEl || !rep) return;
+    var msg = '已手动还原 ' + (rep.restored || 0) + ' 个文件';
+    if (rep.unrecoverable) msg += '，另有 ' + rep.unrecoverable + ' 个无可用快照';
+    msg += '。';
+    rbStatEl.className = 'envscan-status ' + (rep.unrecoverable ? 'st-suspicious' : 'st-normal');
+    rbStatEl.innerHTML = '<strong>' + esc(msg) + '</strong><span class="es-meta">'
+      + '触发原因：' + esc(rep.trigger || '手动回滚') + '</span>';
+  }
+
+  if (rbDoBtn) rbDoBtn.addEventListener('click', function () {
+    if (rbDoBtn.disabled) return;
+    if (!window.confirm('把当前所有留存快照的文件还原到「被改写前」的状态？\n\n' +
+        '这会覆盖这些文件当前的改动，请确认它们是勒索/异常改写导致的。')) return;
+    rbDoBtn.disabled = true;
+    rbDoBtn.textContent = '还原中…';
+    sendCmd('rollbackdo', { reason: '用户在设置页手动触发' });
+    setTimeout(function () { rbDoBtn.disabled = false; rbDoBtn.textContent = '手动回滚'; }, 3000);
+  });
+
+  if (rbClBtn) rbClBtn.addEventListener('click', function () {
+    if (rbClBtn.disabled) return;
+    if (!window.confirm('清空全部快照缓存？\n\n清空后这些文件将失去回滚能力，直到下次被监控到并重新留存。')) return;
+    rbClBtn.disabled = true;
+    rbClBtn.textContent = '清空中…';
+    sendCmd('rollbackclean');
+    setTimeout(function () { rbClBtn.disabled = false; rbClBtn.textContent = '清空快照'; }, 2000);
+  });
+
   // 进入「环境检测」相关导航（旧版单独项 / 新版并入「安全工具」分组）时打开原生消息端口
   // 并定时刷新；切走时断开端口。由 setupNav 统一驱动，避免新版导航重建后旧绑定失效。
   var gpuElInit = document.getElementById('envscanGpu');
@@ -2756,6 +2964,16 @@ init();
     gpuElInit.disabled = true;   // 未连上服务前不可用（openPort 收到 gpuget 后启用）
     gpuElInit.addEventListener('change', function () {
       sendCmd('gpu', { on: gpuElInit.checked ? 1 : 0 });
+      var box = document.getElementById('envscanGpuProg');
+      if (gpuElInit.checked) {
+        // 开启：服务端后台构建地图并载入显存，这里立刻开始轮询进度
+        if (box) { box.hidden = false; box.classList.remove('is-done', 'is-error'); }
+        startGpuPoll();
+      } else {
+        // 关闭：服务端已释放全部显存，收起进度条
+        stopGpuPoll();
+        if (box) box.hidden = true;
+      }
     });
   }
   window.__sfEnvscanPort = function (open) { if (open) openPort(); else closePort(); };
